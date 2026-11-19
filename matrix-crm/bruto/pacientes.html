@@ -1,0 +1,99 @@
+<style>
+  .filtros { display: flex; gap: var(--espaco-md); flex-wrap: wrap; margin-bottom: var(--espaco-md); }
+  .busca-container { flex: 1; min-width: 200px; }
+  .tabela-conteiner { background: var(--superficie); }
+  .status-etapa { font-size: 0.75rem; padding: 2px 8px; border-radius: 4px; }
+</style>
+
+<div class="entre">
+  <h1>Leads</h1>
+  <div class="linha">
+    <button class="btn btn-suave">
+      <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+      Importar ficha por foto
+    </button>
+    <button class="btn btn-primario">
+      <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+      Novo lead
+    </button>
+  </div>
+</div>
+
+<div class="filtros">
+  <div class="campo busca-container">
+    <input type="text" id="busca" placeholder="Buscar por nome ou telefone..." onkeyup="filtrarTabela()">
+  </div>
+  <select id="filtroDentista" onchange="filtrarTabela()">
+    <option value="">Todos os dentistas</option>
+    <option value="Dra. Ana">Dra. Ana</option>
+    <option value="Dr. Bruno">Dr. Bruno</option>
+  </select>
+  <select id="filtroEtapa" onchange="filtrarTabela()">
+    <option value="">Todas as etapas</option>
+    <option value="Avaliação">Avaliação</option>
+    <option value="Em Tratamento">Em Tratamento</option>
+    <option value="Concluído">Concluído</option>
+  </select>
+</div>
+
+<div class="tabela-conteiner">
+  <table class="tabela" id="tabelaPacientes">
+    <thead>
+      <tr>
+        <th>Lead</th>
+        <th>Telefone</th>
+        <th>Última Consulta</th>
+        <th>Próximo Retorno</th>
+        <th>Etapa</th>
+        <th>Dentista</th>
+      </tr>
+    </thead>
+    <tbody id="corpoTabela">
+      <!-- Dados gerados via JS -->
+    </tbody>
+  </table>
+</div>
+
+<script>
+  const pacientes = [
+    { nome: "Alice Santos", tel: "(11) 99999-1111", ultima: "10/10/2023", retorno: "10/11/2023", etapa: "Avaliação", dentista: "Dra. Ana" },
+    { nome: "Bruno Rocha", tel: "(11) 98888-2222", ultima: "05/10/2023", retorno: "05/11/2023", etapa: "Em Tratamento", dentista: "Dr. Bruno" },
+    { nome: "Carla Dias", tel: "(11) 97777-3333", ultima: "01/10/2023", retorno: "-", etapa: "Concluído", dentista: "Dra. Ana" },
+    { nome: "Daniel Souza", tel: "(11) 96666-4444", ultima: "12/10/2023", retorno: "12/11/2023", etapa: "Avaliação", dentista: "Dr. Bruno" },
+    { nome: "Elaine Lima", tel: "(11) 95555-5555", ultima: "08/10/2023", retorno: "08/11/2023", etapa: "Em Tratamento", dentista: "Dra. Ana" },
+    { nome: "Felipe Costa", tel: "(11) 94444-6666", ultima: "20/09/2023", retorno: "-", etapa: "Concluído", dentista: "Dr. Bruno" },
+    { nome: "Gabriela Melo", tel: "(11) 93333-7777", ultima: "15/10/2023", retorno: "15/11/2023", etapa: "Avaliação", dentista: "Dra. Ana" },
+    { nome: "Hugo Silva", tel: "(11) 92222-8888", ultima: "02/10/2023", retorno: "02/11/2023", etapa: "Em Tratamento", dentista: "Dr. Bruno" },
+    { nome: "Iara Nunes", tel: "(11) 91111-9999", ultima: "11/10/2023", retorno: "-", etapa: "Concluído", dentista: "Dra. Ana" },
+    { nome: "João Pedro", tel: "(11) 90000-0000", ultima: "09/10/2023", retorno: "09/11/2023", etapa: "Avaliação", dentista: "Dr. Bruno" }
+  ];
+
+  function renderizar(dados) {
+    const corpo = document.getElementById('corpoTabela');
+    corpo.innerHTML = dados.map(p => `
+      <tr>
+        <td><strong><a href="paciente.html" style="color:var(--marca); text-decoration:none;">${esc(p.nome)}</a></strong></td>
+        <td>${esc(p.tel)}</td>
+        <td>${esc(p.ultima)}</td>
+        <td>${esc(p.retorno)}</td>
+        <td><span class="etiqueta ${p.etapa === 'Concluído' ? 'etiqueta-sucesso' : 'etiqueta-info'}">${esc(p.etapa)}</span></td>
+        <td>${esc(p.dentista)}</td>
+      </tr>
+    `).join('');
+  }
+
+  function filtrarTabela() {
+    const busca = document.getElementById('busca').value.toLowerCase();
+    const dentista = document.getElementById('filtroDentista').value;
+    const etapa = document.getElementById('filtroEtapa').value;
+
+    const filtrados = pacientes.filter(p => 
+      (p.nome.toLowerCase().includes(busca) || p.tel.includes(busca)) &&
+      (dentista === "" || p.dentista === dentista) &&
+      (etapa === "" || p.etapa === etapa)
+    );
+    renderizar(filtrados);
+  }
+
+  renderizar(pacientes);
+</script>

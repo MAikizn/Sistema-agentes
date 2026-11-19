@@ -1,0 +1,33 @@
+{
+  "_como_usar": "ativo liga/desliga os envios. simulacao=true só registra no log o que enviaria, sem falar com ninguém. O Morfeus relê este arquivo a cada minuto: não precisa reiniciar.",
+  "ativo": true,
+  "simulacao": false,
+  "horario": [
+    8,
+    18
+  ],
+  "diasDaSemana": [
+    "Mon",
+    "Tue",
+    "Wed",
+    "Thu",
+    "Fri",
+    "Sat",
+    "Sun"
+  ],
+  "limitePorDia": 40,
+  "intervaloMinutos": [
+    3,
+    3
+  ],
+  "tag": "prospeccao-site",
+  "filaPath": "C:\\Users\\Maike\\Documents\\neo-prospeccao\\fila.json",
+  "mensagemInicial": "Olá! Aqui é o Morfeus, agente de IA do Mikhael Santos, especialista em DEV de sites para empresas. Encontrei a sua empresa no Google. Posso te mostrar rapidinho como um site ajudaria vocês a receber mais clientes? Se não tiver interesse, é só responder SAIR que não mando mais nada. 🙂",
+  "ganchos": {
+    "sem site": "vi que vocês ainda não têm um site",
+    "só rede social": "vi que vocês usam só rede social, sem um site próprio",
+    "site desatualizado": "vi que o site de vocês pode estar desatualizado",
+    "site fora do ar": "vi que o site de vocês não está abrindo",
+    "padrao": "vi que vocês ainda não têm um site"
+  }
+}

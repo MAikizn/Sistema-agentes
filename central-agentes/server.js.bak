@@ -1,0 +1,209 @@
+// CENTRAL DE AGENTES do Maike — painel para ver, ligar, desligar e monitorar os agentes,
+// e runtime "custom" do Hermes3D (GET /health /state /registry, POST /v1/chat/completions).
+// Sem dependências: só Node 18+.
+const http = require('http'), fs = require('fs'), path = require('path'), net = require('net');
+const { spawn, execFile } = require('child_process');
+
+const DIR = __dirname;
+const CFG = JSON.parse(fs.readFileSync(path.join(DIR, 'agentes.json'), 'utf8'));
+const ESTADO_ARQ = path.join(DIR, 'estado.json');
+const WIN = process.platform === 'win32';
+const abs = p => path.resolve(DIR, p.replace(/%([^%]+)%/g, (_, v) => process.env[v] || ''));
+let estado = { ativos: {} };
+try { estado = JSON.parse(fs.readFileSync(ESTADO_ARQ, 'utf8')); } catch {}
+const salvarEstado = () => fs.writeFileSync(ESTADO_ARQ, JSON.stringify(estado, null, 1));
+const noEscritorio = id => estado.ativos[id] !== false;
+
+// ---------- Os 30 especialistas da Niobe ----------
+const AREAS = { 'Pré-produção': '#FF5A5F', 'Montagem': '#FFB400', 'Motion': '#7B61FF', 'Cor': '#00C2A8', 'Áudio': '#00A3FF', 'Entrega': '#FF7AC6' };
+const ESPEC = [
+  ['Triador', 'Pré-produção'], ['Transcritor', 'Pré-produção'], ['Analista', 'Pré-produção'], ['Roteirista', 'Pré-produção'], ['Ganchos', 'Pré-produção'], ['Copywriter', 'Pré-produção'],
+  ['Montador', 'Montagem'], ['Cortador de silêncio', 'Montagem'], ['Removedor de erros', 'Montagem'], ['Ritmista', 'Montagem'], ['B-roll', 'Montagem'], ['Reenquadrador', 'Montagem'], ['Velocidade', 'Montagem'],
+  ['Motion designer', 'Motion'], ['Zoom dinâmico', 'Motion'], ['Tipógrafo', 'Motion'], ['Legendista', 'Motion'], ['Transições', 'Motion'], ['Efeitos', 'Motion'], ['Marca', 'Motion'],
+  ['Colorista técnico', 'Cor'], ['Colorista criativo', 'Cor'], ['Consistência de cor', 'Cor'],
+  ['Engenheiro de voz', 'Áudio'], ['Trilha', 'Áudio'], ['Sound designer', 'Áudio'], ['Mixador', 'Áudio'],
+  ['Revisor', 'Entrega'], ['Exportador', 'Entrega'], ['Versionador', 'Entrega'],
+].map(([nome, area], i) => ({ id: 'agent-' + String(i + 1).padStart(2, '0'), nome, area, cor: AREAS[area], ultima: null, quando: 0 }));
+const REGRAS = [
+  ['Import sfx', 'Sound designer', 'importou efeito sonoro'], ['Import', 'Triador', 'importou mídia'], ['Transcri', 'Transcritor', 'transcreveu a fala'],
+  ['Filler', 'Removedor de erros', 'removeu vícios de linguagem'], ['Pause', 'Cortador de silêncio', 'cortou pausas'], ['Caption', 'Legendista', 'gerou legendas'],
+  ['Character Style', 'Legendista', 'destacou palavra-chave'], ['New Graphic', 'Tipógrafo', 'criou texto na tela'], ['Text', 'Tipógrafo', 'editou texto'],
+  ['Graphic', 'Marca', 'ajustou estilo do texto'], ['Whip', 'Transições', 'transição whip'], ['Zoom Blur', 'Transições', 'transição zoom blur'],
+  ['Flash', 'Transições', 'transição flash'], ['Dissolve', 'Transições', 'cross dissolve'], ['Lumetri', 'Colorista criativo', 'look de cor'],
+  ['Color', 'Colorista técnico', 'correção de cor'], ['Apply', 'Efeitos', 'aplicou efeito'], ['Speed', 'Velocidade', 'mudou a velocidade'],
+  ['Razor', 'Cortador de silêncio', 'corte com a navalha'], ['Add Edit', 'Cortador de silêncio', 'corte na timeline'], ['Delete', 'Ritmista', 'apertou o ritmo'],
+  ['Lift', 'Ritmista', 'retirou trecho'], ['Extract', 'Ritmista', 'retirou trecho'], ['Place Clip', 'Montador', 'colocou clipe na timeline'],
+  ['Effect Parameter', 'Zoom dinâmico', 'zoom / enquadramento'], ['Keyframe', 'Motion designer', 'keyframe de movimento'], ['Volume', 'Mixador', 'ajustou volume'],
+  ['Gain', 'Engenheiro de voz', 'ajustou ganho'], ['Track', 'Mixador', 'ajustou faixa'], ['Sequence', 'Montador', 'criou sequência'], ['', 'Revisor', ''],
+];
+const atividade = []; // feed geral
+function registrar(agente, quem, txt, cor) {
+  atividade.unshift({ t: Date.now(), agente, quem, txt, cor });
+  if (atividade.length > 60) atividade.pop();
+}
+
+// ---------- Leitura do histórico do FilmCraft (modo ponte) ----------
+let fcPrev = -1, fcOnline = false;
+function tokenFilmCraft() {
+  try { return fs.readFileSync(abs('../agente-niobe/projetos/.token'), 'utf8').trim(); } catch { return process.env.FILMCRAFT_CONTROL_TOKEN || ''; }
+}
+function historicoFilmCraft() {
+  return new Promise(res => {
+    const s = net.connect(9876, '127.0.0.1'); let buf = ''; const fim = v => { s.destroy(); res(v); };
+    s.setTimeout(1500, () => fim(null)); s.on('error', () => fim(null));
+    s.on('connect', () => s.write(JSON.stringify({ id: 1, token: tokenFilmCraft(), method: 'engine.execute', params: { command: 'history.list' } }) + '\n'));
+    s.on('data', d => { buf += d; const i = buf.indexOf('\n'); if (i >= 0) { try { const r = JSON.parse(buf.slice(0, i)); fim(r.result?.undo || r.result?.result?.undo || r.undo || null); } catch { fim(null); } } });
+  });
+}
+async function vigiarFilmCraft() {
+  const u = await historicoFilmCraft();
+  fcOnline = Array.isArray(u);
+  if (!fcOnline) return;
+  if (fcPrev < 0 || u.length < fcPrev) { fcPrev = u.length; return; }
+  for (let j = fcPrev; j < u.length; j++) {
+    const lab = String(u[j]);
+    const r = REGRAS.find(([k]) => lab.includes(k));
+    const e = ESPEC.find(x => x.nome === r[1]);
+    e.ultima = r[2] || lab; e.quando = Date.now();
+    registrar('Niobe', e.nome, e.ultima, e.cor);
+  }
+  fcPrev = u.length;
+}
+setInterval(vigiarFilmCraft, 1000);
+
+// ---------- Processos do Windows ----------
+let procs = [];
+function lerProcessos() {
+  if (!WIN) return;
+  execFile('powershell', ['-NoProfile', '-Command', "Get-CimInstance Win32_Process | Where-Object { $_.Name -in 'cmd.exe','node.exe','filmcraft.exe','freellmapi.exe','powershell.exe' } | Select-Object ProcessId,Name,CommandLine | ConvertTo-Json -Compress"], { windowsHide: true, maxBuffer: 8e6 }, (err, out) => {
+    if (err) return;
+    try { const j = JSON.parse(out || '[]'); procs = Array.isArray(j) ? j : [j]; } catch {}
+  });
+}
+setInterval(lerProcessos, 3000); lerProcessos();
+const acharProc = fn => procs.find(p => fn(String(p.Name || '').toLowerCase(), String(p.CommandLine || '').toLowerCase()));
+const portaAberta = porta => new Promise(res => { const s = net.connect(porta, '127.0.0.1'); s.setTimeout(600, () => { s.destroy(); res(false); }); s.on('connect', () => { s.destroy(); res(true); }); s.on('error', () => res(false)); });
+const matar = pid => WIN && spawn('taskkill', ['/pid', String(pid), '/t', '/f'], { windowsHide: true });
+function abrirBat(pasta, bat, titulo) {
+  const p = abs(pasta);
+  spawn('cmd', ['/c', 'start', `"${titulo || bat}"`, 'cmd', '/c', path.join(p, bat)], { cwd: p, detached: true, windowsHide: true, shell: false }).unref();
+}
+
+async function statusAgente(a) {
+  const base = { id: a.id, nome: a.nome, emoji: a.emoji, descricao: a.descricao, tipo: a.tipo, noEscritorio: noEscritorio(a.id), controlavel: a.tipo !== 'skill' };
+  if (a.tipo === 'processo') {
+    const pasta = abs(a.pasta).toLowerCase();
+    const p = acharProc((n, c) => n === 'cmd.exe' && c.includes(pasta.split(path.sep).pop()) && c.includes(a.iniciar.toLowerCase()));
+    let ultimoLog = null;
+    try { ultimoLog = fs.statSync(abs(a.log)).mtimeMs; } catch {}
+    return { ...base, rodando: !!p, pid: p?.ProcessId, detalhe: ultimoLog ? 'última atividade ' + new Date(ultimoLog).toLocaleString('pt-BR') : '', funcionarios: (a.funcionarios || []).map(f => ({ ...f, status: p ? 'ativo' : 'parado' })) };
+  }
+  if (a.tipo === 'niobe') {
+    const fc = acharProc(n => n === 'filmcraft.exe');
+    let overlay = false;
+    try { const pid = +fs.readFileSync(abs('../agente-niobe/ao-vivo/overlay.pid'), 'utf8').trim(); overlay = !!procs.find(p => p.ProcessId === pid); } catch {}
+    const agora = Date.now();
+    return {
+      ...base, rodando: !!fc && (fcOnline || !WIN), detalhe: `FilmCraft ${fc ? (fcOnline ? 'aberto (modo Niobe)' : 'aberto, sem modo Niobe') : 'fechado'} · camada dos agentes ${overlay ? 'ligada' : 'desligada'}`,
+      funcionarios: ESPEC.map(e => ({ id: e.id, nome: e.nome, funcao: e.area, cor: e.cor, status: agora - e.quando < 8000 ? 'trabalhando' : (fc ? 'ativo' : 'parado'), ultima: e.ultima, quando: e.quando })),
+    };
+  }
+  if (a.tipo === 'servico') {
+    const ok = await portaAberta(a.portaTeste);
+    return { ...base, rodando: ok, detalhe: ok ? 'respondendo na porta ' + a.portaTeste : 'não está respondendo' };
+  }
+  if (a.tipo === 'agencia') {
+    const raiz = abs(a.pasta); const funcs = [];
+    try {
+      for (const d of fs.readdirSync(raiz, { withFileTypes: true })) {
+        if (!d.isDirectory() || d.name.startsWith('.') || ['scripts', 'examples', 'integrations'].includes(d.name)) continue;
+        for (const f of fs.readdirSync(path.join(raiz, d.name))) {
+          if (!f.endsWith('.md')) continue;
+          const t = fs.readFileSync(path.join(raiz, d.name, f), 'utf8').slice(0, 800);
+          const nome = (t.match(/^name:\s*(.+)$/m) || [])[1]; if (!nome) continue;
+          funcs.push({ nome: ((t.match(/^emoji:\s*(.+)$/m) || [])[1] || '') + ' ' + nome.trim(), funcao: d.name, status: 'ativo', arquivo: d.name + '/' + f, ultima: ((t.match(/^description:\s*(.+)$/m) || [])[1] || '').slice(0, 90) });
+        }
+      }
+    } catch {}
+    return { ...base, controlavel: false, rodando: funcs.length > 0, detalhe: funcs.length ? `${funcs.length} agentes em ${new Set(funcs.map(f => f.funcao)).size} divisões · use no Claude com /agencia` : 'pasta não encontrada: rode o ORGANIZAR-AGENTES.bat', funcionarios: funcs };
+  }
+  return { ...base, rodando: true, detalhe: 'disponível no chat do Claude (sob demanda)', funcionarios: (a.funcionarios || []).map(f => ({ ...f, status: 'ativo' })) };
+}
+
+async function ligar(a) {
+  if (a.tipo === 'processo' || a.tipo === 'niobe') abrirBat(a.pasta, a.iniciar, a.titulo);
+  if (a.tipo === 'servico') spawn(abs(a.exe), [], { detached: true, windowsHide: false }).unref();
+  registrar(a.nome, 'Central', 'ligado pelo painel', '#22c55e');
+}
+async function desligar(a) {
+  const s = await statusAgente(a);
+  if (a.tipo === 'processo' && s.pid) matar(s.pid);
+  if (a.tipo === 'niobe') {
+    try { fs.appendFileSync(abs('../agente-niobe/ao-vivo/eventos.jsonl'), '{"fim":true}\n'); } catch {}
+  }
+  if (a.tipo === 'servico') { const p = acharProc(n => n === a.processo); if (p) matar(p.ProcessId); }
+  registrar(a.nome, 'Central', 'desligado pelo painel', '#ef4444');
+}
+function tailLog(a, linhas = 120) {
+  try { const t = fs.readFileSync(abs(a.log), 'utf8'); return t.split(/\r?\n/).slice(-linhas).join('\n'); } catch { return '(sem log)'; }
+}
+
+// ---------- Runtime do Hermes3D ----------
+function freeCfg() {
+  try { const c = JSON.parse(fs.readFileSync(abs(CFG.freellmapi.configMorfeus), 'utf8')); return { baseUrl: c.llm.baseUrl, apiKey: c.llm.apiKey }; } catch { return { baseUrl: CFG.freellmapi.baseUrl, apiKey: '' }; }
+}
+function idsEscritorio() {
+  const ids = {};
+  for (const a of CFG.agentes) {
+    if (!noEscritorio(a.id)) continue;
+    ids[a.id] = 'auto';
+    if (a.id === 'niobe') for (const e of ESPEC) if (noEscritorio('niobe-' + e.id)) ids['niobe-' + e.nome.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\s+/g, '-')] = 'auto';
+    if (a.tipo === 'agencia') { try { for (const d of fs.readdirSync(abs(a.pasta), { withFileTypes: true })) if (d.isDirectory() && !d.name.startsWith('.') && !['scripts', 'examples', 'integrations'].includes(d.name)) ids['agency-' + d.name] = 'auto'; } catch {} }
+    if (a.funcionarios) for (const f of a.funcionarios) ids[a.id + '-' + f.nome.normalize('NFD').replace(/[̀-ͯ()]/g, '').toLowerCase().replace(/\s+/g, '-')] = 'auto';
+  }
+  return ids;
+}
+async function chatHermes(body) {
+  const { baseUrl, apiKey } = freeCfg();
+  const persona = { role: 'system', content: 'Você faz parte da equipe de agentes do Maike (Morfeus: atendimento WhatsApp; Niobe: edição de vídeo com 30 especialistas; Neo: CRM e motion). Responda em português, curto e direto.' };
+  const r = await fetch(baseUrl.replace(/\/$/, '') + '/chat/completions', {
+    method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + apiKey },
+    body: JSON.stringify({ model: 'auto', max_tokens: body.max_tokens || 600, messages: [persona, ...(body.messages || [])], stream: false }),
+  });
+  return { status: r.status, text: await r.text() };
+}
+
+// ---------- Servidor ----------
+const lerCorpo = req => new Promise(res => { let b = ''; req.on('data', d => b += d); req.on('end', () => { try { res(JSON.parse(b || '{}')); } catch { res({}); } }); });
+const json = (res, obj, code = 200) => { res.writeHead(code, { 'Content-Type': 'application/json; charset=utf-8', 'Access-Control-Allow-Origin': '*' }); res.end(JSON.stringify(obj)); };
+
+const servidor = async (req, res) => {
+  const u = new URL(req.url, 'http://x'); const p = u.pathname;
+  try {
+    if (req.method === 'OPTIONS') { res.writeHead(204, { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': '*', 'Access-Control-Allow-Methods': 'GET,POST' }); return res.end(); }
+    if (p === '/' || p === '/index.html') { res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' }); return res.end(fs.readFileSync(path.join(DIR, 'painel.html'))); }
+    if (p === '/api/agentes') return json(res, { agentes: await Promise.all(CFG.agentes.map(statusAgente)), atividade, areas: AREAS });
+    let m = p.match(/^\/api\/agentes\/([\w-]+)\/(ligar|desligar|escritorio|log)$/);
+    if (m) {
+      const a = CFG.agentes.find(x => x.id === m[1]); if (!a) return json(res, { erro: 'agente não existe' }, 404);
+      if (m[2] === 'log') return json(res, { log: tailLog(a) });
+      if (m[2] === 'escritorio') { estado.ativos[a.id] = !noEscritorio(a.id); salvarEstado(); return json(res, { noEscritorio: noEscritorio(a.id) }); }
+      if (req.method !== 'POST') return json(res, { erro: 'use POST' }, 405);
+      if (a.tipo === 'skill') return json(res, { erro: 'skills rodam no Claude, não dá para ligar daqui' }, 400);
+      await (m[2] === 'ligar' ? ligar(a) : desligar(a));
+      return json(res, { ok: true });
+    }
+    // Hermes3D (runtime custom)
+    if (p === '/health') return json(res, { ok: true, status: 'ok' });
+    if (p === '/state') return json(res, { profileName: 'central-maike', runtime: { name: 'Central de Agentes do Maike', version: '1.0', vendor: 'Maike', status: 'online', active_model: 'auto' }, active: idsEscritorio() });
+    if (p === '/registry') return json(res, { models: { auto: { via: 'FreeLLMAPI' } } });
+    if (p === '/v1/chat/completions' && req.method === 'POST') {
+      const r = await chatHermes(await lerCorpo(req));
+      res.writeHead(r.status, { 'Content-Type': 'application/json' }); return res.end(r.text);
+    }
+    json(res, { erro: 'não encontrado' }, 404);
+  } catch (e) { json(res, { erro: String(e.message || e) }, 500); }
+};
+http.createServer(servidor).listen(CFG.porta, '127.0.0.1', () => console.log(`Central de Agentes em http://localhost:${CFG.porta}  (Hermes3D: Custom com esta URL)`));
+// também em IPv6 (::1): o Hermes3D resolve "localhost" assim
+http.createServer(servidor).on('error', () => {}).listen(CFG.porta, '::1');

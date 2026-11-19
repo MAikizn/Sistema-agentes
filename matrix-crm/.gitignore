@@ -1,0 +1,13 @@
+# banco local e cache do wrangler
+.wrangler/
+node_modules/
+
+# arquivos temporários que podem conter dados sensíveis
+.dono.sql
+.integracao.sql
+*.env
+.env*
+.dev.vars
+
+# logs automáticos (podem ter saídas do wrangler)
+publicar.log

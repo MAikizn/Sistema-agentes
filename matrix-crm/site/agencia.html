@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<script>function esc(v){return String(v==null?'':v).replace(/[&<>"'`]/g,function(c){return '&#'+c.charCodeAt(0)+';';});}</script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agência · MATRIX CRM</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: var(--espaco-xs) var(--espaco-sm);
+      margin-bottom: var(--espaco-xs);
+    }
+    .logo-icone {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--marca), var(--marca-2));
+      border-radius: var(--raio-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--texto-inverso);
+      flex-shrink: 0;
+      box-shadow: var(--sombra-marca);
+    }
+    .logo-texto {
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: -0.5px;
+      color: var(--texto);
+    }
+    .seletor-subconta {
+      width: 100%;
+      margin-bottom: var(--espaco-sm);
+    }
+    .seletor-subconta select {
+      font-weight: 600;
+      font-size: 0.85rem;
+      height: 40px;
+    }
+    .lateral-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+      overflow-y: auto;
+    }
+    .topo-esquerda {
+      display: flex;
+      align-items: center;
+      gap: var(--espaco-md);
+    }
+    .topo-titulo {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--texto);
+      margin: 0;
+    }
+    .topo-direita {
+      display: flex;
+      align-items: center;
+      gap: var(--espaco-md);
+    }
+    .topo-busca {
+      width: 240px;
+    }
+    .btn-mobile-trigger {
+      display: none;
+    }
+    .lateral-overlay {
+      display: none;
+    }
+    @media (max-width: 768px) {
+      .btn-mobile-trigger {
+        display: inline-flex;
+      }
+      .topo-busca {
+        display: none;
+      }
+      .lateral-overlay.aberta {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(2px);
+        z-index: 35;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="overlay" class="lateral-overlay"></div>
+
+  <div class="app">
+    <!-- MENU LATERAL -->
+    <aside class="lateral">
+      <div class="logo-container">
+        <div class="logo-icone">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+        </div>
+        <span class="logo-texto">MATRIX CRM</span>
+      </div>
+
+      <div class="campo seletor-subconta">
+        <select aria-label="Selecione a Subconta">
+          <option value="sorriso" selected>Clínica Sorriso (exemplo)</option>
+          <option value="matriz">Matriz Odontologia</option>
+          <option value="unidade-sul">Unidade Sul</option>
+        </select>
+      </div>
+
+      <nav class="lateral-nav">
+        <a href="painel.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+          <span>Painel</span>
+        </a>
+        <a href="conversas.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          <span>Conversas</span>
+        </a>
+        <a href="pacientes.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <span>Leads</span>
+        </a>
+        <a href="funil.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+          <span>Funil</span>
+        </a>
+        <a href="agenda.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          <span>Agenda</span>
+        </a>
+        <a href="agentes.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8.01" y2="16"></line><line x1="16" y1="16" x2="16.01" y2="16"></line></svg>
+          <span>Agentes de IA</span>
+        </a>
+        <a href="automacoes.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          <span>Automações</span>
+        </a>
+        <a href="configuracoes.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          <span>Configurações</span>
+        </a>
+        <a href="agencia.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M9 8h1"></path><path d="M9 12h1"></path><path d="M9 16h1"></path><path d="M14 8h1"></path><path d="M14 12h1"></path><path d="M14 16h1"></path><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path></svg>
+          <span>Agência</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- BARRA SUPERIOR DA INTERFACE -->
+    <header class="topo">
+      <div class="topo-esquerda">
+        <button id="btn-menu-toggle" class="btn btn-icone btn-suave btn-mobile-trigger" aria-label="Abrir menu de navegação">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <h1 class="topo-titulo">Agência</h1>
+      </div>
+
+      <div class="topo-direita">
+        <div class="campo topo-busca">
+          <input type="text" placeholder="Buscar leads, telefones..." aria-label="Buscar leads e registros">
+        </div>
+
+        <button id="btn-tema-toggle" class="btn btn-icone btn-suave" aria-label="Alternar tema claro ou escuro">
+          <svg id="icone-tema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+
+        <div class="avatar" title="Dra. Ana Silva">
+          AS
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="conteudo">
+<script src="perfil.js"></script>
+<style>
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--espaco-md); margin: var(--espaco-lg) 0; }
+  .ag-tabela th, .ag-tabela td { text-align: center; white-space: nowrap; }
+  .ag-tabela th:first-child, .ag-tabela td:first-child { text-align: left; }
+  .ag-cor { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+  .ag-pausada td:not(:last-child) { opacity: .5; }
+</style>
+<div class="entre">
+  <div>
+    <h1>Agência · Subcontas</h1>
+    <p class="mudo">Todos os seus clientes. Ligue ou desligue os agentes de IA de qualquer um daqui.</p>
+  </div>
+  <button class="btn btn-primario" type="button" id="agNova">+ Nova subconta</button>
+</div>
+<div class="kpi-grid">
+  <div class="kpi"><span class="mudo">Subcontas ativas</span><div class="valor" id="kAtivas">0</div></div>
+  <div class="kpi"><span class="mudo">Subcontas pausadas</span><div class="valor" id="kPausadas">0</div></div>
+  <div class="kpi"><span class="mudo">Agentes de IA ligados</span><div class="valor" id="kAgentes">0</div></div>
+</div>
+<div class="cartao">
+  <div class="tabela-conteiner">
+    <table class="tabela ag-tabela">
+      <thead><tr id="agCab"></tr></thead>
+      <tbody id="agCorpo"></tbody>
+    </table>
+  </div>
+</div>
+<div id="modalNova" class="modal">
+  <div class="modal-conteudo">
+    <div class="entre" style="margin-bottom: var(--espaco-lg)"><h3>Nova subconta</h3><button class="btn btn-icone" type="button" id="agFechar">✕</button></div>
+    <form id="agForm" style="display:flex;flex-direction:column;gap:var(--espaco-md)">
+      <div class="campo"><label for="agNome">Nome do cliente</label><input id="agNome" type="text" maxlength="60" placeholder="Ex.: Clínica Odonto Master" required></div>
+      <div class="campo"><label for="agCor">Cor da marca</label><input id="agCor" type="color" value="#00e676" style="height:42px;padding:4px"></div>
+      <label class="interruptor"><input type="checkbox" id="agControla"><div class="trilho"></div><span>Cliente pode ligar/desligar os agentes</span></label>
+      <button class="btn btn-primario" type="submit" style="width:100%">Criar subconta</button>
+    </form>
+  </div>
+</div>
+<div id="modalUsu" class="modal">
+  <div class="modal-conteudo" style="max-width:760px;width:95%">
+    <div class="entre" style="margin-bottom: var(--espaco-md)"><h3 id="usuTitulo">Logins e usuários</h3><button class="btn btn-icone" type="button" id="usuFechar">✕</button></div>
+    <p class="mudo" style="margin-bottom:var(--espaco-md)">Quem pode entrar no sistema deste cliente. Cada pessoa tem o próprio login.</p>
+    <div class="tabela-conteiner"><table class="tabela"><thead><tr><th>Nome</th><th>E-mail (login)</th><th>Função</th><th>Situação</th><th>Ações</th></tr></thead><tbody id="usuCorpo"></tbody></table></div>
+    <form id="usuForm" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:var(--espaco-md);margin-top:var(--espaco-lg);align-items:end">
+      <div class="campo"><label for="usuNome">Nome</label><input id="usuNome" type="text" maxlength="60" required></div>
+      <div class="campo"><label for="usuEmail">E-mail (login)</label><input id="usuEmail" type="email" maxlength="80" required></div>
+      <div class="campo"><label for="usuFuncao">Função</label><select id="usuFuncao"><option>Atendente</option><option>Administrador da clínica</option><option>Dentista</option></select></div>
+      <div class="campo"><label for="usuSenha">Senha provisória</label><input id="usuSenha" type="text" minlength="10" maxlength="40" autocomplete="off" required></div>
+      <button class="btn btn-suave" type="button" id="usuGerar">Gerar senha</button>
+      <button class="btn btn-primario" type="submit">Cadastrar usuário</button>
+    </form>
+    <p class="mudo" id="usuAviso" style="margin-top:var(--espaco-md);font-size:13px">A senha é provisória: a pessoa troca no primeiro acesso. Anote e entregue a ela, pois não fica visível depois.</p>
+  </div>
+</div>
+<script>
+(function () {
+  var M = window.MATRIX, el = M.el, lista = [], subAtual = null;
+  var corpo = document.getElementById('agCorpo'), cab = document.getElementById('agCab'), modal = document.getElementById('modalNova');
+  var modalUsu = document.getElementById('modalUsu'), usuCorpo = document.getElementById('usuCorpo'), usuAviso = document.getElementById('usuAviso');
+  function falhou(e) { M.alertar(e.message); carregar(); }
+  ['Cliente', 'Situação'].concat(M.AGENTES.map(function (a) { return a[1]; }), ['Cliente controla', 'Usuários', 'Ações']).forEach(function (t) { cab.appendChild(el('th', {}, t)); });
+  function chave(ligada, aoMudar, desativada) {
+    var l = el('label', { class: 'interruptor', style: 'justify-content:center' }), c = el('input', { type: 'checkbox' });
+    c.checked = !!ligada; c.disabled = !!desativada; c.onchange = function () { aoMudar(c.checked); };
+    l.appendChild(c); l.appendChild(el('div', { class: 'trilho' })); return l;
+  }
+  function mudar(id, dados) { return M.api('PATCH', 'subcontas/' + id, dados).then(carregar).catch(falhou); }
+  function carregar() { return M.api('GET', 'subcontas').then(function (d) { lista = d.subcontas; desenhar(); }).catch(function (e) { M.alertar(e.message); }); }
+  function desenhar() {
+    corpo.textContent = ''; var ativas = 0, ligados = 0;
+    if (!lista.length) { var v = el('tr'); v.appendChild(el('td', { colspan: '9', class: 'mudo' }, 'Nenhum cliente ainda. Clique em "+ Nova subconta".')); corpo.appendChild(v); }
+    lista.forEach(function (s) {
+      if (s.ativa) ativas++;
+      var tr = el('tr', s.ativa ? {} : { class: 'ag-pausada' });
+      var nome = el('td'), linha = el('div', { class: 'linha' });
+      linha.appendChild(el('span', { class: 'ag-cor', style: 'background:' + (/^#[0-9a-f]{6}$/i.test(s.cor) ? s.cor : '#00e676') })); linha.appendChild(el('strong', {}, s.nome)); nome.appendChild(linha); tr.appendChild(nome);
+      var sit = el('td'); sit.appendChild(el('span', { class: 'etiqueta ' + (s.ativa ? 'etiqueta-sucesso' : 'etiqueta-alerta') }, s.ativa ? 'Ativa' : 'Pausada')); tr.appendChild(sit);
+      M.AGENTES.forEach(function (a) {
+        if (s.ativa && s.agentes[a[0]]) ligados++;
+        var td = el('td'); td.appendChild(chave(s.agentes[a[0]], function (v) { var ag = {}; ag[a[0]] = v; mudar(s.id, { agentes: ag }); }, !s.ativa)); tr.appendChild(td);
+      });
+      var tc = el('td'); tc.appendChild(chave(s.clienteControla, function (v) { mudar(s.id, { clienteControla: v }); })); tr.appendChild(tc);
+      tr.appendChild(el('td', {}, String(s.usuarios || 0)));
+      var ac = el('td'), grupo = el('div', { class: 'linha', style: 'justify-content:center' });
+      var b0 = el('button', { class: 'btn btn-suave', type: 'button' }, 'Logins e usuários'); b0.onclick = function () { abrirUsuarios(s); };
+      var b1 = el('button', { class: 'btn btn-suave', type: 'button' }, 'Entrar como cliente'); b1.onclick = function () { M.entrar(s.id).catch(falhou); };
+      var b2 = el('button', { class: 'btn ' + (s.ativa ? 'btn-perigo' : 'btn-suave'), type: 'button' }, s.ativa ? 'Pausar' : 'Reativar'); b2.onclick = function () { mudar(s.id, { ativa: !s.ativa }); };
+      grupo.appendChild(b0); grupo.appendChild(b1); grupo.appendChild(b2); ac.appendChild(grupo); tr.appendChild(ac);
+      corpo.appendChild(tr);
+    });
+    document.getElementById('kAtivas').textContent = ativas;
+    document.getElementById('kPausadas').textContent = lista.length - ativas;
+    document.getElementById('kAgentes').textContent = ligados;
+  }
+  document.getElementById('agNova').onclick = function () { modal.classList.add('aberto'); };
+  document.getElementById('agFechar').onclick = function () { modal.classList.remove('aberto'); };
+  modal.addEventListener('click', function (e) { if (e.target === modal) modal.classList.remove('aberto'); });
+  document.getElementById('agForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    M.api('POST', 'subcontas', { nome: document.getElementById('agNome').value, cor: document.getElementById('agCor').value, clienteControla: document.getElementById('agControla').checked })
+      .then(function () { e.target.reset(); modal.classList.remove('aberto'); carregar(); }).catch(function (er) { M.alertar(er.message); });
+  });
+  // ---- Logins e usuários de cada cliente ----
+  var NOMES = { admin: 'Administrador da clínica', atendente: 'Atendente', dentista: 'Dentista' };
+  function senhaNova() { var c = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789', a = new Uint32Array(12), o = ''; crypto.getRandomValues(a); for (var i = 0; i < 12; i++) o += c[a[i] % c.length]; return o; }
+  function desenharUsuarios() {
+    M.api('GET', 'subcontas/' + subAtual.id + '/usuarios').then(function (d) {
+      usuCorpo.textContent = '';
+      if (!d.usuarios.length) { var v = el('tr'); v.appendChild(el('td', { colspan: '5', class: 'mudo' }, 'Nenhum usuário cadastrado ainda.')); usuCorpo.appendChild(v); }
+      d.usuarios.forEach(function (u) {
+        var tr = el('tr');
+        tr.appendChild(el('td', {}, u.nome)); tr.appendChild(el('td', {}, u.email)); tr.appendChild(el('td', {}, NOMES[u.funcao] || u.funcao));
+        var st = el('td'); st.appendChild(el('span', { class: 'etiqueta ' + (u.ativo ? 'etiqueta-sucesso' : 'etiqueta-erro') }, u.ativo ? 'Ativo' : 'Bloqueado')); tr.appendChild(st);
+        var ac = el('td'), g = el('div', { class: 'linha' });
+        var bB = el('button', { class: 'btn btn-suave', type: 'button' }, u.ativo ? 'Bloquear' : 'Liberar'); bB.onclick = function () { M.api('PATCH', 'usuarios/' + u.id, { ativo: !u.ativo }).then(desenharUsuarios).catch(function (e) { M.alertar(e.message); }); };
+        var bS = el('button', { class: 'btn btn-suave', type: 'button' }, 'Nova senha'); bS.onclick = function () { var nova = senhaNova(); M.api('PATCH', 'usuarios/' + u.id, { senha: nova }).then(function () { usuAviso.textContent = 'Nova senha provisória de ' + u.nome + ': ' + nova + '  (anote agora; ela não aparece de novo)'; }).catch(function (e) { M.alertar(e.message); }); };
+        var bR = el('button', { class: 'btn btn-perigo', type: 'button' }, 'Remover'); bR.onclick = function () { M.api('DELETE', 'usuarios/' + u.id).then(function () { desenharUsuarios(); carregar(); }).catch(function (e) { M.alertar(e.message); }); };
+        g.appendChild(bB); g.appendChild(bS); g.appendChild(bR); ac.appendChild(g); tr.appendChild(ac); usuCorpo.appendChild(tr);
+      });
+    }).catch(function (e) { M.alertar(e.message); });
+  }
+  function abrirUsuarios(s) { subAtual = s; document.getElementById('usuTitulo').textContent = 'Logins e usuários · ' + s.nome; usuAviso.textContent = 'A senha é provisória: a pessoa troca no primeiro acesso. Anote e entregue a ela, pois não fica visível depois.'; desenharUsuarios(); modalUsu.classList.add('aberto'); }
+  document.getElementById('usuFechar').onclick = function () { modalUsu.classList.remove('aberto'); };
+  modalUsu.addEventListener('click', function (e) { if (e.target === modalUsu) modalUsu.classList.remove('aberto'); });
+  document.getElementById('usuGerar').onclick = function () { document.getElementById('usuSenha').value = senhaNova(); };
+  document.getElementById('usuForm').addEventListener('submit', function (e) {
+    e.preventDefault(); if (!subAtual) return;
+    var senha = document.getElementById('usuSenha').value, email = document.getElementById('usuEmail').value;
+    M.api('POST', 'subcontas/' + subAtual.id + '/usuarios', { nome: document.getElementById('usuNome').value, email: email, funcao: document.getElementById('usuFuncao').value, senha: senha })
+      .then(function () { e.target.reset(); usuAviso.textContent = 'Usuário cadastrado. Login: ' + email + ' · senha provisória: ' + senha + '  (anote agora; ela não aparece de novo)'; desenharUsuarios(); carregar(); })
+      .catch(function (er) { usuAviso.textContent = er.message; });
+  });
+  M.pronto.then(carregar);
+})();
+</script>
+
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // 1. Marcação do link ativo conforme página atual
+      var pathAtual = window.location.pathname.split('/').pop();
+      if (!pathAtual) pathAtual = 'painel.html';
+      
+      var linksNav = document.querySelectorAll('.lateral nav a');
+      linksNav.forEach(function(link) {
+        var href = link.getAttribute('href');
+        if (href === pathAtual) {
+          link.classList.add('ativo');
+        } else {
+          link.classList.remove('ativo');
+        }
+      });
+
+      // 2. Controle do Menu Lateral no Celular
+      var btnMenu = document.getElementById('btn-menu-toggle');
+      var lateral = document.querySelector('.lateral');
+      var overlay = document.getElementById('overlay');
+
+      function fecharMenu() {
+        if (lateral) lateral.classList.remove('aberta');
+        if (overlay) overlay.classList.remove('aberta');
+      }
+
+      function abrirMenu() {
+        if (lateral) lateral.classList.add('aberta');
+        if (overlay) overlay.classList.add('aberta');
+      }
+
+      if (btnMenu) {
+        btnMenu.addEventListener('click', function(e) {
+          e.stopPropagation();
+          if (lateral && lateral.classList.contains('aberta')) {
+            fecharMenu();
+          } else {
+            abrirMenu();
+          }
+        });
+      }
+
+      if (overlay) {
+        overlay.addEventListener('click', fecharMenu);
+      }
+
+      // 3. Gerenciador de Tema (Claro / Escuro)
+      var btnTema = document.getElementById('btn-tema-toggle');
+      var iconeTema = document.getElementById('icone-tema');
+      
+      var temaSalvo = localStorage.getItem('matrix-tema') || 'escuro';
+      
+      function aplicarTema(tema) {
+        if (tema === 'claro') {
+          document.documentElement.setAttribute('data-tema', 'claro');
+          if (iconeTema) {
+            iconeTema.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+          }
+        } else {
+          document.documentElement.removeAttribute('data-tema');
+          if (iconeTema) {
+            iconeTema.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+          }
+        }
+      }
+
+      aplicarTema(temaSalvo);
+
+      if (btnTema) {
+        btnTema.addEventListener('click', function() {
+          var temaAtual = document.documentElement.getAttribute('data-tema') === 'claro' ? 'claro' : 'escuro';
+          var novoTema = temaAtual === 'claro' ? 'escuro' : 'claro';
+          localStorage.setItem('matrix-tema', novoTema);
+          aplicarTema(novoTema);
+        });
+      }
+
+      // 4. Aplicação dinâmica das cores de marca salvas
+      var corMarca = localStorage.getItem('matrix-marca');
+      var corMarca2 = localStorage.getItem('matrix-marca-2');
+
+      if (corMarca) {
+        document.documentElement.style.setProperty('--marca', corMarca);
+      }
+      if (corMarca2) {
+        document.documentElement.style.setProperty('--marca-2', corMarca2);
+      }
+    });
+  </script>
+</body>
+</html>

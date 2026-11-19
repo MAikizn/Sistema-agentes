@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prospecção de sites</title>
+<style>
+:root{--bg:#0b120e;--card:#121d16;--line:#24382b;--text:#e6f2e4;--muted:#93a895;--green:#7bd65a;--lime:#c8f560;--red:#ff7a6b;--amber:#f5c15c;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 'Segoe UI',system-ui,sans-serif}
+main{max-width:860px;margin:0 auto;padding:20px 16px 110px}
+h1{font-size:22px;margin:0 0 2px;letter-spacing:.01em}
+h1 small{display:block;font-size:13px;font-weight:400;color:var(--muted);margin-top:4px}
+h2{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin:0 0 12px;font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-top:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.kpi{background:#0e1812;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.kpi b{display:block;font:700 22px Consolas,monospace;color:var(--lime);font-variant-numeric:tabular-nums}
+.kpi span{font-size:12px;color:var(--muted)}
+.linha{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 0;border-top:1px solid var(--line)}
+.linha:first-of-type{border-top:0;padding-top:0}
+.linha p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+.sw{position:relative;flex:none;width:52px;height:30px}
+.sw input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;width:100%;height:100%}
+.sw i{position:absolute;inset:0;border-radius:99px;background:#2a3a30;transition:background .15s}
+.sw i::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#cfd8cf;transition:transform .15s}
+.sw input:checked+i{background:var(--green)}
+.sw input:checked+i::after{transform:translateX(22px);background:#fff}
+.sw input:focus-visible+i{outline:2px solid var(--lime);outline-offset:2px}
+label.c{display:block;font-size:13px;color:var(--muted);margin-bottom:4px}
+input[type=number],select,textarea{width:100%;background:#0e1812;border:1px solid var(--line);border-radius:9px;color:var(--text);padding:9px 10px;font:inherit}
+textarea{resize:vertical;min-height:84px}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--lime);outline-offset:1px}
+.dias{display:flex;flex-wrap:wrap;gap:6px}
+.dias label{position:relative;cursor:pointer}
+.dias input{position:absolute;opacity:0}
+.dias span{display:block;padding:7px 12px;border:1px solid var(--line);border-radius:9px;background:#0e1812;color:var(--muted);font-size:13px}
+.dias input:checked+span{background:#1d3a21;border-color:var(--green);color:var(--text)}
+.dias input:focus-visible+span{outline:2px solid var(--lime)}
+.dica{font-size:12.5px;color:var(--muted);margin:6px 0 0}
+.aviso{border-color:#5a4a1f;background:#1c1809}
+.aviso strong{color:var(--amber)}
+.barra{position:fixed;left:0;right:0;bottom:0;background:rgba(11,18,14,.96);border-top:1px solid var(--line);padding:12px 16px}
+.barra div{max-width:860px;margin:0 auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+button{font:600 15px 'Segoe UI',system-ui,sans-serif;border:0;border-radius:10px;padding:11px 20px;cursor:pointer}
+#iniciar{background:var(--lime);color:#08130a}
+#iniciar:disabled{background:#1d3a21;color:var(--green);cursor:default}
+#salvar{background:#1d2a21;color:var(--text);border:1px solid var(--line)}
+#salvar:disabled{opacity:.5;cursor:default}
+#parar{background:#3a1c18;color:var(--red);border:1px solid #6b2f28}
+#msg{font-size:13.5px;flex:1;min-width:180px}
+.ok{color:var(--green)}.erro{color:var(--red)}
+.pill{display:inline-block;font-size:12px;padding:3px 9px;border-radius:99px;border:1px solid var(--line);color:var(--muted);margin-left:6px;vertical-align:middle}
+.pill.on{border-color:var(--green);color:var(--green)}.pill.sim{border-color:var(--amber);color:var(--amber)}
+pre{white-space:pre-wrap;word-break:break-word;font:12px Consolas,monospace;color:var(--muted);margin:8px 0 0}
+</style>
+</head>
+<body>
+<main>
+  <h1>🎯 Prospecção de sites <span id="selo" class="pill">carregando…</span>
+    <small>O Neo procura empresas sem site ou com site desatualizado. O Morfeus chama no WhatsApp e faz a pré-venda.</small></h1>
+
+  <section class="card">
+    <h2>Agora</h2>
+    <div class="grid">
+      <div class="kpi"><b id="kFila">–</b><span>empresas na fila</span></div>
+      <div class="kpi"><b id="kHoje">–</b><span>mensagens enviadas hoje</span></div>
+      <div class="kpi"><b id="kAbord">–</b><span>empresas abordadas</span></div>
+      <div class="kpi"><b id="kResp">–</b><span>responderam</span></div>
+    </div>
+    <p class="dica" id="situacao"></p>
+    <pre id="buscas"></pre>
+  </section>
+
+  <section class="card">
+    <h2>Ligar e desligar</h2>
+    <div class="linha"><div><strong>Neo: procurar empresas</strong><p id="fonte">Busca novas empresas de hora em hora, dentro do horário.</p></div>
+      <label class="sw"><input type="checkbox" id="neoAtivo" aria-label="Neo: procurar empresas"><i></i></label></div>
+    <div class="linha"><div><strong>Morfeus: enviar mensagens</strong><p>Chama as empresas da fila no WhatsApp, uma por vez.</p></div>
+      <label class="sw"><input type="checkbox" id="morfeusAtivo" aria-label="Morfeus: enviar mensagens"><i></i></label></div>
+    <div class="linha"><div><strong>Modo simulação</strong><p>Ligado: o Morfeus só anota o que enviaria, sem falar com ninguém. Desligue para enviar de verdade.</p></div>
+      <label class="sw"><input type="checkbox" id="simulacao" aria-label="Modo simulação"><i></i></label></div>
+  </section>
+
+  <section class="card">
+    <h2>Horário</h2>
+    <div class="grid">
+      <div><label class="c" for="horaInicio">Começa às</label><select id="horaInicio"></select></div>
+      <div><label class="c" for="horaFim">Termina às</label><select id="horaFim"></select></div>
+    </div>
+    <label class="c" style="margin-top:12px">Dias da semana</label>
+    <div class="dias" id="dias"></div>
+  </section>
+
+  <section class="card">
+    <h2>Região e nichos</h2>
+    <label class="c" for="cidades">Cidades ou bairros (um por linha)</label>
+    <textarea id="cidades" placeholder="Goiânia, GO&#10;Setor Bueno, Goiânia, GO&#10;Aparecida de Goiânia, GO"></textarea>
+    <label class="c" for="nichos" style="margin-top:12px">Nichos de empresa (um por linha)</label>
+    <textarea id="nichos" style="min-height:130px"></textarea>
+    <p class="dica" id="dicaNichos"></p>
+  </section>
+
+  <section class="card">
+    <h2>Ritmo dos envios</h2>
+    <div class="grid">
+      <div><label class="c" for="intervaloMin">Esperar no mínimo (minutos)</label><input type="number" id="intervaloMin" min="3" max="240"></div>
+      <div><label class="c" for="intervaloMax">Esperar no máximo (minutos)</label><input type="number" id="intervaloMax" min="3" max="240"></div>
+      <div><label class="c" for="limitePorDia">Máximo de empresas por dia</label><input type="number" id="limitePorDia" min="1" max="40"></div>
+    </div>
+    <p class="dica">O Morfeus sorteia um tempo entre o mínimo e o máximo a cada envio, para não parecer disparo em massa. Limites de segurança: no mínimo 3 minutos entre mensagens e no máximo 40 empresas por dia.</p>
+  </section>
+
+  <section class="card">
+    <h2>Primeira mensagem</h2>
+    <label class="c" for="mensagemInicial">Texto que o Morfeus envia para cada empresa</label>
+    <textarea id="mensagemInicial" style="min-height:120px" maxlength="700"></textarea>
+    <p class="dica">Use <code>{empresa}</code>, <code>{cidade}</code>, <code>{nicho}</code> e <code>{gancho}</code> (a frase sobre o site da empresa). A mensagem precisa dizer que é uma IA e como parar de receber (responder SAIR).</p>
+  </section>
+
+  <section class="card aviso">
+    <strong>Antes de desligar a simulação</strong>
+    <p class="dica" style="color:var(--text)">Mensagem para quem não te conhece é o que mais gera denúncia no WhatsApp, e o Morfeus usa uma conexão não oficial. O número pode ser bloqueado. Use um chip separado para prospecção e mantenha o ritmo baixo.</p>
+  </section>
+</main>
+
+<div class="barra"><div>
+  <button id="iniciar" title="Liga o Neo e o Morfeus e começa a enviar mensagens de verdade">▶ Iniciar</button>
+  <button id="salvar">Salvar</button>
+  <button id="parar" title="Desliga o Neo e o Morfeus agora">Parar tudo</button>
+  <span id="msg" role="status" aria-live="polite"></span>
+</div></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const DIAS = [['Mon','Seg'],['Tue','Ter'],['Wed','Qua'],['Thu','Qui'],['Fri','Sex'],['Sat','Sáb'],['Sun','Dom']];
+$('dias').innerHTML = DIAS.map(([v,n]) => `<label><input type="checkbox" value="${v}"><span>${n}</span></label>`).join('');
+for (let h = 0; h <= 23; h++) $('horaInicio').add(new Option(String(h).padStart(2,'0') + ':00', h));
+for (let h = 1; h <= 24; h++) $('horaFim').add(new Option(String(h).padStart(2,'0') + ':00', h));
+let sujo = false, carregado = false;
+document.querySelector('main').addEventListener('input', () => { sujo = true; $('msg').textContent = 'Há mudanças não salvas.'; $('msg').className = ''; });
+
+function preencher(e) {
+  $('neoAtivo').checked = e.neo.ativo; $('morfeusAtivo').checked = e.morfeus.ativo; $('simulacao').checked = e.morfeus.simulacao;
+  $('horaInicio').value = e.morfeus.horario[0]; $('horaFim').value = e.morfeus.horario[1];
+  document.querySelectorAll('#dias input').forEach(i => i.checked = e.morfeus.diasDaSemana.includes(i.value));
+  $('cidades').value = e.neo.cidades.join('\n'); $('nichos').value = e.neo.nichos.join('\n');
+  $('intervaloMin').value = e.morfeus.intervaloMinutos[0]; $('intervaloMax').value = e.morfeus.intervaloMinutos[1];
+  $('limitePorDia').value = e.morfeus.limitePorDia; $('mensagemInicial').value = e.morfeus.mensagemInicial;
+}
+function status(e) {
+  const s = e.status;
+  $('kFila').textContent = s.naFila; $('kHoje').textContent = s.enviadosHoje + ' / ' + e.morfeus.limitePorDia; $('kAbord').textContent = s.abordadas; $('kResp').textContent = s.responderam;
+  const ligado = e.neo.ativo || e.morfeus.ativo, selo = $('selo');
+  selo.textContent = !ligado ? 'desligada' : (e.morfeus.ativo && e.morfeus.simulacao ? 'ligada em simulação' : 'ligada');
+  selo.className = 'pill' + (!ligado ? '' : (e.morfeus.ativo && e.morfeus.simulacao ? ' sim' : ' on'));
+  const real = e.neo.ativo && e.morfeus.ativo && !e.morfeus.simulacao; // automação rodando de verdade
+  $('iniciar').disabled = real; $('iniciar').textContent = real ? '✔ Em andamento' : '▶ Iniciar';
+  $('situacao').textContent = 'Morfeus: ' + (s.morfeusConectado ? 'conectado ao WhatsApp' : 'desconectado') + ' · envio: ' + s.situacao + (s.atualizadoEm ? ' (atualizado às ' + new Date(s.atualizadoEm).toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'}) + ')' : '') + ' · respostas salvas em ' + s.planilha;
+  $('buscas').textContent = s.ultimasBuscas.length ? 'Últimas buscas do Neo:\n' + s.ultimasBuscas.join('\n') : 'O Neo ainda não fez nenhuma busca.';
+  $('fonte').textContent = 'Busca novas empresas de hora em hora, dentro do horário. Fonte: ' + e.neo.fonte + (e.neo.temChaveGoogle ? '.' : ' (sem chave do Google no config.json do Neo; acha menos empresas).');
+  $('dicaNichos').textContent = e.neo.temChaveGoogle ? 'O Neo pesquisa um nicho por vez em cada cidade.' : 'Sem a chave do Google, o Neo usa o OpenStreetMap e traz empresas de qualquer nicho da região; os nichos acima passam a valer quando a chave for colocada.';
+}
+async function carregar() {
+  try {
+    const e = await (await fetch('/api/prospeccao', { cache: 'no-store' })).json();
+    if (!carregado || !sujo) { preencher(e); carregado = true; }
+    status(e);
+  } catch { $('msg').textContent = 'Não consegui falar com a Central de Agentes.'; $('msg').className = 'erro'; }
+}
+async function salvar(extra = {}) {
+  const corpo = Object.assign({ neoAtivo: $('neoAtivo').checked, morfeusAtivo: $('morfeusAtivo').checked, simulacao: $('simulacao').checked,
+    horaInicio: $('horaInicio').value, horaFim: $('horaFim').value, dias: [...document.querySelectorAll('#dias input:checked')].map(i => i.value),
+    cidades: $('cidades').value.split('\n'), nichos: $('nichos').value.split('\n'), intervaloMin: $('intervaloMin').value, intervaloMax: $('intervaloMax').value,
+    limitePorDia: $('limitePorDia').value, mensagemInicial: $('mensagemInicial').value }, extra);
+  if (corpo.morfeusAtivo && !corpo.simulacao && !confirm('O Morfeus vai enviar mensagens de verdade para as empresas da fila, a partir do número do WhatsApp dele.\n\nConfirma?')) return;
+  $('salvar').disabled = true;
+  try {
+    const r = await (await fetch('/api/prospeccao', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(corpo) })).json();
+    if (r.ok) { sujo = false; preencher(r.estado); status(r.estado); $('msg').textContent = 'Salvo. O Morfeus aplica em até 1 minuto.'; $('msg').className = 'ok'; }
+    else { $('msg').textContent = (r.erros || ['Não foi possível salvar.']).join(' '); $('msg').className = 'erro'; }
+  } catch { $('msg').textContent = 'Não consegui salvar: a Central de Agentes não respondeu.'; $('msg').className = 'erro'; }
+  $('salvar').disabled = false;
+}
+$('salvar').onclick = () => salvar();
+// Iniciar: liga o Neo e o Morfeus e desliga a simulação (o salvar() pede confirmação antes de enviar de verdade)
+$('iniciar').onclick = () => { $('neoAtivo').checked = true; $('morfeusAtivo').checked = true; $('simulacao').checked = false; salvar(); };
+$('parar').onclick = () => { $('neoAtivo').checked = false; $('morfeusAtivo').checked = false; salvar({ neoAtivo: false, morfeusAtivo: false }); };
+carregar(); setInterval(carregar, 15000);
+</script>
+</body>
+</html>

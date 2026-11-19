@@ -1,0 +1,86 @@
+<style>
+  .agenda-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--espaco-md); }
+  .grade-agenda { display: grid; grid-template-columns: 80px repeat(6, 1fr); border: 1px solid var(--borda); background: var(--superficie-2); border-radius: var(--raio); overflow: hidden; }
+  .col-hora { background: var(--superficie); border-right: 1px solid var(--borda); padding: 10px; font-size: 0.8rem; color: var(--texto-mudo); text-align: center; }
+  .celula { border-right: 1px solid var(--borda); border-bottom: 1px solid var(--borda); min-height: 50px; position: relative; cursor: pointer; transition: var(--transicao); }
+  .celula:hover { background: var(--marca-alpha); }
+  .consulta { position: absolute; top: 2px; left: 2px; right: 2px; bottom: 2px; padding: 4px; border-radius: 4px; font-size: 0.75rem; color: #fff; overflow: hidden; z-index: 1; }
+  .dentista-1 { background: #3b82f6; }
+  .dentista-2 { background: #ef4444; }
+  .dentista-3 { background: #8b5cf6; }
+</style>
+
+<div class="agenda-header">
+  <div class="linha">
+    <button class="btn" onclick="mudarSemana(-1)">«</button>
+    <button class="btn" onclick="hoje()">Hoje</button>
+    <button class="btn" onclick="mudarSemana(1)">»</button>
+    <h2 id="mesAno">Outubro 2023</h2>
+  </div>
+  <select id="filtroDentista" onchange="renderizar()">
+    <option value="todos">Todos Dentistas</option>
+    <option value="1">Dr. Carlos (Azul)</option>
+    <option value="2">Dra. Ana (Vermelho)</option>
+    <option value="3">Dr. Pedro (Roxo)</option>
+  </select>
+</div>
+
+<div class="grade-agenda" id="grade"></div>
+
+<div class="modal" id="modalAgendamento">
+  <div class="modal-conteudo">
+    <h3>Novo Agendamento</h3>
+    <div class="campo" style="margin-top:16px">
+      <label>Lead</label>
+      <input type="text" id="paciente" placeholder="Nome do lead">
+    </div>
+    <div class="campo">
+      <label>Procedimento</label>
+      <select id="proc">
+        <option>Limpeza</option>
+        <option>Canal</option>
+        <option>Avaliação</option>
+      </select>
+    </div>
+    <div class="linha" style="margin-top:20px">
+      <button class="btn" onclick="fecharModal()">Cancelar</button>
+      <button class="btn btn-primario" onclick="salvar()">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let consultas = [{hora: "09:00", dia: 1, dentista: 1, paciente: "João Silva", proc: "Limpeza"}];
+  let diaSelecionado = {hora: "", dia: 0};
+
+  function renderizar() {
+    const grade = document.getElementById('grade');
+    grade.innerHTML = '<div class="col-hora">Hora</div><div class="col-hora">Seg</div><div class="col-hora">Ter</div><div class="col-hora">Qua</div><div class="col-hora">Qui</div><div class="col-hora">Sex</div><div class="col-hora">Sáb</div>';
+    
+    for (let h = 8; h < 18; h++) {
+      ['00', '30'].forEach(m => {
+        grade.innerHTML += `<div class="col-hora">${h}:${m}</div>`;
+        for (let d = 1; d <= 6; d++) {
+          let c = consultas.find(x => x.hora === `${h}:${m}` && x.dia === d);
+          let html = c ? `<div class="consulta dentista-${esc(c.dentista)}">${esc(c.paciente)}<br>${esc(c.proc)}</div>` : '';
+          grade.innerHTML += `<div class="celula" onclick="abrirModal('${h}:${m}', ${d})">${html}</div>`;
+        }
+      });
+    }
+  }
+
+  function abrirModal(h, d) { diaSelecionado = {hora: h, dia: d}; document.getElementById('modalAgendamento').classList.add('aberto'); }
+  function fecharModal() { document.getElementById('modalAgendamento').classList.remove('aberto'); }
+  function salvar() {
+    consultas.push({
+      hora: diaSelecionado.hora,
+      dia: diaSelecionado.dia,
+      dentista: Math.floor(Math.random() * 3) + 1,
+      paciente: document.getElementById('paciente').value,
+      proc: document.getElementById('proc').value
+    });
+    fecharModal();
+    renderizar();
+  }
+  renderizar();
+</script>

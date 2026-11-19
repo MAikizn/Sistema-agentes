@@ -1,0 +1,13 @@
+{
+ "em": "2026-11-17T13:22:21.773Z",
+ "ativo": true,
+ "simulacao": false,
+ "enviadosHoje": 10,
+ "limitePorDia": 40,
+ "abordadosTotal": 74,
+ "responderam": 26,
+ "ultimoEnvio": "2026-11-17T13:22:21.766Z",
+ "proximoEnvioAposMin": 3,
+ "situacao": "ativo",
+ "naFila": 6
+}

@@ -1,0 +1,14 @@
+{"id":"graphics.newText","params":{"text":"MEDI OS FIOS","box":[940,440],"position":[70,1277],"size":103,"font":"Inter","fontStyle":"Black","seconds":1.96,"time":508032000000,"track":1}}
+{"id":"graphics.newText","params":{"text":"TESTE NO CONECTOR","box":[940,440],"position":[70,1277],"size":89,"font":"Inter","fontStyle":"Black","seconds":1.96,"time":1016064000000,"track":1}}
+{"id":"graphics.newText","params":{"text":"LEITURA ESTRANHA","box":[940,440],"position":[70,1277],"size":89,"font":"Inter","fontStyle":"Black","seconds":1.96,"time":1524096000000,"track":1}}
+{"id":"graphics.newText","params":{"text":"MEDIÇÃO ERRADA","box":[940,440],"position":[70,1277],"size":103,"font":"Inter","fontStyle":"Black","seconds":1.96,"time":2032128000000,"track":1}}
+{"id":"graphics.newText","params":{"text":"TUDO DÁ DIFERENTE","box":[940,440],"position":[70,1277],"size":89,"font":"Inter","fontStyle":"Black","seconds":1.96,"time":2540160000000,"track":1}}
+{"id":"graphics.newText","params":{"text":"ABRI A MÁQUINA","box":[940,440],"position":[70,1277],"size":103,"font":"Inter","fontStyle":"Black","seconds":1.96,"time":3048192000000,"track":1}}
+{"id":"graphics.newText","params":{"text":"ACHEI O CULPADO","box":[940,440],"position":[70,1277],"size":89,"font":"Inter","fontStyle":"Black","seconds":1.96,"time":3556224000000,"track":1}}
+{"id":"graphics.newText","params":{"text":"PLACA NA MÃO","box":[940,440],"position":[70,1277],"size":103,"font":"Inter","fontStyle":"Black","seconds":1.96,"time":4064256000000,"track":1}}
+{"id":"graphics.newText","params":{"text":"CONFERI AS PEÇAS","box":[940,440],"position":[70,1277],"size":89,"font":"Inter","fontStyle":"Black","seconds":1.96,"time":4572288000000,"track":1}}
+{"id":"graphics.newText","params":{"text":"VOLTOU A GIRAR","box":[940,440],"position":[70,1277],"size":103,"font":"Inter","fontStyle":"Black","seconds":1.96,"time":5080320000000,"track":1}}
+{"id":"graphics.newText","params":{"text":"TEMPO CAIU","box":[940,440],"position":[70,1277],"size":103,"font":"Inter","fontStyle":"Black","seconds":1.96,"time":5588352000000,"track":1}}
+{"id":"graphics.newText","params":{"text":"AGORA FUNCIONA","box":[940,440],"position":[70,1277],"size":103,"font":"Inter","fontStyle":"Black","seconds":1.96,"time":6096384000000,"track":1}}
+{"id":"graphics.newText","params":{"text":"SUA MÁQUINA TRAVOU?","box":[940,440],"position":[70,307],"size":89,"font":"Inter","fontStyle":"Black","seconds":2,"time":0,"track":2}}
+{"id":"graphics.newText","params":{"text":"SEGUE PRA VER MAIS","box":[940,440],"position":[70,307],"size":89,"font":"Inter","fontStyle":"Black","seconds":2.2,"time":6045580800000,"track":2}}

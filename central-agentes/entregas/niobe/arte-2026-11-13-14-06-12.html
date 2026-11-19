@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Clínica Odontológica</title>
+<style>
+    html, body {
+        width: 1080px;
+        height: 1350px;
+        margin: 0;
+        overflow: hidden;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background: linear-gradient(150deg, #4A6B3F 0%, #6C8B56 100%);
+        color: #FFFFFF;
+    }
+    .wrapper {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 60px 40px;
+        box-sizing: border-box;
+    }
+    h1 {
+        font-size: 68px;
+        margin: 0 0 20px;
+        line-height: 1.1;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    p {
+        font-size: 32px;
+        margin: 0 0 40px;
+        line-height: 1.4;
+        max-width: 800px;
+    }
+    .cta {
+        display: inline-block;
+        padding: 20px 40px;
+        font-size: 32px;
+        font-weight: 600;
+        color: #FFFFFF;
+        background-color: #25D366; /* cor do WhatsApp */
+        border-radius: 12px;
+        text-decoration: none;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .cta:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 12px rgba(0,0,0,0.4);
+    }
+    .tooth {
+        width: 240px;
+        height: auto;
+        margin-bottom: 40px;
+        fill: #FFFFFF;
+        opacity: 0.85;
+    }
+</style>
+</head>
+<body>
+<div class="wrapper">
+    <svg class="tooth" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <path d="M32 2c-6 8-12 12-12 24 0 9 6 13 12 13s12-4 12-13c0-12-6-16-12-24z"/>
+    </svg>
+    <h1>Clínica OdontoSorriso</h1>
+    <p>Cuidamos do seu sorriso com tecnologia avançada e carinho. Agende sua avaliação e descubra como podemos transformar o seu sorriso.</p>
+    <a href="https://wa.me/5511999999999?text=Ol%C3%A1%2C%20gostaria%20de%20agendar%20uma%20consulta" class="cta">Marcar no WhatsApp</a>
+</div>
+</body>
+</html>

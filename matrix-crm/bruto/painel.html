@@ -1,0 +1,145 @@
+<main class="conteudo">
+  <!-- KPIs -->
+  <div class="grade">
+    <div class="kpi">
+      <div class="valor">128</div>
+      <div class="texto">Leads ativos</div>
+    </div>
+    <div class="kpi">
+      <div class="valor">5</div>
+      <div class="texto">Consultas hoje</div>
+    </div>
+    <div class="kpi">
+      <div class="valor">23</div>
+      <div class="texto">Novos leads (semana)</div>
+    </div>
+    <div class="kpi">
+      <div class="valor">R$ 12.450</div>
+      <div class="texto">Faturamento do mês</div>
+    </div>
+  </div>
+
+  <!-- Agenda de hoje -->
+  <div class="cartao">
+    <h2 class="mudo">Agenda de hoje</h2>
+    <div class="tabela-conteiner">
+      <table class="tabela">
+        <thead>
+          <tr>
+            <th>Horário</th>
+            <th>Lead</th>
+            <th>Procedimento</th>
+            <th>Dentista</th>
+            <th>Situação</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>08:30</td>
+            <td>Maria Silva</td>
+            <td>Limpeza</td>
+            <td>Dr. João</td>
+            <td><span class="etiqueta etiqueta-sucesso">Confirmada</span></td>
+          </tr>
+          <tr>
+            <td>10:00</td>
+            <td>Carlos Souza</td>
+            <td>Canalização</td>
+            <td>Dra. Ana</td>
+            <td><span class="etiqueta etiqueta-alerta">Pendente</span></td>
+          </tr>
+          <tr>
+            <td>11:30</td>
+            <td>Fernanda Lima</td>
+            <td>Extração</td>
+            <td>Dr. João</td>
+            <td><span class="etiqueta etiqueta-erro">Cancelada</span></td>
+          </tr>
+          <tr>
+            <td>14:00</td>
+            <td>Pedro Alves</td>
+            <td>Prótese</td>
+            <td>Dra. Ana</td>
+            <td><span class="etiqueta etiqueta-sucesso">Confirmada</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Gráfico de barras -->
+  <div class="cartao">
+    <h2 class="mudo">Consultas por dia da semana</h2>
+    <div class="grafico-barras">
+      <svg viewBox="0 0 350 200" preserveAspectRatio="none" aria-label="Gráfico de consultas por dia">
+        <style>
+          .barra { fill: var(--marca); }
+          .eixo { stroke: var(--texto-mudo); stroke-width: 1; }
+          .rotulo { fill: var(--texto-mudo); font-size: 0.75rem; font-family: var(--fonte-padrao); }
+        </style>
+        <!-- Eixos -->
+        <line x1="30" y1="180" x2="330" y2="180" class="eixo"/>
+        <line x1="30" y1="20" x2="30" y2="180" class="eixo"/>
+        <!-- Barras (dados fictícios) -->
+        <rect x="45" y="80" width="30" height="100" class="barra"/>
+        <rect x="95" y="60" width="30" height="120" class="barra"/>
+        <rect x="145" y="30" width="30" height="150" class="barra"/>
+        <rect x="195" y="70" width="30" height="110" class="barra"/>
+        <rect x="245" y="50" width="30" height="130" class="barra"/>
+        <rect x="295" y="90" width="30" height="90" class="barra"/>
+        <!-- Rótulos dos dias -->
+        <text x="60" y="195" class="rotulo" text-anchor="middle">Seg</text>
+        <text x="110" y="195" class="rotulo" text-anchor="middle">Ter</text>
+        <text x="160" y="195" class="rotulo" text-anchor="middle">Qua</text>
+        <text x="210" y="195" class="rotulo" text-anchor="middle">Qui</text>
+        <text x="260" y="195" class="rotulo" text-anchor="middle">Sex</text>
+        <text x="310" y="195" class="rotulo" text-anchor="middle">Sáb</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Atividade recente -->
+  <div class="cartao">
+    <h2 class="mudo">Atividade recente</h2>
+    <ul class="lista-atividade" style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:var(--espaco-sm);">
+      <li class="linha entre">
+        <div class="linha">
+          <div class="avatar">JD</div>
+          <div class="mudo" style="margin-left:var(--espaco-sm);">Dr. João</div>
+        </div>
+        <span class="etiqueta etiqueta-info">Novo lead: Ana Pereira</span>
+      </li>
+      <li class="linha entre">
+        <div class="linha">
+          <div class="avatar">DA</div>
+          <div class="mudo" style="margin-left:var(--espaco-sm);">Dra. Ana</div>
+        </div>
+        <span class="etiqueta etiqueta-sucesso">Consulta concluída: Carlos Souza</span>
+      </li>
+      <li class="linha entre">
+        <div class="linha">
+          <div class="avatar">RS</div>
+          <div class="mudo" style="margin-left:var(--espaco-sm);">Recepcionista</div>
+        </div>
+        <span class="etiqueta etiqueta-alerta">Reagendamento: Pedro Alves</span>
+      </li>
+    </ul>
+  </div>
+
+  <style>
+    /* Ajustes específicos da tela Painel */
+    .grafico-barras {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+    .grafico-barras svg {
+      width: 100%;
+      height: auto;
+    }
+    .lista-atividade .avatar {
+      font-size: 0.85rem;
+    }
+  </style>
+</main>

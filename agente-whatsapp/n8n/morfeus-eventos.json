@@ -1,0 +1,45 @@
+{
+  "id": "MorfeusEventos00001",
+  "name": "Morfeus - Eventos",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Morfeus - Eventos\nO Morfeus avisa aqui tudo o que acontece, para você criar automações sem programar.\n\nCampo `body.tipo`:\n- `mensagem_respondida`: `telefone`, `mensagem`, `resposta`, `veioAudio`\n- `lead_qualificado`: `telefone`, `lead` (nome | empresa | ... | data da reunião)\n- `transferido_para_humano`: `telefone`, `motivo`, `mensagem`\n\n**Como usar**: ligue um nó Switch em `{{ $json.body.tipo }}` depois do gatilho e, em cada saída, o que quiser: planilha do Google, e-mail, Telegram, CRM, tarefa.\n\nÉ só aviso: nada aqui atrasa o atendimento.",
+        "height": 400,
+        "width": 460
+      },
+      "id": "b1000000-0000-4000-8000-000000000001",
+      "name": "Como funciona",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-520, -180]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "morfeus-eventos",
+        "options": {}
+      },
+      "id": "b1000000-0000-4000-8000-000000000002",
+      "name": "Evento do Morfeus",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "webhookId": "morfeus-eventos"
+    },
+    {
+      "parameters": {},
+      "id": "b1000000-0000-4000-8000-000000000003",
+      "name": "Ligue aqui a sua automação",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [280, 0]
+    }
+  ],
+  "connections": {
+    "Evento do Morfeus": { "main": [[{ "node": "Ligue aqui a sua automação", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "pinData": {}
+}

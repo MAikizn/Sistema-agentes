@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<script>function esc(v){return String(v==null?'':v).replace(/[&<>"'`]/g,function(c){return '&#'+c.charCodeAt(0)+';';});}</script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MATRIX CRM - Login</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+      background-color: var(--bg);
+    }
+
+    .login-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 100vh;
+      width: 100vw;
+    }
+
+    /* Lado Esquerdo - Marca e Efeito Visual */
+    .hero-painel {
+      position: relative;
+      background-color: var(--superficie);
+      border-right: 1px solid var(--borda);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: var(--espaco-xl);
+      overflow: hidden;
+    }
+
+    #matrix-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.18;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .hero-conteudo {
+      position: relative;
+      z-index: 2;
+      max-width: 480px;
+      margin: auto 0;
+    }
+
+    .hero-logo {
+      display: flex;
+      align-items: center;
+      gap: var(--espaco-sm);
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--texto);
+      letter-spacing: -0.5px;
+      margin-bottom: var(--espaco-xl);
+    }
+
+    .hero-logo-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--marca-alpha);
+      border: 1px solid var(--marca);
+      border-radius: var(--raio);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--marca);
+      box-shadow: var(--sombra-marca);
+    }
+
+    .hero-titulo {
+      font-size: 2.2rem;
+      line-height: 1.25;
+      font-weight: 800;
+      color: var(--texto);
+      margin-bottom: var(--espaco-md);
+      letter-spacing: -0.5px;
+    }
+
+    .hero-destaque {
+      color: var(--marca);
+    }
+
+    .hero-subtitulo {
+      font-size: 1.05rem;
+      color: var(--texto-mudo);
+      line-height: 1.6;
+    }
+
+    .hero-rodape {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: var(--texto-mudo);
+      border-top: 1px solid var(--borda);
+      padding-top: var(--espaco-md);
+    }
+
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+    }
+
+    .ponto-ativo {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--marca);
+      box-shadow: 0 0 8px var(--marca);
+    }
+
+    /* Lado Direito - Formulário */
+    .formulario-painel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--espaco-lg);
+      background-color: var(--bg);
+      position: relative;
+    }
+
+    .caixa-login {
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--espaco-lg);
+    }
+
+    .caixa-cabecalho {
+      display: flex;
+      flex-direction: column;
+      gap: var(--espaco-xs);
+    }
+
+    .caixa-cabecalho h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--texto);
+      letter-spacing: -0.5px;
+    }
+
+    .senha-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .senha-wrapper input {
+      padding-right: 48px;
+    }
+
+    .btn-toggle-senha {
+      position: absolute;
+      right: 4px;
+      background: transparent;
+      border: none;
+      color: var(--texto-mudo);
+      width: 36px;
+      height: 36px;
+      border-radius: var(--raio-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transicao);
+    }
+
+    .btn-toggle-senha:hover {
+      color: var(--texto);
+      background-color: var(--superficie-3);
+    }
+
+    .link-senha {
+      color: var(--marca);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: var(--transicao);
+    }
+
+    .link-senha:hover {
+      color: var(--marca-hover);
+      text-decoration: underline;
+    }
+
+    .btn-submit {
+      width: 100%;
+      min-height: 44px;
+      font-size: 1rem;
+      margin-top: var(--espaco-xs);
+    }
+
+    .alerta-erro {
+      padding: var(--espaco-sm) var(--espaco-md);
+      border-radius: var(--raio-sm);
+      background-color: var(--erro-fundo);
+      border: 1px solid var(--erro);
+      color: var(--erro);
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: var(--espaco-sm);
+    }
+
+    /* Responsividade Celular */
+    @media (max-width: 900px) {
+      body {
+        overflow-y: auto;
+      }
+      .login-layout {
+        grid-template-columns: 1fr;
+      }
+      .hero-painel {
+        display: none;
+      }
+      .formulario-painel {
+        min-height: 100vh;
+        padding: var(--espaco-xl) var(--espaco-md);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-layout">
+    <!-- Painel Visual Esquerdo -->
+    <section class="hero-painel" aria-hidden="true">
+      <canvas id="matrix-canvas"></canvas>
+
+      <div class="hero-logo">
+        <div class="hero-logo-icon">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+        </div>
+        <span>MATRIX <span class="hero-destaque">CRM</span></span>
+      </div>
+
+      <div class="hero-conteudo">
+        <h2 class="hero-titulo">
+          A gestão do seu negócio em <span class="hero-destaque">ritmo acelerado</span> e descomplicado.
+        </h2>
+        <p class="hero-subtitulo">
+          Atendimentos via WhatsApp, agendamentos e acompanhamento de leads em uma só tela visual.
+        </p>
+      </div>
+
+      <div class="hero-rodape">
+        <div class="badge-status">
+          <span class="ponto-ativo"></span>
+          <span>Sistemas Operacionais Normais</span>
+        </div>
+        <span>v3.4.0</span>
+      </div>
+    </section>
+
+    <!-- Painel Formulário Direito -->
+    <main class="formulario-painel">
+      <div class="caixa-login cartao">
+        
+        <div class="caixa-cabecalho">
+          <h1>Acessar Conta</h1>
+          <p class="mudo">Digite suas credenciais para entrar no sistema</p>
+        </div>
+
+        <div id="alerta-erro" class="alerta-erro oculto" role="alert">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <span id="mensagem-erro">Preencha os campos para continuar.</span>
+        </div>
+
+        <form id="form-login" novalidate>
+          <div class="campo" style="margin-bottom: var(--espaco-md);">
+            <label for="email">E-mail corporativo</label>
+            <input 
+              type="email" 
+              id="email" 
+              name="email" 
+              placeholder="voce@suaempresa.com.br"
+              autocomplete="email" 
+              required
+            >
+          </div>
+
+          <div class="campo" style="margin-bottom: var(--espaco-md);">
+            <label for="senha">Senha de acesso</label>
+            <div class="senha-wrapper">
+              <input 
+                type="password" 
+                id="senha" 
+                name="senha" 
+                placeholder="••••••••••••"
+                autocomplete="current-password" 
+                required
+              >
+              <button 
+                type="button" 
+                id="btn-toggle-senha" 
+                class="btn-toggle-senha" 
+                title="Mostrar ou ocultar senha"
+                aria-label="Mostrar senha"
+              >
+                <!-- Ícone Olho Fechado (Padrão Inicial) -->
+                <svg id="icone-olho" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="entre" style="margin-bottom: var(--espaco-lg);">
+            <label class="interruptor">
+              <input type="checkbox" id="lembrar" name="lembrar" checked>
+              <span class="trilho"></span>
+              <span style="font-size: 0.85rem; color: var(--texto-mudo);">Lembrar-me</span>
+            </label>
+
+            <a href="#" class="link-senha" onclick="alert('Instruções de recuperação foram enviadas para o e-mail informado.'); return false;">
+              Esqueci minha senha
+            </a>
+          </div>
+
+          <button type="submit" id="btn-entrar" class="btn btn-primario btn-submit">
+            Entrar no Sistema
+          </button>
+        </form>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // -------------------------------------------------------------
+    // 1. Efeito Visual Rain Matrix no Canvas (Respeitando Acessibilidade)
+    // -------------------------------------------------------------
+    (function initMatrixCanvas() {
+      const canvas = document.getElementById('matrix-canvas');
+      if (!canvas) return;
+
+      const ctx = canvas.getContext('2d');
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      let width = canvas.width = canvas.parentElement.offsetWidth;
+      let height = canvas.height = canvas.parentElement.offsetHeight;
+
+      const chars = "01MATRIXCRM0123456789ODONTO";
+      const fontSize = 14;
+      const columns = Math.floor(width / fontSize);
+      const drops = Array(columns).fill(1);
+
+      function draw() {
+        // Obter a cor da marca dinamica do CSS
+        const estiloCor = getComputedStyle(document.documentElement).getPropertyValue('--marca').trim() || '#00e676';
+        
+        ctx.fillStyle = 'rgba(17, 23, 26, 0.15)';
+        ctx.fillRect(0, 0, width, height);
+
+        ctx.fillStyle = estiloCor;
+        ctx.font = fontSize + 'px monospace';
+
+        for (let i = 0; i < drops.length; i++) {
+          const text = chars.charAt(Math.floor(Math.random() * chars.length));
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+          if (drops[i] * fontSize > height && Math.random() > 0.975) {
+            drops[i] = 0;
+          }
+          drops[i]++;
+        }
+      }
+
+      // Se o usuário prefere movimento reduzido, desenha apenas um quadro estático
+      if (prefersReducedMotion) {
+        ctx.fillStyle = 'rgba(17, 23, 26, 1)';
+        ctx.fillRect(0, 0, width, height);
+        draw();
+        return;
+      }
+
+      let intervalId = setInterval(draw, 45);
+
+      window.addEventListener('resize', () => {
+        width = canvas.width = canvas.parentElement.offsetWidth;
+        height = canvas.height = canvas.parentElement.offsetHeight;
+      });
+    })();
+
+    // -------------------------------------------------------------
+    // 2. Alternar Visibilidade da Senha
+    // -------------------------------------------------------------
+    const btnToggleSenha = document.getElementById('btn-toggle-senha');
+    const inputSenha = document.getElementById('senha');
+    const iconeOlho = document.getElementById('icone-olho');
+
+    const svgOlhoAberto = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>`;
+    const svgOlhoFechado = `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>`;
+
+    btnToggleSenha.addEventListener('click', () => {
+      const isPassword = inputSenha.type === 'password';
+      inputSenha.type = isPassword ? 'text' : 'password';
+      iconeOlho.innerHTML = isPassword ? svgOlhoFechado : svgOlhoAberto;
+      btnToggleSenha.setAttribute('aria-label', isPassword ? 'Ocultar senha' : 'Mostrar senha');
+    });
+
+    // -------------------------------------------------------------
+    // 3. Validação do Formulário e Redirecionamento
+    // -------------------------------------------------------------
+    const formLogin = document.getElementById('form-login');
+    const alertaErro = document.getElementById('alerta-erro');
+    const mensagemErro = document.getElementById('mensagem-erro');
+    const btnEntrar = document.getElementById('btn-entrar');
+
+    formLogin.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value.trim();
+      const senha = inputSenha.value.trim();
+
+      // Esconder alerta prévio
+      alertaErro.classList.add('oculto');
+
+      // Validação básica
+      if (!email || !senha) {
+        mensagemErro.textContent = 'Por favor, preencha o e-mail e a senha.';
+        alertaErro.classList.remove('oculto');
+        return;
+      }
+
+      if (!email.includes('@') || !email.includes('.')) {
+        mensagemErro.textContent = 'Por favor, insira um e-mail válido.';
+        alertaErro.classList.remove('oculto');
+        return;
+      }
+
+      // Feedback visual de carregamento
+      btnEntrar.disabled = true;
+      btnEntrar.textContent = 'Acessando...';
+      var campoCodigo = document.getElementById('codigo-2f');
+      fetch('/api/login', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Matrix': '1' }, body: JSON.stringify({ email: email, senha: senha, codigo: campoCodigo ? campoCodigo.value : undefined }) })
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) throw new Error(d.erro || 'Não foi possível entrar.'); return d; }); })
+        .then(function (d) {
+          if (d.precisaCodigo) {
+            if (!campoCodigo) {
+              var cx = document.createElement('div'); cx.style.margin = '12px 0';
+              var lb = document.createElement('label'); lb.setAttribute('for', 'codigo-2f'); lb.textContent = 'Código do app autenticador (6 números)'; lb.style.cssText = 'display:block;font-size:13px;margin-bottom:6px';
+              campoCodigo = document.createElement('input'); campoCodigo.id = 'codigo-2f'; campoCodigo.type = 'text'; campoCodigo.setAttribute('inputmode', 'numeric'); campoCodigo.setAttribute('autocomplete', 'one-time-code'); campoCodigo.maxLength = 12; campoCodigo.placeholder = '000000';
+              campoCodigo.style.cssText = 'width:100%;padding:12px;border-radius:8px;background:#182226;color:#f0f4f6;border:1px solid #28383f;font-size:18px;letter-spacing:4px';
+              cx.appendChild(lb); cx.appendChild(campoCodigo); btnEntrar.parentNode.insertBefore(cx, btnEntrar);
+            }
+            campoCodigo.focus(); btnEntrar.disabled = false; btnEntrar.textContent = 'Confirmar código'; return;
+          }
+          window.location.href = d.funcao === 'dono' ? 'agencia.html' : 'painel.html';
+        })
+        .catch(function (er) { mensagemErro.textContent = er.message; alertaErro.classList.remove('oculto'); btnEntrar.disabled = false; btnEntrar.textContent = campoCodigo ? 'Confirmar código' : 'Entrar no Sistema'; });
+    });
+  </script>
+</body>
+</html>

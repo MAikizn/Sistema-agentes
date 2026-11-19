@@ -1,0 +1,82 @@
+<style>
+  .header-secao { margin-bottom: var(--espaco-lg); }
+  .painel-header { padding: var(--espaco-lg); border-bottom: 1px solid var(--borda); display: flex; justify-content: space-between; align-items: center; }
+  .painel-body { padding: var(--espaco-lg); display: flex; flex-direction: column; gap: var(--espaco-md); overflow-y: auto; }
+</style>
+
+<div class="header-secao">
+  <h1>Agentes de IA</h1>
+  <p class="mudo">Gerencie seus assistentes virtuais e automatize o atendimento da sua clínica.</p>
+</div>
+
+<div class="grade">
+  <!-- Cartão 1 -->
+  <div class="cartao">
+    <div class="entre">
+      <h3>Recepcionista Virtual</h3>
+      <label class="interruptor"><input type="checkbox" checked><div class="trilho"></div></label>
+    </div>
+    <p class="mudo">WhatsApp, pré-atendimento e agendamento automático.</p>
+    <div class="linha"><span class="etiqueta etiqueta-info">WhatsApp</span> <span class="etiqueta">142 atendidos hoje</span></div>
+    <button class="btn" onclick="abrirPainel('Recepcionista Virtual')">Configurar</button>
+  </div>
+
+  <!-- Cartão 2 -->
+  <div class="cartao">
+    <div class="entre">
+      <h3>SDR de Vendas</h3>
+      <label class="interruptor"><input type="checkbox"><div class="trilho"></div></label>
+    </div>
+    <p class="mudo">Qualificação de leads e follow-up de orçamentos.</p>
+    <div class="linha"><span class="etiqueta etiqueta-info">WhatsApp</span> <span class="etiqueta">45 atendidos hoje</span></div>
+    <button class="btn" onclick="abrirPainel('SDR de Vendas')">Configurar</button>
+  </div>
+
+  <!-- Cartão 3 -->
+  <div class="cartao">
+    <div class="entre">
+      <h3>Lembretes</h3>
+      <label class="interruptor"><input type="checkbox" checked><div class="trilho"></div></label>
+    </div>
+    <p class="mudo">Confirmação automática de consultas via chat.</p>
+    <div class="linha"><span class="etiqueta etiqueta-info">SMS/WhatsApp</span> <span class="etiqueta">89 atendidos hoje</span></div>
+    <button class="btn" onclick="abrirPainel('Lembretes')">Configurar</button>
+  </div>
+
+  <!-- Cartão 4 -->
+  <div class="cartao">
+    <div class="entre">
+      <h3>Pós-consulta</h3>
+      <label class="interruptor"><input type="checkbox"><div class="trilho"></div></label>
+    </div>
+    <p class="mudo">Pesquisa de satisfação e agendamento de retorno.</p>
+    <div class="linha"><span class="etiqueta etiqueta-info">WhatsApp</span> <span class="etiqueta">12 atendidos hoje</span></div>
+    <button class="btn" onclick="abrirPainel('Pós-consulta')">Configurar</button>
+  </div>
+</div>
+
+<!-- Painel Lateral -->
+<div class="painel-lateral" id="painelConfig">
+  <div class="painel-header">
+    <h2 id="tituloPainel">Configurações</h2>
+    <button class="btn btn-icone" onclick="fecharPainel()">✕</button>
+  </div>
+  <div class="painel-body">
+    <div class="campo"><label>Nome da Assistente</label><input type="text" value="Dra. Bot"></div>
+    <div class="campo"><label>Tom de voz</label><select><option>Cordial e Profissional</option><option>Descontraído</option></select></div>
+    <div class="campo"><label>Informar preços?</label><select><option>Sim, sempre</option><option>Não, apenas sob consulta</option></select></div>
+    <div class="campo"><label>Transferir para humano</label><textarea placeholder="Ex: Quando o lead estiver irritado ou pedir falar com atendente..."></textarea></div>
+    <div class="campo"><label>Horário de funcionamento</label><input type="text" value="08:00 - 18:00"></div>
+    <button class="btn btn-primario">Salvar Alterações</button>
+  </div>
+</div>
+
+<script>
+  function abrirPainel(nome) {
+    document.getElementById('tituloPainel').innerText = nome;
+    document.getElementById('painelConfig').classList.add('aberto');
+  }
+  function fecharPainel() {
+    document.getElementById('painelConfig').classList.remove('aberto');
+  }
+</script>

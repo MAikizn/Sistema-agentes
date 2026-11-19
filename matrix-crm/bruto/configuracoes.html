@@ -1,0 +1,94 @@
+<style>
+  .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--espaco-lg); }
+  @media (max-width: 900px) { .config-grid { grid-template-columns: 1fr; } }
+  .color-picker { display: flex; gap: var(--espaco-sm); align-items: center; }
+  .color-box { width: 40px; height: 40px; border-radius: var(--raio-sm); border: 1px solid var(--borda); cursor: pointer; }
+</style>
+
+<div class="entre">
+  <h1>Configurações da Clínica</h1>
+  <button class="btn btn-primario" onclick="salvarConfig()">Salvar Alterações</button>
+</div>
+
+<div class="abas">
+  <button class="aba ativa">Geral</button>
+  <button class="aba">Usuários</button>
+  <button class="aba">Procedimentos</button>
+</div>
+
+<div class="config-grid">
+  <!-- Marca -->
+  <section class="cartao">
+    <h3>Identidade Visual</h3>
+    <div class="campo">
+      <label>Nome da Empresa</label>
+      <input type="text" id="nomeEmpresa" value="Clínica Sorriso Matrix">
+    </div>
+    <div class="linha">
+      <div class="campo">
+        <label>Cor Primária</label>
+        <div class="color-picker">
+          <input type="color" id="corMarca" value="#00e676" oninput="atualizarCor('--marca', this.value)">
+        </div>
+      </div>
+      <div class="campo">
+        <label>Cor Secundária</label>
+        <div class="color-picker">
+          <input type="color" id="corMarca2" value="#059669" oninput="atualizarCor('--marca-2', this.value)">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WhatsApp -->
+  <section class="cartao">
+    <h3>WhatsApp</h3>
+    <div class="entre">
+      <div>
+        <p><strong>Status:</strong> <span class="etiqueta etiqueta-sucesso">Conectado</span></p>
+        <p class="mudo">Última sincronização: 2 min atrás</p>
+      </div>
+      <button class="btn btn-perigo">Desconectar</button>
+    </div>
+  </section>
+</div>
+
+<!-- Procedimentos -->
+<section class="cartao">
+  <div class="entre">
+    <h3>Procedimentos</h3>
+    <button class="btn btn-suave">+ Novo Procedimento</button>
+  </div>
+  <div class="tabela-conteiner">
+    <table class="tabela">
+      <thead>
+        <tr><th>Nome</th><th>Duração</th><th>Preço</th><th>Ações</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Limpeza Profissional</td><td>45 min</td><td>R$ 250,00</td><td><button class="btn">Editar</button></td></tr>
+        <tr><td>Clareamento</td><td>60 min</td><td>R$ 800,00</td><td><button class="btn">Editar</button></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<script>
+  function atualizarCor(variavel, valor) {
+    document.documentElement.style.setProperty(variavel, valor);
+    localStorage.setItem(variavel, valor);
+  }
+
+  function salvarConfig() {
+    const nome = document.getElementById('nomeEmpresa').value;
+    localStorage.setItem('nomeEmpresa', nome);
+    alert('Configurações salvas com sucesso!');
+  }
+
+  // Carregar cores salvas ao iniciar
+  window.onload = () => {
+    const m1 = localStorage.getItem('--marca');
+    const m2 = localStorage.getItem('--marca-2');
+    if(m1) document.documentElement.style.setProperty('--marca', m1);
+    if(m2) document.documentElement.style.setProperty('--marca-2', m2);
+  };
+</script>

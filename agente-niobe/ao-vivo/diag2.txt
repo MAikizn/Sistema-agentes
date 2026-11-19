@@ -1,0 +1,8 @@
+﻿data: 2026-11-13T15:18:04
+cli: C:\Program Files\ArtCraft\FilmCraft\filmcraft-cli.exe
+token len: 64
+config claude nao encontrada: C:\Users\Maike\AppData\Roaming\Claude\claude_desktop_config.json
+proc 31568 filmcraft.exe
+porta 9876 aberta: True
+--- teste ponte (inspect project):
+{"activeSequence":8,"dirty":false,"name":"GM_midea","path":"C:\\Users\\Maike\\Documents\\agente-niobe\\projetos\\GM_midea.fcproj","revision":2,"root":{"children":[{"customLabelColor":null,"duration":56543961600000,"item":1,"label":"Iris","name":"maquina-midea.mp4","type":"Movie"},{"customLabelColor":null,"duration":10372320000000,"item":8,"label":"Forest","name":"GM_midea_v1_antes-depois","type":"Sequence"},{"customLabelColor":null,"duration":152409600000,"item":27,"label":"Caribbean","name":"sfx_whoosh.wav","type":"Audio"},{"customLabelColor":null,"duration":127008000000,"item":28,"label":"Ca

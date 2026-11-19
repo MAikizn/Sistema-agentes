@@ -1,0 +1,77 @@
+{
+    "llm":  {
+                "baseUrl":  "http://127.0.0.1:31415/v1",
+                "apiKey":  "COLOQUE_AQUI",
+                "model":  [
+                              "gemini-3.5-flash",
+                              "gemini-3.1-flash-lite",
+                              "qwen3.8-27b"
+                          ]
+            },
+    "haiku":  {
+                  "ativo":  true,
+                  "apiKey":  "",
+                  "modelo":  "claude-haiku-5-5",
+                  "esforco":  "low",
+                  "_ajuda":  "modo \"assinatura\" = usa o Claude Code logado com a sua conta do Claude (sem chave). Teste: TESTAR-HAIKU-ASSINATURA.bat. Para voltar à API: modo \"api\" e cole a chave em apiKey.",
+                  "modo":  "assinatura",
+                  "comando":  "claude"
+              },
+    "geminiApiKey":  "COLOQUE_AQUI",
+    "pastaSaida":  "saida",
+    "maxParalelo":  3,
+    "maxClipes":  5,
+    "fonte":  "Arial Black",
+    "corDestaque":  "\u0026H0000E5FF",
+    "ruidoSilencio":  "-35dB",
+    "silencioMinimo":  0.45,
+    "abrirPastaAoTerminar":  true,
+    "manterArquivosTemporarios":  false,
+    "geminiModelos":  [
+                          "gemini-flash",
+                          "gemini-3.5-flash",
+                          "gemini-2.5-flash"
+                      ],
+    "filmcraft":  {
+                      "ativo":  true,
+                      "cli":  "%LOCALAPPDATA%\\Programs\\ArtCraft\\FilmCraft\\filmcraft-cli.exe"
+                  },
+    "whatsapp":  {
+                     "ativo":  false,
+                     "gatilho":  "/Niobe",
+                     "numerosAutorizados":  null
+                 },
+    "higgsfield":  {
+                       "ativo":  true,
+                       "credenciais":  "",
+                       "baseUrl":  "https://api.higgsfield.ai",
+                       "modeloImagem":  "higgsfield-ai/soul/v2/standard",
+                       "maxPorVideo":  3,
+                       "limiteSegundos":  600,
+                       "_ajuda":  "Crie a chave em https://cloud.higgsfield.ai (precisa de créditos) e cole aqui no formato ID:SECRET.",
+                       "tipoBroll":  "video",
+                       "modeloVideo":  "higgsfield-ai/dop/lite",
+                       "duracaoVideo":  5,
+                       "resolucaoVideo":  "720p",
+                       "_tipoBroll":  "\"video\" = clipes animados (mais créditos) ou \"imagem\" = fotos"
+                   },
+    "direcao":  {
+                    "ativo":  true,
+                    "modelos":  [
+                                    "gemini-3.6-flash",
+                                    "gemini-3.5-flash",
+                                    "gemini-3.8-flash"
+                                ],
+                    "modelosReserva":  [
+                                           "gemini-3.5-flash-lite",
+                                           "gemini-2.5-flash",
+                                           "gemini-3.6-flash"
+                                       ],
+                    "tentarAudio":  false,
+                    "esperaEntreModelos":  8000
+                },
+    "exportacao":  {
+                       "escala":  "auto",
+                       "_ajuda":  "auto = 720x1280 quando o vídeo original é pequeno (até 1300 px); 1 = sempre 1080x1920"
+                   }
+}

@@ -1,0 +1,16 @@
+NIOBE - agente de edição de vídeo do Maike
+
+1. Deixe o FreeLLMAPI aberto (é o "cérebro" da Niobe, igual ao Morfeus).
+2. Dê dois cliques em INICIAR.bat.
+3. Digite /Niobe e aperte Enter.
+4. Arraste o vídeo para a janela, escreva o que quer e aperte Enter. Exemplos:
+     3 reels com legenda para a JL Terapia
+     criativo de anúncio para a GM Máquinas, 30 segundos
+     só limpar os silêncios, manter horizontal
+     edição profissional com cor cinema
+5. Os vídeos prontos aparecem na pasta "saida" (ela abre sozinha no fim).
+
+Comandos: /equipe (os 30 especialistas), /pasta (abrir a pasta dos prontos), /ajuda.
+Ajustes ficam no config.json (cor de destaque da legenda, fonte, quantos vídeos renderizar ao mesmo tempo, FilmCraft).
+WhatsApp: desligado por enquanto (config.json > whatsapp). Peça ao Claude para ativar quando quiser.
+Problemas: veja niobe.log e avise o Claude.

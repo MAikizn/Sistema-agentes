@@ -1,0 +1,20 @@
+npm warn gitignore-fallback No .npmignore file found, using .gitignore for file exclusion. Consider creating a .npmignore file to explicitly control published files.
+npm warn deprecated @whiskeysockets/baileys@6.7.18: This version is affected by a zero-day vulnerability that allows spoofing of messages, please update to
+npm warn deprecated   the latest versions (6.7.22^ or 7.0.0-rc12^)! For more information, check out the public advisory at
+npm warn deprecated   https://github.com/WhiskeySockets/Baileys/security/advisories/GHSA-qvv5-jq5g-4cgg
+npm warn deprecated eslint@9.39.5: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+
+added 208 packages, and audited 209 packages in 1m
+
+55 packages are looking for funding
+  run `npm fund` for details
+
+10 vulnerabilities (8 moderate, 1 high, 1 critical)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues, run:
+  npm audit fix --force
+
+Run `npm audit` for details.

@@ -1,0 +1,58 @@
+{
+  "versao": 1,
+  "_o_que_e": "Manual do Neo: o que 'vídeo profissional' quer dizer. A Niobe lê este arquivo antes de cada edição. O Neo atualiza quando estuda um vídeo viral (pasta referencias).",
+  "regras": {
+    "corteMin": 1.2,
+    "corteMax": 2.8,
+    "cortesPorReel": [
+      9,
+      14
+    ],
+    "duracaoReel": [
+      15,
+      30
+    ],
+    "palavrasLegenda": 3,
+    "zoomsPorReel": [
+      3,
+      5
+    ]
+  },
+  "licoes": [
+    "Gancho nos 2 primeiros segundos: a imagem mais forte do vídeo com um texto de até 5 palavras que promete ou pergunta. O gancho nunca repete a legenda.",
+    "Corte a cada 1,2 a 2,8 segundos. Nenhum plano parado: espera, repetição e câmera procurando o assunto ficam de fora.",
+    "Uma ideia por legenda, até 3 palavras, em caixa alta, do jeito que se fala no dia a dia. A palavra mais importante vai em amarelo.",
+    "Zoom alternado a cada corte e punch-in nos momentos de pico (o erro aparecendo, o defeito encontrado, o resultado funcionando).",
+    "Estrutura de conserto ou antes e depois: problema, causa, o que foi feito, prova funcionando, chamada final.",
+    "Um reel conta a história inteira. Série em partes só quando o Maike pedir.",
+    "Som marca o ritmo: whoosh nos cortes, pop quando o texto entra, ding na chamada final, sempre abaixo da voz.",
+    "Chamada final nos últimos 2 segundos, com uma ação só (seguir, salvar, comentar ou chamar no direct).",
+    "Legenda conta a história com tensão e virada (\"LIGA, MAS NÃO GIRA\", \"ACHEI O CULPADO\"). Nunca descreva a cena em gerúndio (\"TESTANDO\", \"REMOVENDO\", \"INSPECIONANDO\").",
+    "Use o que aparece na imagem: código de erro, leitura do aparelho, nome da peça. Número na tela vira a palavra em amarelo."
+  ],
+  "referencias": [
+    {
+      "arquivo": "referencia-claude-higgsfield.mp4",
+      "data": "2026-11-13",
+      "resumo": "Vídeo de demonstração de fluxo de trabalho no editor de vídeo mostrando a combinação entre ferramentas e chamada para ação final.",
+      "medidas": {
+        "duracao": 16.7,
+        "cortes": 2,
+        "cortesPorMinuto": 7.2,
+        "mediaPlano": 5.56,
+        "formato": "480x854"
+      },
+      "gancho": {
+        "texto": "Fable 5.2 + Higgsfield MCP = 🔥",
+        "segundos": 1,
+        "tipo": "promessa"
+      },
+      "legendas": {
+        "palavras": 7,
+        "posicao": "base",
+        "estilo": "caixa de texto preta e verde limão, fonte sem serifa branca e preta, peso bold"
+      },
+      "ritmo": "O ritmo é marcado pela reprodução contínua da timeline no monitor, mantendo a tomada estática até a transição final de CTA."
+    }
+  ]
+}

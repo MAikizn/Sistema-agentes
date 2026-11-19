@@ -1,0 +1,817 @@
+/*
+==========================================================================
+MATRIX CRM - DESIGN SYSTEM CSS
+==========================================================================
+Classes e Usos:
+.app               : Conteiner principal em grade (menu lateral + area principal)
+.lateral           : Menu de navegacao lateral fixo/retratil
+.lateral a         : Links de navegacao do menu lateral
+.lateral a.ativo   : Estado do link atualmente selecionado no menu lateral
+.lateral.aberta    : Estado expandido do menu lateral em telas menores/celular
+.topo              : Barra superior de cabecalho e acoes rapidas
+.conteudo          : Conteiner interno rolável da area de conteudo principal
+.btn               : Botao base neutro interativo (min. 40px de altura)
+.btn-primario      : Botao de acao principal destacado com cor de marca
+.btn-suave         : Botao secundario com fundo sutil para acoes de menor prioridade
+.btn-perigo        : Botao de alerta para acoes destrutivas ou exclusao
+.btn-icone         : Botao compacto quadrado/redondo para icones
+.cartao            : Painel de superficie com borda e sombra para agrupar informacoes
+.kpi               : Cartao formatado especificamente para metricas e indicadores
+.grade             : Layout responsivo em grade flexivel (auto-fit colunas)
+.tabela            : Tabela estilizada para listagem de dados com cabecalho fixo
+.campo             : Conteiner estrutural para agrupar label e input
+.abas              : Barra de navegacao em abas
+.aba               : Item individual de aba
+.aba.ativa         : Estado ativo da aba selecionada
+.etiqueta          : Badge/tag compacta para status e categorias
+.etiqueta-sucesso  : Tag para status positivos ou concluidos
+.etiqueta-alerta   : Tag para avisos, pendencias ou atencao
+.etiqueta-erro     : Tag para erros, cancelamentos ou bloqueios
+.etiqueta-info     : Tag para informacoes neutras ou processamento
+.avatar            : Imagem de perfil ou circulo com iniciais do usuario
+.modal             : Camada de fundo escurecida (backdrop) para dialogos
+.modal.aberto      : Estado visivel do dialogo modal centralizado
+.painel-lateral    : Gaveta/painel deslizante que surge da lateral da tela
+.painel-lateral.aberto : Estado visivel do painel lateral deslizante
+.interruptor       : Campo seletor tipo switch liga/desliga para configuracoes
+.kanban            : Quadrante de colunas para fluxo de trabalho/funil
+.coluna            : Coluna individual dentro do quadro Kanban
+.cartao-kanban     : Item de oportunidade/tarefa movivel dentro da coluna Kanban
+.balao             : Balao de mensagem recebida no chat de atendimento
+.balao.meu         : Balao de mensagem enviada pelo operador no chat
+.vazio             : Estado sem dados com mensagem amigavel e icone centralizado
+.linha             : Utilitario flexbox para alinhar itens em linha com espacamento
+.entre             : Utilitario flexbox alinhando itens com espaco entre extremidades
+.mudo              : Utilitario de texto com opacidade reduzida/cor neutra
+.oculto            : Utilitario para esconder elementos da arvore visual
+==========================================================================
+*/
+
+:root {
+  /* Marca e Identidade Visual (Verde Matrix Elegante & Funcional) */
+  --marca: #00e676;
+  --marca-hover: #00c853;
+  --marca-2: #059669;
+  --marca-alpha: rgba(0, 230, 118, 0.12);
+  --marca-alpha-forte: rgba(0, 230, 118, 0.25);
+
+  /* Superficies e Fundos (Escuro / Terminal Limpo) */
+  --bg: #090d0f;
+  --superficie: #11171a;
+  --superficie-2: #182226;
+  --superficie-3: #212e34;
+  --borda: #28383f;
+  --borda-foco: #00e676;
+
+  /* Tipografia e Textos */
+  --texto: #f0f4f6;
+  --texto-mudo: #8a9fa8;
+  --texto-inverso: #05100a;
+  --fonte-padrao: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --fonte-mono: "JetBrains Mono", "Fira Code", Consolas, Monaco, monospace;
+
+  /* Status e Alertas */
+  --sucesso: #00e676;
+  --sucesso-fundo: rgba(0, 230, 118, 0.12);
+  --alerta: #ffb300;
+  --alerta-fundo: rgba(255, 179, 0, 0.12);
+  --erro: #ff5252;
+  --erro-fundo: rgba(255, 82, 82, 0.12);
+  --info: #29b6f6;
+  --info-fundo: rgba(41, 182, 246, 0.12);
+
+  /* Geometria e Sombras */
+  --raio-sm: 6px;
+  --raio: 10px;
+  --raio-lg: 16px;
+  --raio-pilo: 9999px;
+
+  --sombra-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --sombra: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --sombra-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
+  --sombra-marca: 0 0 15px rgba(0, 230, 118, 0.2);
+
+  /* Espacamentos Padronizados */
+  --espaco-xs: 4px;
+  --espaco-sm: 8px;
+  --espaco-md: 16px;
+  --espaco-lg: 24px;
+  --espaco-xl: 32px;
+
+  /* Transicoes */
+  --transicao: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Tema Claro Alternativo */
+[data-tema="claro"] {
+  --marca: #00a86b;
+  --marca-hover: #008e5a;
+  --marca-2: #00796b;
+  --marca-alpha: rgba(0, 168, 107, 0.08);
+  --marca-alpha-forte: rgba(0, 168, 107, 0.18);
+
+  --bg: #f4f7f6;
+  --superficie: #ffffff;
+  --superficie-2: #eaf0ed;
+  --superficie-3: #dce5e1;
+  --borda: #cbd8d3;
+  --borda-foco: #00a86b;
+
+  --texto: #11181c;
+  --texto-mudo: #526660;
+  --texto-inverso: #ffffff;
+
+  --sucesso: #008e46;
+  --sucesso-fundo: rgba(0, 142, 70, 0.1);
+  --alerta: #d97706;
+  --alerta-fundo: rgba(217, 119, 6, 0.1);
+  --erro: #dc2626;
+  --erro-fundo: rgba(220, 38, 38, 0.1);
+  --info: #0284c7;
+  --info-fundo: rgba(2, 132, 199, 0.1);
+
+  --sombra-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --sombra: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --sombra-lg: 0 10px 25px rgba(0, 0, 0, 0.12);
+  --sombra-marca: 0 0 12px rgba(0, 168, 107, 0.15);
+}
+
+/* Reset Basico e Acessibilidade */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  font-family: var(--fonte-padrao);
+  background-color: var(--bg);
+  color: var(--texto);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Estados de Foco Globais */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--borda-foco);
+  outline-offset: 2px;
+}
+
+/* Estrutura Principal (.app) */
+.app {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "lateral topo"
+    "lateral conteudo";
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* Menu Lateral (.lateral) */
+.lateral {
+  grid-area: lateral;
+  background-color: var(--superficie);
+  border-right: 1px solid var(--borda);
+  display: flex;
+  flex-direction: column;
+  padding: var(--espaco-md);
+  gap: var(--espaco-sm);
+  z-index: 40;
+  transition: var(--transicao);
+}
+
+.lateral a {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-sm);
+  padding: 0 var(--espaco-md);
+  min-height: 44px;
+  color: var(--texto-mudo);
+  text-decoration: none;
+  border-radius: var(--raio);
+  font-weight: 500;
+  transition: var(--transicao);
+}
+
+.lateral a:hover {
+  background-color: var(--superficie-2);
+  color: var(--texto);
+}
+
+.lateral a.ativo {
+  background-color: var(--marca-alpha);
+  color: var(--marca);
+  border-left: 3px solid var(--marca);
+  font-weight: 600;
+}
+
+.lateral a svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  fill: currentColor;
+}
+
+/* Topo / Barra Superior (.topo) */
+.topo {
+  grid-area: topo;
+  background-color: var(--superficie);
+  border-bottom: 1px solid var(--borda);
+  padding: 0 var(--espaco-lg);
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 30;
+}
+
+/* Conteudo Principal (.conteudo) */
+.conteudo {
+  grid-area: conteudo;
+  padding: var(--espaco-lg);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-lg);
+}
+
+/* Botoes (.btn) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espaco-sm);
+  min-height: 40px;
+  padding: 0 var(--espaco-md);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: var(--raio);
+  border: 1px solid var(--borda);
+  background-color: var(--superficie-2);
+  color: var(--texto);
+  cursor: pointer;
+  transition: var(--transicao);
+  user-select: none;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background-color: var(--superficie-3);
+  border-color: var(--borda);
+}
+
+.btn-primario {
+  background-color: var(--marca);
+  color: var(--texto-inverso);
+  border-color: var(--marca);
+  box-shadow: var(--sombra-marca);
+}
+
+.btn-primario:hover {
+  background-color: var(--marca-hover);
+  border-color: var(--marca-hover);
+}
+
+.btn-suave {
+  background-color: var(--marca-alpha);
+  color: var(--marca);
+  border-color: transparent;
+}
+
+.btn-suave:hover {
+  background-color: var(--marca-alpha-forte);
+}
+
+.btn-perigo {
+  background-color: var(--erro-fundo);
+  color: var(--erro);
+  border-color: transparent;
+}
+
+.btn-perigo:hover {
+  background-color: var(--erro);
+  color: #ffffff;
+}
+
+.btn-icone {
+  min-width: 40px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: var(--raio);
+}
+
+.btn svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+/* Cartoes e Layout de Grade (.cartao, .kpi, .grade) */
+.cartao {
+  background-color: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-lg);
+  padding: var(--espaco-lg);
+  box-shadow: var(--sombra-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-md);
+}
+
+.kpi {
+  background-color: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  padding: var(--espaco-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-xs);
+  position: relative;
+  overflow: hidden;
+}
+
+.kpi::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background-color: var(--marca);
+}
+
+.kpi .valor {
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--espaco-md);
+  width: 100%;
+}
+
+/* Formularios e Campos (.campo, label, input, select, textarea) */
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-xs);
+  width: 100%;
+}
+
+label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--texto-mudo);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="tel"],
+input[type="date"],
+select,
+textarea {
+  width: 100%;
+  min-height: 40px;
+  padding: 0 var(--espaco-md);
+  background-color: var(--superficie-2);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-sm);
+  color: var(--texto);
+  font-family: inherit;
+  font-size: 0.95rem;
+  transition: var(--transicao);
+}
+
+textarea {
+  padding: var(--espaco-sm) var(--espaco-md);
+  min-height: 100px;
+  resize: vertical;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--borda-foco);
+  box-shadow: 0 0 0 3px var(--marca-alpha);
+}
+
+select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%208a9fa8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--espaco-md) center;
+  padding-right: calc(var(--espaco-md) * 2.5);
+}
+
+/* Interruptor / Switch (.interruptor) */
+.interruptor {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espaco-sm);
+  cursor: pointer;
+  user-select: none;
+  min-height: 40px;
+}
+
+.interruptor input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.interruptor .trilho {
+  width: 44px;
+  height: 24px;
+  background-color: var(--superficie-3);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-pilo);
+  position: relative;
+  transition: var(--transicao);
+}
+
+.interruptor .trilho::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  background-color: var(--texto-mudo);
+  border-radius: 50%;
+  transition: var(--transicao);
+}
+
+.interruptor input:checked + .trilho {
+  background-color: var(--marca);
+  border-color: var(--marca);
+}
+
+.interruptor input:checked + .trilho::after {
+  transform: translateX(20px);
+  background-color: var(--texto-inverso);
+}
+
+/* Tabela (.tabela) */
+.tabela-conteiner {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background-color: var(--superficie);
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.tabela th {
+  background-color: var(--superficie-2);
+  color: var(--texto-mudo);
+  font-weight: 600;
+  padding: var(--espaco-md);
+  border-bottom: 1px solid var(--borda);
+  white-space: nowrap;
+}
+
+.tabela td {
+  padding: var(--espaco-md);
+  border-bottom: 1px solid var(--borda);
+  color: var(--texto);
+}
+
+.tabela tr:last-child td {
+  border-bottom: none;
+}
+
+.tabela tbody tr:hover {
+  background-color: var(--superficie-2);
+}
+
+/* Abas (.abas, .aba) */
+.abas {
+  display: flex;
+  gap: var(--espaco-xs);
+  border-bottom: 1px solid var(--borda);
+  width: 100%;
+}
+
+.aba {
+  padding: var(--espaco-sm) var(--espaco-md);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--texto-mudo);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  min-height: 40px;
+  transition: var(--transicao);
+}
+
+.aba:hover {
+  color: var(--texto);
+}
+
+.aba.ativa {
+  color: var(--marca);
+  border-bottom-color: var(--marca);
+}
+
+/* Etiquetas e Badges (.etiqueta) */
+.etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espaco-xs);
+  padding: 2px 10px;
+  border-radius: var(--raio-pilo);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background-color: var(--superficie-3);
+  color: var(--texto);
+  width: fit-content;
+}
+
+.etiqueta-sucesso { background-color: var(--sucesso-fundo); color: var(--sucesso); }
+.etiqueta-alerta { background-color: var(--alerta-fundo); color: var(--alerta); }
+.etiqueta-erro { background-color: var(--erro-fundo); color: var(--erro); }
+.etiqueta-info { background-color: var(--info-fundo); color: var(--info); }
+
+/* Avatar (.avatar) */
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--marca-alpha);
+  color: var(--marca);
+  border: 1px solid var(--marca);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Modal e overlays (.modal, .painel-lateral) */
+.modal {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--espaco-md);
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: var(--transicao);
+}
+
+.modal.aberto {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-conteudo {
+  background-color: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-lg);
+  width: 100%;
+  max-width: 540px;
+  padding: var(--espaco-lg);
+  box-shadow: var(--sombra-lg);
+  transform: translateY(20px);
+  transition: var(--transicao);
+}
+
+.modal.aberto .modal-conteudo {
+  transform: translateY(0);
+}
+
+.painel-lateral {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 420px;
+  background-color: var(--superficie);
+  border-left: 1px solid var(--borda);
+  z-index: 90;
+  transform: translateX(100%);
+  transition: var(--transicao);
+  box-shadow: var(--sombra-lg);
+  display: flex;
+  flex-direction: column;
+}
+
+.painel-lateral.aberto {
+  transform: translateX(0);
+}
+
+/* Quadro Kanban (.kanban, .coluna, .cartao-kanban) */
+.kanban {
+  display: flex;
+  gap: var(--espaco-md);
+  overflow-x: auto;
+  padding-bottom: var(--espaco-md);
+  height: 100%;
+  min-height: 500px;
+}
+
+.coluna {
+  flex: 0 0 300px;
+  background-color: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  padding: var(--espaco-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-md);
+  max-height: 100%;
+}
+
+.coluna-cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 700;
+}
+
+.cartao-kanban {
+  background-color: var(--superficie-2);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-sm);
+  padding: var(--espaco-md);
+  cursor: grab;
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-sm);
+  transition: var(--transicao);
+}
+
+.cartao-kanban:hover {
+  border-color: var(--marca);
+  transform: translateY(-2px);
+  box-shadow: var(--sombra-sm);
+}
+
+/* Chat e Baloes (.balao, .balao.meu) */
+.balao {
+  max-width: 75%;
+  padding: var(--espaco-sm) var(--espaco-md);
+  border-radius: var(--raio-lg);
+  border-bottom-left-radius: var(--raio-xs);
+  background-color: var(--superficie-2);
+  color: var(--texto);
+  align-self: flex-start;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  border: 1px solid var(--borda);
+}
+
+.balao.meu {
+  align-self: flex-end;
+  border-bottom-left-radius: var(--raio-lg);
+  border-bottom-right-radius: var(--raio-xs);
+  background-color: var(--marca-2);
+  color: #ffffff;
+  border-color: transparent;
+}
+
+/* Estado Vazio (.vazio) */
+.vazio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--espaco-xl);
+  text-align: center;
+  gap: var(--espaco-md);
+  color: var(--texto-mudo);
+  border: 2px dashed var(--borda);
+  border-radius: var(--raio-lg);
+}
+
+.vazio svg {
+  width: 48px;
+  height: 48px;
+  fill: currentColor;
+  opacity: 0.5;
+}
+
+/* Utilitarios Layout & Visibilidade */
+.linha {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-md);
+}
+
+.entre {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espaco-md);
+}
+
+.mudo {
+  color: var(--texto-mudo);
+}
+
+.oculto {
+  display: none !important;
+}
+
+/* Responsividade Celular */
+@media (max-width: 768px) {
+  .app {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "topo"
+      "conteudo";
+  }
+
+  .lateral {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    bottom: 0;
+    width: 260px;
+    transform: translateX(-100%);
+    box-shadow: var(--sombra-lg);
+  }
+
+  .lateral.aberta {
+    transform: translateX(0);
+  }
+
+  .grade {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Respeito a Preferencia de Movimento Reduzido */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Estilo para Impressao (Relatorios e Fichas) */
+@media print {
+  .lateral, .topo, .btn, .interruptor {
+    display: none !important;
+  }
+
+  .app {
+    display: block;
+  }
+
+  .conteudo {
+    padding: 0;
+    overflow: visible;
+  }
+
+  body {
+    background-color: #ffffff;
+    color: #000000;
+  }
+
+  .cartao, .tabela-conteiner {
+    border: 1px solid #ccc;
+    box-shadow: none;
+  }
+}

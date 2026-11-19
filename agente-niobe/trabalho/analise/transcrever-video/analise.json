@@ -1,0 +1,121 @@
+{
+ "video": "C:\\Users\\Maike\\Downloads\\Vídeo para editar.mp4",
+ "info": {
+  "duracao": 222.6,
+  "w": 576,
+  "h": 1024,
+  "audio": true
+ },
+ "dir": "C:\\Users\\Maike\\Documents\\agente-niobe\\trabalho\\analise\\transcrever-video",
+ "intervalo": 1,
+ "porFolha": 30,
+ "colunas": 6,
+ "silencios": [
+  [
+   0,
+   0.56
+  ],
+  [
+   0.72,
+   1.33
+  ],
+  [
+   3.4,
+   4.06
+  ],
+  [
+   4.98,
+   5.39
+  ],
+  [
+   7.06,
+   7.59
+  ],
+  [
+   17.5,
+   17.99
+  ],
+  [
+   20.15,
+   21.01
+  ],
+  [
+   71.47,
+   71.88
+  ],
+  [
+   90.51,
+   91.23
+  ],
+  [
+   92.49,
+   93.34
+  ],
+  [
+   98.7,
+   99.2
+  ],
+  [
+   119.52,
+   119.9
+  ],
+  [
+   119.9,
+   120.35
+  ],
+  [
+   120.35,
+   121.41
+  ],
+  [
+   124.5,
+   125.14
+  ],
+  [
+   129.32,
+   129.69
+  ],
+  [
+   190.16,
+   191.09
+  ],
+  [
+   196.54,
+   197.16
+  ],
+  [
+   206.77,
+   207.35
+  ],
+  [
+   208.8,
+   209.19
+  ],
+  [
+   214.27,
+   214.63
+  ]
+ ],
+ "cenas": [
+  71.93,
+  120.2,
+  129.73,
+  190.23,
+  197.1,
+  209.5
+ ],
+ "folhas": [
+  "folha_01.jpg",
+  "folha_02.jpg",
+  "folha_03.jpg",
+  "folha_04.jpg",
+  "folha_05.jpg",
+  "folha_06.jpg",
+  "folha_07.jpg",
+  "folha_08.jpg"
+ ],
+ "transcricao": {
+  "passos": [],
+  "erro": "FilmCraft não abriu no modo Niobe (porta 9876)"
+ }
+}

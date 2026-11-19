@@ -1,0 +1,261 @@
+﻿# NIOBE AO VIVO - camada com os 30 agentes (setas com nome) + painel AGENT ACTIVITY.
+# A Niobe escreve eventos em eventos.jsonl:  {"agente":"Legendista","x":0.60,"y":0.78,"acao":"legenda gancho"}
+# x,y = fracao da tela (0 a 1). {"fim":true} fecha a camada.
+Add-Type -AssemblyName PresentationFramework, PresentationCore, WindowsBase
+Add-Type @"
+using System; using System.Runtime.InteropServices;
+public static class NW {
+  [DllImport("user32.dll")] public static extern int GetWindowLong(IntPtr h, int i);
+  [DllImport("user32.dll")] public static extern int SetWindowLong(IntPtr h, int i, int v);
+  [StructLayout(LayoutKind.Sequential)] public struct P { public int X; public int Y; }
+  [DllImport("user32.dll")] public static extern bool GetCursorPos(out P p);
+}
+"@
+
+$dir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$ev  = Join-Path $dir 'eventos.jsonl'
+Set-Content -Path $ev -Value '' -Encoding UTF8
+Set-Content -Path (Join-Path $dir 'overlay.pid') -Value $PID
+
+$areas = @(
+  @{ cor = '#FF5A5F'; casa = @(0.13, 0.74) },  # 0 pre-producao  -> painel Projeto
+  @{ cor = '#FFB400'; casa = @(0.62, 0.79) },  # 1 montagem      -> timeline video
+  @{ cor = '#7B61FF'; casa = @(0.54, 0.30) },  # 2 motion        -> monitor Programa
+  @{ cor = '#00C2A8'; casa = @(0.86, 0.30) },  # 3 cor           -> painel direito
+  @{ cor = '#00A3FF'; casa = @(0.62, 0.88) },  # 4 audio         -> faixas de audio
+  @{ cor = '#FF7AC6'; casa = @(0.18, 0.06) }   # 5 entrega       -> menu Exportar
+)
+$nomes = @(
+  @('Triador',0),@('Transcritor',0),@('Analista',0),@('Roteirista',0),@('Ganchos',0),@('Copywriter',0),
+  @('Montador',1),@('Cortador de silencio',1),@('Removedor de erros',1),@('Ritmista',1),@('B-roll',1),@('Reenquadrador',1),@('Velocidade',1),
+  @('Motion designer',2),@('Zoom dinamico',2),@('Tipografo',2),@('Legendista',2),@('Transicoes',2),@('Efeitos',2),@('Marca',2),
+  @('Colorista tecnico',3),@('Colorista criativo',3),@('Consistencia de cor',3),
+  @('Engenheiro de voz',4),@('Trilha',4),@('Sound designer',4),@('Mixador',4),
+  @('Revisor',5),@('Exportador',5),@('Versionador',5)
+)
+
+$W = [System.Windows.SystemParameters]::PrimaryScreenWidth
+$H = [System.Windows.SystemParameters]::PrimaryScreenHeight
+$bc = New-Object System.Windows.Media.BrushConverter
+function Pincel($c) { $bc.ConvertFromString($c) }
+
+$win = New-Object System.Windows.Window
+$win.WindowStyle = 'None'; $win.AllowsTransparency = $true; $win.Topmost = $true; $win.ShowInTaskbar = $false
+$win.Background = [System.Windows.Media.Brushes]::Transparent
+$win.Left = 0; $win.Top = 0; $win.Width = $W; $win.Height = $H
+$canvas = New-Object System.Windows.Controls.Canvas
+$win.Content = $canvas
+$win.Add_SourceInitialized({
+  $h = (New-Object System.Windows.Interop.WindowInteropHelper($win)).Handle
+  $s = [NW]::GetWindowLong($h, -20)
+  [void][NW]::SetWindowLong($h, -20, ($s -bor 0x20 -bor 0x80000 -bor 0x80))  # clique atravessa, sem barra de tarefas
+})
+
+$seta = 'M0,0 L0,19 L5,14 L9,23 L12,22 L8,13 L15,13 Z'
+function Novo-Cursor($nome, $cor) {
+  $g = New-Object System.Windows.Controls.Canvas
+  $p = New-Object System.Windows.Shapes.Path
+  $p.Data = [System.Windows.Media.Geometry]::Parse($seta); $p.Fill = (Pincel $cor)
+  $p.Stroke = [System.Windows.Media.Brushes]::White; $p.StrokeThickness = 1.3
+  $b = New-Object System.Windows.Controls.Border
+  $b.Background = (Pincel $cor); $b.CornerRadius = New-Object System.Windows.CornerRadius(4)
+  $b.Padding = New-Object System.Windows.Thickness(6, 1, 6, 2)
+  $t = New-Object System.Windows.Controls.TextBlock
+  $t.Text = $nome; $t.Foreground = [System.Windows.Media.Brushes]::White; $t.FontSize = 11; $t.FontWeight = 'Bold'
+  $b.Child = $t
+  [System.Windows.Controls.Canvas]::SetLeft($b, 14); [System.Windows.Controls.Canvas]::SetTop($b, 20)
+  [void]$g.Children.Add($p); [void]$g.Children.Add($b)
+  [void]$canvas.Children.Add($g)
+  return $g
+}
+function Mover($g, $x, $y, $ms) {
+  $x = [Math]::Max(0, [Math]::Min($W - 160, $x)); $y = [Math]::Max(0, [Math]::Min($H - 50, $y))
+  $d = New-Object System.Windows.Duration([TimeSpan]::FromMilliseconds($ms))
+  $e = New-Object System.Windows.Media.Animation.QuadraticEase
+  $ax = New-Object System.Windows.Media.Animation.DoubleAnimation($x, $d); $ax.EasingFunction = $e
+  $ay = New-Object System.Windows.Media.Animation.DoubleAnimation($y, $d); $ay.EasingFunction = $e
+  $g.BeginAnimation([System.Windows.Controls.Canvas]::LeftProperty, $ax)
+  $g.BeginAnimation([System.Windows.Controls.Canvas]::TopProperty, $ay)
+}
+
+$rnd = New-Object System.Random
+$agentes = @()
+$i = 0
+foreach ($n in $nomes) {
+  $i++; $a = $areas[$n[1]]
+  $g = Novo-Cursor $n[0] $a.cor
+  $x = ($a.casa[0] + ($rnd.NextDouble() - 0.5) * 0.16) * $W
+  $y = ($a.casa[1] + ($rnd.NextDouble() - 0.5) * 0.10) * $H
+  [System.Windows.Controls.Canvas]::SetLeft($g, $x); [System.Windows.Controls.Canvas]::SetTop($g, $y)
+  $agentes += [pscustomobject]@{ id = ('agent-{0:D2}' -f $i); nome = $n[0]; area = $n[1]; g = $g; ocupado = [DateTime]::MinValue }
+}
+
+# 31o cursor: etiqueta "Niobe" seguindo o mouse real
+$niobe = Novo-Cursor 'NIOBE (diretora)' '#E11D48'
+$niobe.Children[0].Visibility = 'Hidden'
+
+# Painel AGENT ACTIVITY
+$painel = New-Object System.Windows.Controls.Border
+$painel.Background = (Pincel '#D90E0E16'); $painel.CornerRadius = New-Object System.Windows.CornerRadius(8)
+$painel.BorderBrush = (Pincel '#557B61FF'); $painel.BorderThickness = New-Object System.Windows.Thickness(1)
+$painel.Padding = New-Object System.Windows.Thickness(12, 8, 12, 10); $painel.Width = 430
+$stack = New-Object System.Windows.Controls.StackPanel
+$tit = New-Object System.Windows.Controls.TextBlock
+$tit.Text = 'AGENT ACTIVITY  ·  NIOBE  ·  30 agentes'; $tit.Foreground = (Pincel '#FFD400'); $tit.FontWeight = 'Bold'; $tit.FontSize = 12
+[void]$stack.Children.Add($tit)
+$linhas = New-Object System.Windows.Controls.StackPanel
+[void]$stack.Children.Add($linhas)
+$painel.Child = $stack
+[System.Windows.Controls.Canvas]::SetLeft($painel, 16); [System.Windows.Controls.Canvas]::SetTop($painel, $H * 0.40)
+[void]$canvas.Children.Add($painel)
+
+function Registrar($ag, $txt) {
+  $tb = New-Object System.Windows.Controls.TextBlock
+  $tb.FontFamily = 'Consolas'; $tb.FontSize = 11; $tb.Margin = New-Object System.Windows.Thickness(0, 3, 0, 0)
+  $r1 = New-Object System.Windows.Documents.Run((Get-Date -Format 'HH:mm:ss') + '  ')
+  $r1.Foreground = (Pincel '#88FFFFFF')
+  $r2 = New-Object System.Windows.Documents.Run($ag.id + ' ' + $ag.nome + '  ')
+  $r2.Foreground = (Pincel $areas[$ag.area].cor); $r2.FontWeight = 'Bold'
+  $r3 = New-Object System.Windows.Documents.Run($txt)
+  $r3.Foreground = [System.Windows.Media.Brushes]::White
+  [void]$tb.Inlines.Add($r1); [void]$tb.Inlines.Add($r2); [void]$tb.Inlines.Add($r3)
+  $linhas.Children.Insert(0, $tb)
+  while ($linhas.Children.Count -gt 14) { $linhas.Children.RemoveAt($linhas.Children.Count - 1) }
+}
+
+# Leitura dos eventos que a Niobe escreve
+$global:pos = 0
+$timer = New-Object System.Windows.Threading.DispatcherTimer
+$timer.Interval = [TimeSpan]::FromMilliseconds(120)
+$timer.Add_Tick({
+  try {
+    $src = [System.Windows.PresentationSource]::FromVisual($win)
+    if ($src) {
+      $p = New-Object NW+P; [void][NW]::GetCursorPos([ref]$p)
+      $m = $src.CompositionTarget.TransformFromDevice
+      $pt = $m.Transform((New-Object System.Windows.Point($p.X, $p.Y)))
+      [System.Windows.Controls.Canvas]::SetLeft($niobe, $pt.X); [System.Windows.Controls.Canvas]::SetTop($niobe, $pt.Y)
+    }
+    $fs = New-Object System.IO.FileStream($ev, 'Open', 'Read', 'ReadWrite')
+    if ($fs.Length -lt $global:pos) { $global:pos = 0 }
+    [void]$fs.Seek($global:pos, 'Begin')
+    $sr = New-Object System.IO.StreamReader($fs, [System.Text.Encoding]::UTF8)
+    $novo = $sr.ReadToEnd(); $global:pos = $fs.Position; $sr.Close()
+    foreach ($l in ($novo -split "`n")) {
+      $l = $l.Trim(); if (-not $l) { continue }
+      $e = $l | ConvertFrom-Json
+      if ($e.fim) { $win.Close(); return }
+      $ag = $agentes | Where-Object { $_.nome -like ('*' + $e.agente + '*') } | Select-Object -First 1
+      if (-not $ag) { continue }
+      $ag.ocupado = [DateTime]::Now
+      if ($e.x -ne $null) { Mover $ag.g ($e.x * $W) ($e.y * $H) 450 }
+      if ($e.acao) { Registrar $ag $e.acao }
+    }
+  } catch { }
+})
+$timer.Start()
+
+# ---- Escuta o historico do FilmCraft (modo ponte) e move o agente certo a cada edicao ----
+$tokFile = Join-Path (Split-Path $dir -Parent) 'projetos\.token'
+$global:tok = if (Test-Path $tokFile) { (Get-Content $tokFile -Raw).Trim() } else { $env:FILMCRAFT_CONTROL_TOKEN }
+$global:cli = $null; $global:rd = $null; $global:wr = $null; $global:prev = -1; $global:fila = New-Object System.Collections.Queue
+$locais = @{
+  programa = @(0.54, 0.30); timelineV = @(0.62, 0.79); audio = @(0.62, 0.88)
+  efeitos = @(0.18, 0.30); graficos = @(0.85, 0.30); projeto = @(0.13, 0.74)
+}
+$regras = @(
+  @('Import sfx', 'Sound designer', 'audio', 'importou efeito sonoro'),
+  @('Import', 'Triador', 'projeto', 'importou midia'),
+  @('Transcri', 'Transcritor', 'projeto', 'transcreveu a fala'),
+  @('Filler', 'Removedor de erros', 'timelineV', 'removeu vicios de linguagem'),
+  @('Pause', 'Cortador de silencio', 'timelineV', 'cortou pausas'),
+  @('Caption', 'Legendista', 'programa', 'gerou legendas'),
+  @('Character Style', 'Legendista', 'programa', 'destacou palavra-chave'),
+  @('New Graphic', 'Tipografo', 'programa', 'criou texto na tela'),
+  @('Text', 'Tipografo', 'graficos', 'editou texto'),
+  @('Graphic', 'Marca', 'graficos', 'ajustou estilo do texto'),
+  @('Whip', 'Transicoes', 'timelineV', 'transicao whip'),
+  @('Zoom Blur', 'Transicoes', 'timelineV', 'transicao zoom blur'),
+  @('Flash', 'Transicoes', 'timelineV', 'transicao flash'),
+  @('Dissolve', 'Transicoes', 'timelineV', 'cross dissolve'),
+  @('Lumetri', 'Colorista criativo', 'efeitos', 'aplicou look de cor'),
+  @('Color', 'Colorista tecnico', 'efeitos', 'corrigiu a cor'),
+  @('Apply', 'Efeitos', 'efeitos', 'aplicou efeito'),
+  @('Speed', 'Velocidade', 'timelineV', 'mudou a velocidade'),
+  @('Razor', 'Cortador de silencio', 'timelineV', 'corte com a navalha'),
+  @('Add Edit', 'Cortador de silencio', 'timelineV', 'corte na timeline'),
+  @('Delete', 'Ritmista', 'timelineV', 'apertou o ritmo'),
+  @('Lift', 'Ritmista', 'timelineV', 'retirou trecho'),
+  @('Extract', 'Ritmista', 'timelineV', 'retirou trecho'),
+  @('Place Clip', 'Montador', 'timelineV', 'colocou clipe na timeline'),
+  @('Effect Parameter', 'Zoom dinamico', 'programa', 'zoom / enquadramento'),
+  @('Keyframe', 'Motion designer', 'efeitos', 'keyframe de movimento'),
+  @('Volume', 'Mixador', 'audio', 'ajustou volume'),
+  @('Gain', 'Engenheiro de voz', 'audio', 'ajustou ganho'),
+  @('Track', 'Mixador', 'audio', 'ajustou faixa'),
+  @('Sequence', 'Montador', 'timelineV', 'criou sequencia'),
+  @('', 'Revisor', 'programa', '')
+)
+function Conectar {
+  try {
+    $global:cli = New-Object System.Net.Sockets.TcpClient('127.0.0.1', 9876)
+    $global:cli.ReceiveTimeout = 1500
+    $s = $global:cli.GetStream()
+    $global:rd = New-Object System.IO.StreamReader($s, [System.Text.Encoding]::UTF8)
+    $global:wr = New-Object System.IO.StreamWriter($s, (New-Object System.Text.UTF8Encoding($false))); $global:wr.AutoFlush = $true
+  } catch { $global:cli = $null }
+}
+function Historico {
+  if (-not $global:cli -or -not $global:cli.Connected) { Conectar }
+  if (-not $global:cli) { return $null }
+  try {
+    $req = @{ id = 1; token = $global:tok; method = 'engine.execute'; params = @{ command = 'history.list' } } | ConvertTo-Json -Compress -Depth 4
+    $global:wr.WriteLine($req)
+    $r = $global:rd.ReadLine() | ConvertFrom-Json
+    foreach ($c in @($r.result.undo, $r.result.result.undo, $r.undo)) { if ($c -ne $null) { return ,@($c) } }
+  } catch { try { $global:cli.Close() } catch {}; $global:cli = $null }
+  return $null
+}
+$hist = New-Object System.Windows.Threading.DispatcherTimer
+$hist.Interval = [TimeSpan]::FromMilliseconds(350)
+$hist.Add_Tick({
+  $u = Historico
+  if ($u -ne $null) {
+    $n = $u.Count
+    if ($global:prev -lt 0 -or $n -lt $global:prev) { $global:prev = $n }
+    elseif ($n -gt $global:prev) { for ($j = $global:prev; $j -lt $n; $j++) { $global:fila.Enqueue([string]$u[$j]) }; $global:prev = $n }
+  }
+})
+$hist.Start()
+$anim = New-Object System.Windows.Threading.DispatcherTimer
+$anim.Interval = [TimeSpan]::FromMilliseconds(260)
+$anim.Add_Tick({
+  if ($global:fila.Count -eq 0) { return }
+  $lab = $global:fila.Dequeue()
+  foreach ($rg in $regras) {
+    if ($lab -like ('*' + $rg[0] + '*')) {
+      $ag = $agentes | Where-Object { $_.nome -eq $rg[1] } | Select-Object -First 1
+      $l = $locais[$rg[2]]
+      $ag.ocupado = [DateTime]::Now
+      Mover $ag.g (($l[0] + ($rnd.NextDouble() - 0.5) * 0.12) * $W) (($l[1] + ($rnd.NextDouble() - 0.5) * 0.05) * $H) 380
+      Registrar $ag $(if ($rg[3]) { $rg[3] } else { $lab })
+      break
+    }
+  }
+})
+$anim.Start()
+
+# Agentes ociosos se mexem perto da sua area (equipe "viva")
+$vida = New-Object System.Windows.Threading.DispatcherTimer
+$vida.Interval = [TimeSpan]::FromMilliseconds(700)
+$vida.Add_Tick({
+  for ($k = 0; $k -lt 5; $k++) {
+    $ag = $agentes[$rnd.Next($agentes.Count)]
+    if (([DateTime]::Now - $ag.ocupado).TotalSeconds -lt 4) { continue }
+    $c = $areas[$ag.area].casa
+    Mover $ag.g (($c[0] + ($rnd.NextDouble() - 0.5) * 0.18) * $W) (($c[1] + ($rnd.NextDouble() - 0.5) * 0.10) * $H) (900 + $rnd.Next(900))
+  }
+})
+$vida.Start()
+
+[void]$win.ShowDialog()

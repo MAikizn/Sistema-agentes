@@ -1,0 +1,23 @@
+﻿# segredos e dados locais - nunca subir
+config.json
+config*.json
+!*.exemplo.json
+.env*
+*.env
+*.pem
+*.key
+creds.json
+chave*.json
+.token*
+session-*.json
+auth*/
+session*/
+sessao*/
+.next/
+_to_delete/
+.wwebjs_auth/
+.wrangler/
+node_modules/
+*.log
+*.sqlite*
+*.db

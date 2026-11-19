@@ -1,0 +1,18 @@
+{
+  "porta": 7780,
+  "upstream": "http://127.0.0.1:31415/v1",
+  "chaveDe": "../agente-whatsapp/config.json",
+  "_ajuda": "A Unidade une o Kimi K3 e o Mistral Large numa IA só. Cada 'membro' é uma lista: usa o primeiro modelo que responder. Enquanto as chaves do Kimi (NVIDIA) e do Mistral não estiverem no painel do FreeLLMAPI, entram os substitutos gratuitos.",
+  "membroA": ["kimi-k3-nvidia-direct", "nemotron-3-ultra-550b", "gemini-3.5-flash"],
+  "membroB": ["mistral-large-3", "gpt-oss-120b", "qwen3.8-27b"],
+  "sintese": ["mistral-large-3", "kimi-k3-nvidia-direct", "gpt-oss-120b", "gemini-3.5-flash", "auto"],
+  "rapida": ["kimi-k3-nvidia-direct", "mistral-large-3", "gemini-3.5-flash", "gpt-oss-120b", "gemini-3.1-flash-lite", "qwen3.8-27b", "auto"],
+  "rapidaSegundosPorModelo": 9,
+  "rapidaSegundosTotal": 22,
+  "fusaoSegundosPorModelo": 45,
+  "pesado": {
+    "_ajuda": "No modelo 'unidade' (automático), a fusão só entra quando o pedido é pesado: mensagem longa ou resposta grande.",
+    "caracteresDoPedido": 280,
+    "maxTokens": 4000
+  }
+}

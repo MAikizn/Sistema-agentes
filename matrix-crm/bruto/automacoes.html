@@ -1,0 +1,217 @@
+<main class="conteudo">
+  <!-- Cabeçalho da tela -->
+  <div class="linha entre">
+    <h2 class="mudo">Automações</h2>
+    <button class="btn btn-primario btn-icone" id="abrirModal">
+      <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      Nova automação
+    </button>
+  </div>
+
+  <!-- Lista de automações -->
+  <div class="tabela-conteiner cartao">
+    <table class="tabela" id="tabelaAutomacoes">
+      <thead>
+        <tr>
+          <th>Regra</th>
+          <th class="oculto">Ativa</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- linhas geradas por script -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Área de Webhooks -->
+  <div class="cartao">
+    <div class="linha entre">
+      <h3 class="mudo">Webhooks (n8n)</h3>
+      <button class="btn btn-suave btn-icone" id="addWebhook">
+        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        Adicionar webhook
+      </button>
+    </div>
+    <ul id="listaWebhooks" class="mudo" style="margin-top: var(--espaco-md); list-style:none; padding-left:0;">
+      <!-- itens gerados por script -->
+    </ul>
+  </div>
+
+  <!-- Modal de criação/edição de automação -->
+  <div class="modal" id="modalAutomacao">
+    <div class="modal-conteudo">
+      <h3 class="mudo">Nova automação</h3>
+      <form id="formAutomacao">
+        <div class="campo">
+          <label for="gatilho">Gatilho</label>
+          <select id="gatilho" required>
+            <option value="">Selecione...</option>
+            <option>Consulta agendada</option>
+            <option>Véspera da consulta</option>
+            <option>2h antes</option>
+            <option>Lead compareceu</option>
+            <option>Procedimento concluído</option>
+            <option>Faltou</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="acao">Ação</label>
+          <select id="acao" required>
+            <option value="">Selecione...</option>
+            <option>avisar dentista no WhatsApp e mover para Agendado</option>
+            <option>enviar lembrete</option>
+            <option>mover para Compareceu</option>
+            <option>mover cartão e agendar retorno em 6 meses</option>
+            <option>mover para Reagendar</option>
+          </select>
+        </div>
+        <div class="linha entre" style="margin-top: var(--espaco-lg);">
+          <button type="button" class="btn btn-suave" id="fecharModal">Cancelar</button>
+          <button type="submit" class="btn btn-primario">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal de criação de webhook -->
+  <div class="modal" id="modalWebhook">
+    <div class="modal-conteudo">
+      <h3 class="mudo">Novo webhook</h3>
+      <form id="formWebhook">
+        <div class="campo">
+          <label for="nomeWebhook">Nome</label>
+          <input type="text" id="nomeWebhook" placeholder="ex.: n8n - Consulta agendada" required>
+        </div>
+        <div class="campo">
+          <label for="urlWebhook">URL</label>
+          <input type="text" id="urlWebhook" placeholder="https://..." required>
+        </div>
+        <div class="linha entre" style="margin-top: var(--espaco-lg);">
+          <button type="button" class="btn btn-suave" id="fecharWebhook">Cancelar</button>
+          <button type="submit" class="btn btn-primario">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <style>
+    /* Ajustes menores para a tabela */
+    #tabelaAutomacoes td:last-child { width: 80px; text-align: center; }
+    .interruptor { justify-content: flex-end; }
+    .modal-conteudo h3 { margin-bottom: var(--espaco-md); }
+  </style>
+
+  <script>
+    // Dados iniciais fictícios
+    const automacoes = [
+      { gatilho: 'Consulta agendada', acao: 'avisar dentista no WhatsApp e mover para Agendado', ativo: true },
+      { gatilho: 'Véspera da consulta', acao: 'enviar lembrete', ativo: true },
+      { gatilho: '2h antes', acao: 'enviar lembrete', ativo: false },
+      { gatilho: 'Lead compareceu', acao: 'mover para Compareceu', ativo: true },
+      { gatilho: 'Procedimento concluído', acao: 'mover cartão e agendar retorno em 6 meses', ativo: false },
+      { gatilho: 'Faltou', acao: 'mover para Reagendar', ativo: true }
+    ];
+
+    const webhooks = [];
+
+    const tbody = document.querySelector('#tabelaAutomacoes tbody');
+    const listaWebhooks = document.getElementById('listaWebhooks');
+
+    function renderAutomacoes() {
+      tbody.innerHTML = '';
+      automacoes.forEach((a, i) => {
+        const tr = document.createElement('tr');
+
+        const tdRegra = document.createElement('td');
+        tdRegra.textContent = `Quando ${esc(a.gatilho)}, então ${esc(a.acao)}`;
+        tr.appendChild(tdRegra);
+
+        const tdSwitch = document.createElement('td');
+        tdSwitch.innerHTML = `
+          <label class="interruptor">
+            <input type="checkbox" ${a.ativo ? 'checked' : ''} data-index="${i}">
+            <span class="trilho"></span>
+          </label>
+        `;
+        tr.appendChild(tdSwitch);
+
+        const tdStatus = document.createElement('td');
+        const etiqueta = document.createElement('span');
+        etiqueta.className = 'etiqueta ' + (a.ativo ? 'etiqueta-sucesso' : 'etiqueta-erro');
+        etiqueta.textContent = a.ativo ? 'Ativa' : 'Desativada';
+        tdStatus.appendChild(etiqueta);
+        tr.appendChild(tdStatus);
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderWebhooks() {
+      listaWebhooks.innerHTML = '';
+      webhooks.forEach((w, i) => {
+        const li = document.createElement('li');
+        li.className = 'linha entre';
+        li.style.padding = 'var(--espaco-sm) 0';
+        li.innerHTML = `
+          <span>${esc(w.nome)}</span>
+          <a href="${esc(w.url)}" target="_blank" class="btn btn-icone" style="min-width:40px;">
+            <svg viewBox="0 0 24 24"><path d="M10 14l2-2-2-2M14 10l-2 2 2 2" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+          </a>
+        `;
+        listaWebhooks.appendChild(li);
+      });
+    }
+
+    // Switch toggle
+    tbody.addEventListener('change', e => {
+      if (e.target.matches('input[type="checkbox"]')) {
+        const idx = e.target.dataset.index;
+        automacoes[idx].ativo = e.target.checked;
+        renderAutomacoes();
+      }
+    });
+
+    // Modal automação
+    const modal = document.getElementById('modalAutomacao');
+    const abrirModalBtn = document.getElementById('abrirModal');
+    const fecharModalBtn = document.getElementById('fecharModal');
+    const formAuto = document.getElementById('formAutomacao');
+
+    abrirModalBtn.addEventListener('click', () => modal.classList.add('aberto'));
+    fecharModalBtn.addEventListener('click', () => modal.classList.remove('aberto'));
+
+    formAuto.addEventListener('submit', e => {
+      e.preventDefault();
+      const gatilho = document.getElementById('gatilho').value;
+      const acao = document.getElementById('acao').value;
+      automacoes.push({ gatilho, acao, ativo: true });
+      renderAutomacoes();
+      formAuto.reset();
+      modal.classList.remove('aberto');
+    });
+
+    // Modal webhook
+    const modalWebhook = document.getElementById('modalWebhook');
+    const abrirWebhookBtn = document.getElementById('addWebhook');
+    const fecharWebhookBtn = document.getElementById('fecharWebhook');
+    const formWebhook = document.getElementById('formWebhook');
+
+    abrirWebhookBtn.addEventListener('click', () => modalWebhook.classList.add('aberto'));
+    fecharWebhookBtn.addEventListener('click', () => modalWebhook.classList.remove('aberto'));
+
+    formWebhook.addEventListener('submit', e => {
+      e.preventDefault();
+      const nome = document.getElementById('nomeWebhook').value;
+      const url = document.getElementById('urlWebhook').value;
+      webhooks.push({ nome, url });
+      renderWebhooks();
+      formWebhook.reset();
+      modalWebhook.classList.remove('aberto');
+    });
+
+    // Inicialização
+    renderAutomacoes();
+    renderWebhooks();
+  </script>
+</main>

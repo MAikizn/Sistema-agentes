@@ -1,0 +1,72 @@
+<style>
+  .chat-container { display: grid; grid-template-columns: 320px 1fr 300px; gap: var(--espaco-md); height: calc(100vh - 120px); }
+  .coluna-chat { background: var(--superficie); border: 1px solid var(--borda); border-radius: var(--raio-lg); display: flex; flex-direction: column; overflow: hidden; }
+  .lista-conversas { overflow-y: auto; flex: 1; }
+  .conversa-item { padding: var(--espaco-md); border-bottom: 1px solid var(--borda); cursor: pointer; transition: var(--transicao); }
+  .conversa-item:hover { background: var(--superficie-2); }
+  .conversa-item.ativo { background: var(--marca-alpha); border-left: 3px solid var(--marca); }
+  .area-mensagens { display: flex; flex-direction: column; height: 100%; background: var(--superficie-2); border-radius: var(--raio-lg); padding: var(--espaco-md); gap: var(--espaco-md); }
+  .historico { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: var(--espaco-md); padding-right: var(--espaco-sm); }
+  .input-chat { display: flex; gap: var(--espaco-sm); background: var(--superficie); padding: var(--espaco-sm); border-radius: var(--raio); }
+  .detalhes-contato { padding: var(--espaco-md); display: flex; flex-direction: column; gap: var(--espaco-md); }
+</style>
+
+<div class="chat-container">
+  <!-- Coluna 1: Lista -->
+  <div class="coluna-chat">
+    <div class="abas">
+      <button class="aba ativa">Não lidas</button>
+      <button class="aba">Todas</button>
+    </div>
+    <div class="lista-conversas" id="lista-conversas">
+      <div class="conversa-item ativo" onclick="carregarConversa(1)">
+        <div class="entre"><strong>Ana Silva</strong> <span class="mudo">10:42</span></div>
+        <div class="mudo">Olá, gostaria de agendar...</div>
+      </div>
+      <div class="conversa-item" onclick="carregarConversa(2)">
+        <div class="entre"><strong>Dr. Carlos Souza</strong> <span class="mudo">09:15</span></div>
+        <div class="mudo">O lead chegou.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Coluna 2: Chat -->
+  <div class="area-mensagens">
+    <div class="entre" style="padding-bottom: var(--espaco-sm); border-bottom: 1px solid var(--borda);">
+      <div><strong>Ana Silva</strong><br><small class="etiqueta etiqueta-sucesso">Recepcionista IA respondendo</small></div>
+      <button class="btn btn-suave">Assumir conversa</button>
+    </div>
+    <div class="historico" id="historico">
+      <div class="balao">Olá! Gostaria de agendar uma limpeza.</div>
+      <div class="balao meu">Olá Ana, tudo bem? Temos vaga para amanhã às 14h, pode ser?</div>
+    </div>
+    <div class="input-chat">
+      <input type="text" placeholder="Digite sua mensagem...">
+      <button class="btn btn-primario">Enviar</button>
+    </div>
+  </div>
+
+  <!-- Coluna 3: Detalhes -->
+  <div class="coluna-chat">
+    <div class="detalhes-contato">
+      <div class="avatar" style="margin: 0 auto;">AS</div>
+      <h3 style="text-align: center;">Ana Silva</h3>
+      <div class="campo"><label>Etiquetas</label><div class="etiqueta">Odontologia</div></div>
+      <div class="campo"><label>Etapa</label><select><option>Agendamento</option></select></div>
+      <div class="kpi"><span class="mudo">Próxima consulta</span><span class="valor">15 Out</span></div>
+      <button class="btn">Abrir ficha completa</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function carregarConversa(id) {
+    const historico = document.getElementById('historico');
+    historico.innerHTML = id === 1 ? 
+      '<div class="balao">Olá! Gostaria de agendar uma limpeza.</div><div class="balao meu">Olá Ana, tudo bem? Temos vaga para amanhã às 14h, pode ser?</div>' :
+      '<div class="balao">O lead chegou para o procedimento.</div><div class="balao meu">Certo, encaminhando para a cadeira 2.</div>';
+    
+    document.querySelectorAll('.conversa-item').forEach(el => el.classList.remove('ativo'));
+    event.currentTarget.classList.add('ativo');
+  }
+</script>

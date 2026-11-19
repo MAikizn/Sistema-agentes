@@ -1,0 +1,17 @@
+{
+  "porta": 7780,
+  "upstream": "http://127.0.0.1:31415/v1",
+  "chaveArquivo": "chave.json",
+  "_ajuda": "A Unidade é uma IA só, independente dos agentes. Por dentro, duas mentes (A e B) pensam juntas e a resposta sai numa voz única. Cada mente é uma lista: usa o primeiro modelo que responder.",
+  "identidade": "Você é a Unidade, uma IA pessoal única. Responda sempre como uma só voz, em português do Brasil, de forma direta, natural e útil. Nunca fale em modelos, rascunhos, mentes ou bastidores: você é a Unidade.",
+  "papelA": "Foco desta etapa: raciocínio. Pense com cuidado, confira fatos e contas, e seja correta antes de ser bonita.",
+  "papelB": "Foco desta etapa: comunicação. Seja clara, natural e completa, com o tom certo para quem pediu.",
+  "membroA": ["kimi-k3-nvidia-direct", "nemotron-3-ultra-550b", "gemini-3.5-flash"],
+  "membroB": ["mistral-large-3", "gpt-oss-120b", "qwen3.8-27b"],
+  "sintese": ["mistral-large-3", "kimi-k3-nvidia-direct", "gpt-oss-120b", "gemini-3.5-flash", "auto"],
+  "rapida": ["kimi-k3-nvidia-direct", "mistral-large-3", "gemini-3.5-flash", "gpt-oss-120b", "gemini-3.1-flash-lite", "qwen3.8-27b", "auto"],
+  "rapidaSegundosPorModelo": 9,
+  "rapidaSegundosTotal": 22,
+  "fusaoSegundosPorModelo": 45,
+  "mentePensaJuntaAcimaDeCaracteres": 60
+}

@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<script>function esc(v){return String(v==null?'':v).replace(/[&<>"'`]/g,function(c){return '&#'+c.charCodeAt(0)+';';});}</script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Funil · MATRIX CRM</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: var(--espaco-xs) var(--espaco-sm);
+      margin-bottom: var(--espaco-xs);
+    }
+    .logo-icone {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--marca), var(--marca-2));
+      border-radius: var(--raio-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--texto-inverso);
+      flex-shrink: 0;
+      box-shadow: var(--sombra-marca);
+    }
+    .logo-texto {
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: -0.5px;
+      color: var(--texto);
+    }
+    .seletor-subconta {
+      width: 100%;
+      margin-bottom: var(--espaco-sm);
+    }
+    .seletor-subconta select {
+      font-weight: 600;
+      font-size: 0.85rem;
+      height: 40px;
+    }
+    .lateral-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+      overflow-y: auto;
+    }
+    .topo-esquerda {
+      display: flex;
+      align-items: center;
+      gap: var(--espaco-md);
+    }
+    .topo-titulo {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--texto);
+      margin: 0;
+    }
+    .topo-direita {
+      display: flex;
+      align-items: center;
+      gap: var(--espaco-md);
+    }
+    .topo-busca {
+      width: 240px;
+    }
+    .btn-mobile-trigger {
+      display: none;
+    }
+    .lateral-overlay {
+      display: none;
+    }
+    @media (max-width: 768px) {
+      .btn-mobile-trigger {
+        display: inline-flex;
+      }
+      .topo-busca {
+        display: none;
+      }
+      .lateral-overlay.aberta {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(2px);
+        z-index: 35;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="overlay" class="lateral-overlay"></div>
+
+  <div class="app">
+    <!-- MENU LATERAL -->
+    <aside class="lateral">
+      <div class="logo-container">
+        <div class="logo-icone">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+        </div>
+        <span class="logo-texto">MATRIX CRM</span>
+      </div>
+
+      <div class="campo seletor-subconta">
+        <select aria-label="Selecione a Subconta">
+          <option value="sorriso" selected>Clínica Sorriso (exemplo)</option>
+          <option value="matriz">Matriz Odontologia</option>
+          <option value="unidade-sul">Unidade Sul</option>
+        </select>
+      </div>
+
+      <nav class="lateral-nav">
+        <a href="painel.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+          <span>Painel</span>
+        </a>
+        <a href="conversas.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          <span>Conversas</span>
+        </a>
+        <a href="pacientes.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <span>Leads</span>
+        </a>
+        <a href="funil.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+          <span>Funil</span>
+        </a>
+        <a href="agenda.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          <span>Agenda</span>
+        </a>
+        <a href="agentes.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8.01" y2="16"></line><line x1="16" y1="16" x2="16.01" y2="16"></line></svg>
+          <span>Agentes de IA</span>
+        </a>
+        <a href="automacoes.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          <span>Automações</span>
+        </a>
+        <a href="configuracoes.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          <span>Configurações</span>
+        </a>
+        <a href="agencia.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M9 8h1"></path><path d="M9 12h1"></path><path d="M9 16h1"></path><path d="M14 8h1"></path><path d="M14 12h1"></path><path d="M14 16h1"></path><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path></svg>
+          <span>Agência</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- BARRA SUPERIOR DA INTERFACE -->
+    <header class="topo">
+      <div class="topo-esquerda">
+        <button id="btn-menu-toggle" class="btn btn-icone btn-suave btn-mobile-trigger" aria-label="Abrir menu de navegação">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <h1 class="topo-titulo">Funil</h1>
+      </div>
+
+      <div class="topo-direita">
+        <div class="campo topo-busca">
+          <input type="text" placeholder="Buscar leads, telefones..." aria-label="Buscar leads e registros">
+        </div>
+
+        <button id="btn-tema-toggle" class="btn btn-icone btn-suave" aria-label="Alternar tema claro ou escuro">
+          <svg id="icone-tema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+
+        <div class="avatar" title="Dra. Ana Silva">
+          AS
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="conteudo">
+<style>
+  /* Estilos específicos da tela de Funil Kanban */
+  .funil-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--espaco-md);
+    background-color: var(--superficie);
+    padding: var(--espaco-md) var(--espaco-lg);
+    border: 1px solid var(--borda);
+    border-radius: var(--raio-lg);
+  }
+
+  .funil-seletor-abas {
+    display: flex;
+    background-color: var(--superficie-2);
+    padding: 4px;
+    border-radius: var(--raio);
+    border: 1px solid var(--borda);
+    gap: 4px;
+  }
+
+  .btn-aba-funil {
+    padding: var(--espaco-sm) var(--espaco-md);
+    border: none;
+    background: transparent;
+    color: var(--texto-mudo);
+    font-weight: 600;
+    font-size: 0.9rem;
+    border-radius: var(--raio-sm);
+    cursor: pointer;
+    transition: var(--transicao);
+    display: flex;
+    align-items: center;
+    gap: var(--espaco-xs);
+    min-height: 36px;
+  }
+
+  .btn-aba-funil.ativo {
+    background-color: var(--superficie);
+    color: var(--marca);
+    box-shadow: var(--sombra-sm);
+  }
+
+  .funil-filtros {
+    display: flex;
+    align-items: center;
+    gap: var(--espaco-md);
+    flex-wrap: wrap;
+  }
+
+  .funil-mural {
+    display: flex;
+    gap: var(--espaco-md);
+    overflow-x: auto;
+    padding-bottom: var(--espaco-md);
+    min-height: calc(100vh - 240px);
+    scroll-behavior: smooth;
+  }
+
+  /* Customizacao da Coluna Kanban */
+  .coluna-funil {
+    flex: 0 0 310px;
+    background-color: var(--superficie);
+    border: 1px solid var(--borda);
+    border-radius: var(--raio-lg);
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 240px);
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .coluna-funil.drag-over {
+    border-color: var(--marca);
+    background-color: var(--superficie-2);
+  }
+
+  .coluna-topo {
+    padding: var(--espaco-md);
+    border-bottom: 1px solid var(--borda);
+    display: flex;
+    flex-direction: column;
+    gap: var(--espaco-xs);
+    background-color: var(--superficie-2);
+    border-top-left-radius: var(--raio-lg);
+    border-top-right-radius: var(--raio-lg);
+  }
+
+  .coluna-titulo-linha {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .coluna-nome {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--texto);
+    display: flex;
+    align-items: center;
+    gap: var(--espaco-xs);
+  }
+
+  .coluna-badge-qtd {
+    background-color: var(--superficie-3);
+    color: var(--texto);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: var(--raio-pilo);
+    border: 1px solid var(--borda);
+  }
+
+  .coluna-total-val {
+    font-size: 0.85rem;
+    color: var(--marca);
+    font-weight: 700;
+  }
+
+  .coluna-corpo {
+    padding: var(--espaco-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--espaco-md);
+    overflow-y: auto;
+    flex-grow: 1;
+    min-height: 150px;
+  }
+
+  /* Cartao Kanban Customizado */
+  .cartao-paciente {
+    background-color: var(--superficie-2);
+    border: 1px solid var(--borda);
+    border-radius: var(--raio);
+    padding: var(--espaco-md);
+    cursor: grab;
+    display: flex;
+    flex-direction: column;
+    gap: var(--espaco-sm);
+    transition: var(--transicao);
+    position: relative;
+    user-select: none;
+  }
+
+  .cartao-paciente:hover {
+    border-color: var(--marca);
+    transform: translateY(-2px);
+    box-shadow: var(--sombra);
+  }
+
+  .cartao-paciente:active {
+    cursor: grabbing;
+  }
+
+  .cartao-paciente.arrastando {
+    opacity: 0.4;
+    border: 2px dashed var(--marca);
+  }
+
+  .cartao-cabecalho {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--espaco-xs);
+  }
+
+  .cartao-nome {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--texto);
+    line-height: 1.2;
+  }
+
+  .cartao-dente {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 0.75rem;
+    background-color: var(--superficie-3);
+    color: var(--info);
+    padding: 2px 6px;
+    border-radius: var(--raio-sm);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .cartao-detalhes {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.85rem;
+  }
+
+  .cartao-dentista {
+    color: var(--texto-mudo);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .cartao-dentista svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+  }
+
+  .cartao-rodape {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: var(--espaco-xs);
+    border-top: 1px solid var(--borda);
+    margin-top: 2px;
+  }
+
+  .cartao-valor {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--texto);
+  }
+
+  /* Modal de Adicionar Card */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--espaco-md);
+  }
+
+  @media (max-width: 600px) {
+    .funil-header {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .funil-filtros {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<!-- HEADER DA TELA DE FUNIL (SELETORES & FILTROS) -->
+<div class="funil-header">
+  <div class="linha" style="gap: var(--espaco-md);">
+    <div class="linha" style="gap:8px">
+      <strong>Funil</strong>
+      <input type="text" id="novaEtapaNome" maxlength="40" placeholder="Nome da nova etapa" aria-label="Nome da nova etapa" style="width:200px" onkeydown="if(event.key==='Enter'){event.preventDefault();adicionarEtapa();}">
+      <button class="btn btn-suave" type="button" onclick="adicionarEtapa()">+ Adicionar etapa</button>
+    </div>
+  </div>
+
+  <div class="funil-filtros">
+    <div class="campo" style="width: 220px;">
+      <select id="filtroDentista" onchange="aplicarFiltros()" aria-label="Filtrar por responsável">
+        <option value="todos">Todos os responsáveis</option>
+      </select>
+    </div>
+
+    <button class="btn btn-primario" onclick="abrirModalNovoCard()">
+      <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+      Novo Card
+    </button>
+  </div>
+</div>
+
+<!-- QUADRO KANBAN (ROLAGEM HORIZONTAL) -->
+<div class="funil-mural" id="kanbanMural">
+  <!-- As colunas e cartões serão renderizados dinamicamente pelo JavaScript -->
+</div>
+
+<!-- MODAL NOVO CARD / OPORTUNIDADE -->
+<div class="modal" id="modalNovoCard">
+  <div class="modal-conteudo">
+    <div class="entre" style="margin-bottom: var(--espaco-md);">
+      <h3 style="font-size: 1.2rem; font-weight: 700;" id="modalTitulo">Nova Oportunidade</h3>
+      <button class="btn btn-icone btn-suave" onclick="fecharModalNovoCard()" aria-label="Fechar modal">
+        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+
+    <form id="formNovoCard" onsubmit="salvarNovoCard(event)">
+      <div style="display: flex; flex-direction: column; gap: var(--espaco-md);">
+        <div class="campo">
+          <label for="inputNome">Nome do Lead *</label>
+          <input type="text" id="inputNome" placeholder="Ex: Maria Oliveira" maxlength="80" required />
+        </div>
+
+        <div class="campo">
+          <label for="inputCelular">Celular (WhatsApp)</label>
+          <input type="tel" id="inputCelular" placeholder="Ex: (11) 99999-0000" maxlength="20" />
+        </div>
+
+        <div class="form-grid">
+          <div class="campo">
+            <label for="inputDentista">Responsável</label>
+            <select id="inputDentista">
+              <option value="">Sem responsável</option>
+            </select>
+          </div>
+
+          <div class="campo">
+            <label for="inputColuna">Etapa / Coluna</label>
+            <select id="inputColuna" required>
+              <!-- Preenchido via JS conforme funil ativo -->
+            </select>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="campo">
+            <input type="hidden" id="inputValor" value="0" />
+          </div>
+
+          <div class="campo">
+            <label for="inputDente">Etiqueta (opcional)</label>
+            <input type="text" id="inputDente" placeholder="Ex.: orçamento enviado" />
+          </div>
+        </div>
+
+        <div class="campo">
+          <label for="inputSituacao">Situação / Tag</label>
+          <select id="inputSituacao">
+            <option value="Avaliação|etiqueta-info">Avaliação (Info)</option>
+            <option value="Urgente|etiqueta-erro">Urgente (Alerta)</option>
+            <option value="Particular|etiqueta-sucesso">Particular (Sucesso)</option>
+            <option value="Convênio|etiqueta-alerta">Convênio (Pendente)</option>
+            <option value="Aguardando|etiqueta-alerta">Aguardando Retorno</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="entre" style="margin-top: var(--espaco-lg);">
+        <button type="button" class="btn btn-suave" onclick="fecharModalNovoCard()">Cancelar</button>
+        <button type="submit" class="btn btn-primario">Salvar no Funil</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Estrutura de Colunas por Funil
+  // Cada cliente (subconta) monta as próprias etapas. O padrão é só "Novo lead".
+  // As etapas e os cards vêm do banco (/api/funil); cada subconta tem os seus.
+  const ESTRUTURA_FUNIS = { atendimento: [], procedimentos: [] };
+  let cartoesDados = [];
+  let funilAtual = 'atendimento';
+  let dentistaFiltro = 'todos';
+  const avisar = t => (window.MATRIX && MATRIX.alertar ? MATRIX.alertar(t) : alert(t));
+
+  function carregarFunil() {
+    return MATRIX.api('GET', 'funil').then(d => {
+      ESTRUTURA_FUNIS.atendimento = d.etapas;
+      cartoesDados = d.cards.map(c => ({ id: c.id, funil: 'atendimento', colunaId: c.etapaId, nome: c.nome, dente: c.etiqueta, dentista: c.responsavel, dentistaId: c.responsavelId || '', valor: c.valor, situacao: c.situacao, etiquetaClasse: c.classe, pacienteId: c.pacienteId }));
+      renderizarKanban();
+    }).catch(er => {
+      document.getElementById('kanbanMural').innerHTML = `<p class="mudo" style="padding:var(--espaco-md)">${esc(er.message)}</p>`;
+    });
+  }
+  function carregarEquipe() {
+    return MATRIX.api('GET', 'equipe').then(d => {
+      const filtro = document.getElementById('filtroDentista'), form = document.getElementById('inputDentista');
+      d.equipe.forEach(u => {
+        [filtro, form].forEach(sel => { const o = document.createElement('option'); o.value = u.id; o.textContent = u.nome; sel.appendChild(o); });
+      });
+    }).catch(() => {});
+  }
+  function adicionarEtapa() {
+    const campo = document.getElementById('novaEtapaNome'), nome = campo.value.trim().slice(0, 40); if (!nome) { campo.focus(); return; }
+    MATRIX.api('POST', 'funil/etapas', { nome: nome }).then(() => { campo.value = ''; return carregarFunil(); }).catch(er => avisar(er.message));
+  }
+  function removerEtapa(id) {
+    const etapa = ESTRUTURA_FUNIS.atendimento.find(e => e.id === id); if (!etapa) return;
+    if (!confirm('Remover a etapa "' + etapa.nome + '"? Os cards dela voltam para a primeira etapa.')) return;
+    MATRIX.api('DELETE', 'funil/etapas/' + encodeURIComponent(id)).then(carregarFunil).catch(er => avisar(er.message));
+  }
+
+  // Inicialização (perfil.js já carregou quando este evento dispara)
+  document.addEventListener('DOMContentLoaded', () => {
+    carregarEquipe();
+    carregarFunil();
+  });
+
+  // Alterna entre Funil Atendimento e Procedimentos
+  function alternarFunil(tipoFunil) {
+    funilAtual = tipoFunil;
+
+
+    renderizarKanban();
+  }
+
+  // Aplica filtro por dentista
+  function aplicarFiltros() {
+    dentistaFiltro = document.getElementById('filtroDentista').value;
+    renderizarKanban();
+  }
+
+  // Formatação de Moeda em R$
+  function formatarMoeda(valor) {
+    return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  }
+
+  // Renderiza todo o Kanban baseado na estrutura e filtros atuais
+  function renderizarKanban() {
+    const mural = document.getElementById('kanbanMural');
+    mural.innerHTML = '';
+
+    const colunasDefinidas = ESTRUTURA_FUNIS[funilAtual];
+
+    colunasDefinidas.forEach(coluna => {
+      // Filtrar cartões pertencentes a esta coluna e ao funil/dentista selecionado
+      const cartoesColuna = cartoesDados.filter(c => {
+        const pertenceFunil = c.funil === funilAtual;
+        const pertenceColuna = c.colunaId === coluna.id;
+        const pertenceDentista = dentistaFiltro === 'todos' || c.dentistaId === dentistaFiltro;
+        return pertenceFunil && pertenceColuna && pertenceDentista;
+      });
+
+      // Calcular soma total da coluna
+      const totalValor = cartoesColuna.reduce((acc, c) => acc + c.valor, 0);
+
+      // Elemento HTML da Coluna
+      const colunaEl = document.createElement('div');
+      colunaEl.className = 'coluna-funil';
+      colunaEl.setAttribute('data-coluna-id', coluna.id);
+
+      // Eventos Drag and Drop na coluna
+      colunaEl.addEventListener('dragover', e => handleDragOver(e, colunaEl));
+      colunaEl.addEventListener('dragleave', e => handleDragLeave(e, colunaEl));
+      colunaEl.addEventListener('drop', e => handleDrop(e, coluna.id, colunaEl));
+
+      // Cabeçalho da coluna
+      colunaEl.innerHTML = `
+        <div class="coluna-topo">
+          <div class="coluna-titulo-linha">
+            <span class="coluna-nome">${esc(coluna.nome)}</span>
+            <span class="coluna-badge-qtd">${cartoesColuna.length}</span>
+            ${coluna.id === (colunasDefinidas[0] && colunasDefinidas[0].id) ? '' : `<button type="button" class="btn btn-icone btn-suave" title="Remover etapa" aria-label="Remover etapa" onclick="removerEtapa('${esc(coluna.id)}')" style="width:26px;height:26px;padding:0">✕</button>`}
+          </div>
+          
+        </div>
+        <div class="coluna-corpo" id="corpo-${esc(coluna.id)}"></div>
+      `;
+
+      mural.appendChild(colunaEl);
+
+      const corpoEl = colunaEl.querySelector(`#corpo-${esc(coluna.id)}`);
+
+      // Renderizar Cartões dentro da coluna
+      if (cartoesColuna.length === 0) {
+        corpoEl.innerHTML = `
+          <div style="text-align: center; color: var(--texto-mudo); font-size: 0.8rem; padding: var(--espaco-md) 0; border: 1px dashed var(--borda); border-radius: var(--raio-sm);">
+            Arraste um card aqui
+          </div>
+        `;
+      } else {
+        cartoesColuna.forEach(card => {
+          const cardEl = criarElementoCartao(card);
+          corpoEl.appendChild(cardEl);
+        });
+      }
+    });
+  }
+
+  // Cria o elemento HTML do Cartão Kanban
+  function criarElementoCartao(card) {
+    const el = document.createElement('div');
+    el.className = 'cartao-paciente';
+    el.setAttribute('draggable', 'true');
+    el.setAttribute('data-card-id', card.id);
+
+    // Eventos de Drag no Cartão
+    el.addEventListener('dragstart', e => handleDragStart(e, card.id));
+    el.addEventListener('dragend', handleDragEnd);
+
+    const tagDenteHTML = card.dente 
+      ? `<span class="cartao-dente">
+          <svg viewBox="0 0 24 24" style="width: 12px; height: 12px; fill: currentColor;"><path d="M12 2C8.5 2 6 4.5 6 8c0 3 1.5 5 2 9 .4 3.2 1.5 5 4 5s3.6-1.8 4-5c.5-4 2-6 2-9 0-3.5-2.5-6-6-6z"/></svg>
+          ${esc(card.dente)}
+         </span>`
+      : '';
+
+    el.innerHTML = `
+      <div class="cartao-cabecalho">
+        <span class="cartao-nome">${card.pacienteId ? `<a href="paciente.html?id=${encodeURIComponent(card.pacienteId)}" draggable="false" style="color:inherit;text-decoration:none">${esc(card.nome)}</a>` : esc(card.nome)}</span>
+        ${tagDenteHTML}
+      </div>
+      
+      <div class="cartao-detalhes">
+        <div class="cartao-dentista">
+          <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          ${esc(card.dentista)}
+        </div>
+      </div>
+
+      <div class="cartao-rodape">
+        
+        <span class="etiqueta ${esc(card.etiquetaClasse)}">${esc(card.situacao)}</span>
+      </div>
+    `;
+
+    return el;
+  }
+
+  // Lógica de Arrastar e Soltar (HTML5 Drag and Drop)
+  let cardIdSendoArrastado = null;
+
+  function handleDragStart(e, cardId) {
+    cardIdSendoArrastado = cardId;
+    e.dataTransfer.setData('text/plain', cardId);
+    e.dataTransfer.effectAllowed = 'move';
+    
+    // Adiciona classe visual com pequeno atraso para melhor efeito no browser
+    setTimeout(() => {
+      if (e.target) e.target.classList.add('arrastando');
+    }, 0);
+  }
+
+  function handleDragEnd(e) {
+    if (e.target) e.target.classList.remove('arrastando');
+    cardIdSendoArrastado = null;
+  }
+
+  function handleDragOver(e, colunaEl) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    colunaEl.classList.add('drag-over');
+  }
+
+  function handleDragLeave(e, colunaEl) {
+    colunaEl.classList.remove('drag-over');
+  }
+
+  function handleDrop(e, novaColunaId, colunaEl) {
+    e.preventDefault();
+    colunaEl.classList.remove('drag-over');
+
+    if (!cardIdSendoArrastado) return;
+
+    // Localizar o cartão no array e atualizar sua coluna
+    const card = cartoesDados.find(c => c.id === cardIdSendoArrastado);
+    if (card && card.colunaId !== novaColunaId) {
+      const anterior = card.colunaId;
+      card.colunaId = novaColunaId;
+      renderizarKanban(); // mostra na hora; se o servidor recusar, volta o card
+      MATRIX.api('PATCH', 'oportunidades/' + encodeURIComponent(card.id), { etapaId: novaColunaId })
+        .catch(er => { card.colunaId = anterior; renderizarKanban(); avisar(er.message); });
+    }
+  }
+
+  // Lógica do Modal de Novo Card
+  function abrirModalNovoCard() {
+    const modal = document.getElementById('modalNovoCard');
+    const selectColuna = document.getElementById('inputColuna');
+    
+    // Preenche as opções de coluna com base no funil ativo
+    selectColuna.innerHTML = '';
+    ESTRUTURA_FUNIS[funilAtual].forEach(col => {
+      const opt = document.createElement('option');
+      opt.value = col.id;
+      opt.textContent = col.nome;
+      selectColuna.appendChild(opt);
+    });
+
+    document.getElementById('formNovoCard').reset();
+    modal.classList.add('aberto');
+  }
+
+  function fecharModalNovoCard() {
+    document.getElementById('modalNovoCard').classList.remove('aberto');
+  }
+
+  function salvarNovoCard(e) {
+    e.preventDefault();
+
+    const [situacao, classe] = document.getElementById('inputSituacao').value.split('|');
+    const botao = e.submitter || document.querySelector('#formNovoCard [type=submit]');
+    if (botao) botao.disabled = true;
+    MATRIX.api('POST', 'oportunidades', {
+      nome: document.getElementById('inputNome').value,
+      celular: document.getElementById('inputCelular').value,
+      responsavelId: document.getElementById('inputDentista').value || null,
+      etapaId: document.getElementById('inputColuna').value,
+      valor: parseFloat(document.getElementById('inputValor').value) || 0,
+      etiqueta: document.getElementById('inputDente').value,
+      situacao: situacao,
+      classe: classe
+    }).then(() => { fecharModalNovoCard(); return carregarFunil(); })
+      .catch(er => avisar(er.message))
+      .then(() => { if (botao) botao.disabled = false; });
+  }
+</script>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // 1. Marcação do link ativo conforme página atual
+      var pathAtual = window.location.pathname.split('/').pop();
+      if (!pathAtual) pathAtual = 'painel.html';
+      
+      var linksNav = document.querySelectorAll('.lateral nav a');
+      linksNav.forEach(function(link) {
+        var href = link.getAttribute('href');
+        if (href === pathAtual) {
+          link.classList.add('ativo');
+        } else {
+          link.classList.remove('ativo');
+        }
+      });
+
+      // 2. Controle do Menu Lateral no Celular
+      var btnMenu = document.getElementById('btn-menu-toggle');
+      var lateral = document.querySelector('.lateral');
+      var overlay = document.getElementById('overlay');
+
+      function fecharMenu() {
+        if (lateral) lateral.classList.remove('aberta');
+        if (overlay) overlay.classList.remove('aberta');
+      }
+
+      function abrirMenu() {
+        if (lateral) lateral.classList.add('aberta');
+        if (overlay) overlay.classList.add('aberta');
+      }
+
+      if (btnMenu) {
+        btnMenu.addEventListener('click', function(e) {
+          e.stopPropagation();
+          if (lateral && lateral.classList.contains('aberta')) {
+            fecharMenu();
+          } else {
+            abrirMenu();
+          }
+        });
+      }
+
+      if (overlay) {
+        overlay.addEventListener('click', fecharMenu);
+      }
+
+      // 3. Gerenciador de Tema (Claro / Escuro)
+      var btnTema = document.getElementById('btn-tema-toggle');
+      var iconeTema = document.getElementById('icone-tema');
+      
+      var temaSalvo = localStorage.getItem('matrix-tema') || 'escuro';
+      
+      function aplicarTema(tema) {
+        if (tema === 'claro') {
+          document.documentElement.setAttribute('data-tema', 'claro');
+          if (iconeTema) {
+            iconeTema.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+          }
+        } else {
+          document.documentElement.removeAttribute('data-tema');
+          if (iconeTema) {
+            iconeTema.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+          }
+        }
+      }
+
+      aplicarTema(temaSalvo);
+
+      if (btnTema) {
+        btnTema.addEventListener('click', function() {
+          var temaAtual = document.documentElement.getAttribute('data-tema') === 'claro' ? 'claro' : 'escuro';
+          var novoTema = temaAtual === 'claro' ? 'escuro' : 'claro';
+          localStorage.setItem('matrix-tema', novoTema);
+          aplicarTema(novoTema);
+        });
+      }
+
+      // 4. Aplicação dinâmica das cores de marca salvas
+      var corMarca = localStorage.getItem('matrix-marca');
+      var corMarca2 = localStorage.getItem('matrix-marca-2');
+
+      if (corMarca) {
+        document.documentElement.style.setProperty('--marca', corMarca);
+      }
+      if (corMarca2) {
+        document.documentElement.style.setProperty('--marca-2', corMarca2);
+      }
+    });
+  </script>
+<script src="perfil.js"></script>
+</body>
+</html>

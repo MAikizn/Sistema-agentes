@@ -1,0 +1,135 @@
+<style>
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--espaco-md); margin: var(--espaco-lg) 0; }
+  .ag-tabela th, .ag-tabela td { text-align: center; white-space: nowrap; }
+  .ag-tabela th:first-child, .ag-tabela td:first-child { text-align: left; }
+  .ag-cor { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+  .ag-pausada td:not(:last-child) { opacity: .5; }
+</style>
+<div class="entre">
+  <div>
+    <h1>Agência · Subcontas</h1>
+    <p class="mudo">Todos os seus clientes. Ligue ou desligue os agentes de IA de qualquer um daqui.</p>
+  </div>
+  <button class="btn btn-primario" type="button" id="agNova">+ Nova subconta</button>
+</div>
+<div class="kpi-grid">
+  <div class="kpi"><span class="mudo">Subcontas ativas</span><div class="valor" id="kAtivas">0</div></div>
+  <div class="kpi"><span class="mudo">Subcontas pausadas</span><div class="valor" id="kPausadas">0</div></div>
+  <div class="kpi"><span class="mudo">Agentes de IA ligados</span><div class="valor" id="kAgentes">0</div></div>
+</div>
+<div class="cartao">
+  <div class="tabela-conteiner">
+    <table class="tabela ag-tabela">
+      <thead><tr id="agCab"></tr></thead>
+      <tbody id="agCorpo"></tbody>
+    </table>
+  </div>
+</div>
+<div id="modalNova" class="modal">
+  <div class="modal-conteudo">
+    <div class="entre" style="margin-bottom: var(--espaco-lg)"><h3>Nova subconta</h3><button class="btn btn-icone" type="button" id="agFechar">✕</button></div>
+    <form id="agForm" style="display:flex;flex-direction:column;gap:var(--espaco-md)">
+      <div class="campo"><label for="agNome">Nome do cliente</label><input id="agNome" type="text" maxlength="60" placeholder="Ex.: Clínica Odonto Master" required></div>
+      <div class="campo"><label for="agCor">Cor da marca</label><input id="agCor" type="color" value="#00e676" style="height:42px;padding:4px"></div>
+      <label class="interruptor"><input type="checkbox" id="agControla"><div class="trilho"></div><span>Cliente pode ligar/desligar os agentes</span></label>
+      <button class="btn btn-primario" type="submit" style="width:100%">Criar subconta</button>
+    </form>
+  </div>
+</div>
+<div id="modalUsu" class="modal">
+  <div class="modal-conteudo" style="max-width:760px;width:95%">
+    <div class="entre" style="margin-bottom: var(--espaco-md)"><h3 id="usuTitulo">Logins e usuários</h3><button class="btn btn-icone" type="button" id="usuFechar">✕</button></div>
+    <p class="mudo" style="margin-bottom:var(--espaco-md)">Quem pode entrar no sistema deste cliente. Cada pessoa tem o próprio login.</p>
+    <div class="tabela-conteiner"><table class="tabela"><thead><tr><th>Nome</th><th>E-mail (login)</th><th>Função</th><th>Situação</th><th>Ações</th></tr></thead><tbody id="usuCorpo"></tbody></table></div>
+    <form id="usuForm" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:var(--espaco-md);margin-top:var(--espaco-lg);align-items:end">
+      <div class="campo"><label for="usuNome">Nome</label><input id="usuNome" type="text" maxlength="60" required></div>
+      <div class="campo"><label for="usuEmail">E-mail (login)</label><input id="usuEmail" type="email" maxlength="80" required></div>
+      <div class="campo"><label for="usuFuncao">Função</label><select id="usuFuncao"><option>Atendente</option><option>Administrador da clínica</option><option>Dentista</option></select></div>
+      <div class="campo"><label for="usuSenha">Senha provisória</label><input id="usuSenha" type="text" minlength="10" maxlength="40" autocomplete="off" required></div>
+      <button class="btn btn-suave" type="button" id="usuGerar">Gerar senha</button>
+      <button class="btn btn-primario" type="submit">Cadastrar usuário</button>
+    </form>
+    <p class="mudo" id="usuAviso" style="margin-top:var(--espaco-md);font-size:13px">A senha é provisória: a pessoa troca no primeiro acesso. Anote e entregue a ela, pois não fica visível depois.</p>
+  </div>
+</div>
+<script>
+(function () {
+  var M = window.MATRIX, el = M.el, lista = [], subAtual = null;
+  var corpo = document.getElementById('agCorpo'), cab = document.getElementById('agCab'), modal = document.getElementById('modalNova');
+  var modalUsu = document.getElementById('modalUsu'), usuCorpo = document.getElementById('usuCorpo'), usuAviso = document.getElementById('usuAviso');
+  function falhou(e) { M.alertar(e.message); carregar(); }
+  ['Cliente', 'Situação'].concat(M.AGENTES.map(function (a) { return a[1]; }), ['Cliente controla', 'Usuários', 'Ações']).forEach(function (t) { cab.appendChild(el('th', {}, t)); });
+  function chave(ligada, aoMudar, desativada) {
+    var l = el('label', { class: 'interruptor', style: 'justify-content:center' }), c = el('input', { type: 'checkbox' });
+    c.checked = !!ligada; c.disabled = !!desativada; c.onchange = function () { aoMudar(c.checked); };
+    l.appendChild(c); l.appendChild(el('div', { class: 'trilho' })); return l;
+  }
+  function mudar(id, dados) { return M.api('PATCH', 'subcontas/' + id, dados).then(carregar).catch(falhou); }
+  function carregar() { return M.api('GET', 'subcontas').then(function (d) { lista = d.subcontas; desenhar(); }).catch(function (e) { M.alertar(e.message); }); }
+  function desenhar() {
+    corpo.textContent = ''; var ativas = 0, ligados = 0;
+    if (!lista.length) { var v = el('tr'); v.appendChild(el('td', { colspan: '9', class: 'mudo' }, 'Nenhum cliente ainda. Clique em "+ Nova subconta".')); corpo.appendChild(v); }
+    lista.forEach(function (s) {
+      if (s.ativa) ativas++;
+      var tr = el('tr', s.ativa ? {} : { class: 'ag-pausada' });
+      var nome = el('td'), linha = el('div', { class: 'linha' });
+      linha.appendChild(el('span', { class: 'ag-cor', style: 'background:' + (/^#[0-9a-f]{6}$/i.test(s.cor) ? s.cor : '#00e676') })); linha.appendChild(el('strong', {}, s.nome)); nome.appendChild(linha); tr.appendChild(nome);
+      var sit = el('td'); sit.appendChild(el('span', { class: 'etiqueta ' + (s.ativa ? 'etiqueta-sucesso' : 'etiqueta-alerta') }, s.ativa ? 'Ativa' : 'Pausada')); tr.appendChild(sit);
+      M.AGENTES.forEach(function (a) {
+        if (s.ativa && s.agentes[a[0]]) ligados++;
+        var td = el('td'); td.appendChild(chave(s.agentes[a[0]], function (v) { var ag = {}; ag[a[0]] = v; mudar(s.id, { agentes: ag }); }, !s.ativa)); tr.appendChild(td);
+      });
+      var tc = el('td'); tc.appendChild(chave(s.clienteControla, function (v) { mudar(s.id, { clienteControla: v }); })); tr.appendChild(tc);
+      tr.appendChild(el('td', {}, String(s.usuarios || 0)));
+      var ac = el('td'), grupo = el('div', { class: 'linha', style: 'justify-content:center' });
+      var b0 = el('button', { class: 'btn btn-suave', type: 'button' }, 'Logins e usuários'); b0.onclick = function () { abrirUsuarios(s); };
+      var b1 = el('button', { class: 'btn btn-suave', type: 'button' }, 'Entrar como cliente'); b1.onclick = function () { M.entrar(s.id).catch(falhou); };
+      var b2 = el('button', { class: 'btn ' + (s.ativa ? 'btn-perigo' : 'btn-suave'), type: 'button' }, s.ativa ? 'Pausar' : 'Reativar'); b2.onclick = function () { mudar(s.id, { ativa: !s.ativa }); };
+      grupo.appendChild(b0); grupo.appendChild(b1); grupo.appendChild(b2); ac.appendChild(grupo); tr.appendChild(ac);
+      corpo.appendChild(tr);
+    });
+    document.getElementById('kAtivas').textContent = ativas;
+    document.getElementById('kPausadas').textContent = lista.length - ativas;
+    document.getElementById('kAgentes').textContent = ligados;
+  }
+  document.getElementById('agNova').onclick = function () { modal.classList.add('aberto'); };
+  document.getElementById('agFechar').onclick = function () { modal.classList.remove('aberto'); };
+  modal.addEventListener('click', function (e) { if (e.target === modal) modal.classList.remove('aberto'); });
+  document.getElementById('agForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    M.api('POST', 'subcontas', { nome: document.getElementById('agNome').value, cor: document.getElementById('agCor').value, clienteControla: document.getElementById('agControla').checked })
+      .then(function () { e.target.reset(); modal.classList.remove('aberto'); carregar(); }).catch(function (er) { M.alertar(er.message); });
+  });
+  // ---- Logins e usuários de cada cliente ----
+  var NOMES = { admin: 'Administrador da clínica', atendente: 'Atendente', dentista: 'Dentista' };
+  function senhaNova() { var c = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789', a = new Uint32Array(12), o = ''; crypto.getRandomValues(a); for (var i = 0; i < 12; i++) o += c[a[i] % c.length]; return o; }
+  function desenharUsuarios() {
+    M.api('GET', 'subcontas/' + subAtual.id + '/usuarios').then(function (d) {
+      usuCorpo.textContent = '';
+      if (!d.usuarios.length) { var v = el('tr'); v.appendChild(el('td', { colspan: '5', class: 'mudo' }, 'Nenhum usuário cadastrado ainda.')); usuCorpo.appendChild(v); }
+      d.usuarios.forEach(function (u) {
+        var tr = el('tr');
+        tr.appendChild(el('td', {}, u.nome)); tr.appendChild(el('td', {}, u.email)); tr.appendChild(el('td', {}, NOMES[u.funcao] || u.funcao));
+        var st = el('td'); st.appendChild(el('span', { class: 'etiqueta ' + (u.ativo ? 'etiqueta-sucesso' : 'etiqueta-erro') }, u.ativo ? 'Ativo' : 'Bloqueado')); tr.appendChild(st);
+        var ac = el('td'), g = el('div', { class: 'linha' });
+        var bB = el('button', { class: 'btn btn-suave', type: 'button' }, u.ativo ? 'Bloquear' : 'Liberar'); bB.onclick = function () { M.api('PATCH', 'usuarios/' + u.id, { ativo: !u.ativo }).then(desenharUsuarios).catch(function (e) { M.alertar(e.message); }); };
+        var bS = el('button', { class: 'btn btn-suave', type: 'button' }, 'Nova senha'); bS.onclick = function () { var nova = senhaNova(); M.api('PATCH', 'usuarios/' + u.id, { senha: nova }).then(function () { usuAviso.textContent = 'Nova senha provisória de ' + u.nome + ': ' + nova + '  (anote agora; ela não aparece de novo)'; }).catch(function (e) { M.alertar(e.message); }); };
+        var bR = el('button', { class: 'btn btn-perigo', type: 'button' }, 'Remover'); bR.onclick = function () { M.api('DELETE', 'usuarios/' + u.id).then(function () { desenharUsuarios(); carregar(); }).catch(function (e) { M.alertar(e.message); }); };
+        g.appendChild(bB); g.appendChild(bS); g.appendChild(bR); ac.appendChild(g); tr.appendChild(ac); usuCorpo.appendChild(tr);
+      });
+    }).catch(function (e) { M.alertar(e.message); });
+  }
+  function abrirUsuarios(s) { subAtual = s; document.getElementById('usuTitulo').textContent = 'Logins e usuários · ' + s.nome; usuAviso.textContent = 'A senha é provisória: a pessoa troca no primeiro acesso. Anote e entregue a ela, pois não fica visível depois.'; desenharUsuarios(); modalUsu.classList.add('aberto'); }
+  document.getElementById('usuFechar').onclick = function () { modalUsu.classList.remove('aberto'); };
+  modalUsu.addEventListener('click', function (e) { if (e.target === modalUsu) modalUsu.classList.remove('aberto'); });
+  document.getElementById('usuGerar').onclick = function () { document.getElementById('usuSenha').value = senhaNova(); };
+  document.getElementById('usuForm').addEventListener('submit', function (e) {
+    e.preventDefault(); if (!subAtual) return;
+    var senha = document.getElementById('usuSenha').value, email = document.getElementById('usuEmail').value;
+    M.api('POST', 'subcontas/' + subAtual.id + '/usuarios', { nome: document.getElementById('usuNome').value, email: email, funcao: document.getElementById('usuFuncao').value, senha: senha })
+      .then(function () { e.target.reset(); usuAviso.textContent = 'Usuário cadastrado. Login: ' + email + ' · senha provisória: ' + senha + '  (anote agora; ela não aparece de novo)'; desenharUsuarios(); carregar(); })
+      .catch(function (er) { usuAviso.textContent = er.message; });
+  });
+  M.pronto.then(carregar);
+})();
+</script>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Black Friday - Suplementos</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 1080px;
+    height: 1350px;
+    overflow: hidden;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    background: linear-gradient(135deg, #0a0a0a, #1c1c1c);
+    color: #fff;
+  }
+  .container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    padding: 60px;
+    box-sizing: border-box;
+  }
+  h1 {
+    font-size: 96px;
+    font-weight: 900;
+    letter-spacing: -2px;
+    text-transform: uppercase;
+    margin: 0;
+    background: linear-gradient(90deg, #ffcc00, #ff6600);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .subtitle {
+    font-size: 48px;
+    font-weight: 600;
+    margin: 0;
+    color: #ffdd57;
+  }
+  .cta {
+    font-size: 56px;
+    font-weight: 700;
+    padding: 20px 40px;
+    background: #ff4400;
+    border-radius: 12px;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(255,68,0,0.5);
+    transition: background 0.3s;
+  }
+  .cta:hover {
+    background: #ff2200;
+  }
+  /* Decorative SVG overlay */
+  .decor {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .decor svg {
+    width: 100%;
+    height: 100%;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Black Friday</h1>
+  <div class="subtitle">30% de desconto em toda a loja</div>
+  <div class="subtitle">Whey Protein – Suplementos de alta performance</div>
+  <div class="cta">Aproveite agora</div>
+</div>
+
+<div class="decor">
+  <svg viewBox="0 0 1080 1350" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style="stop-color:#ff6600;stop-opacity:0.2"/>
+        <stop offset="100%" style="stop-color:#ffcc00;stop-opacity:0.2"/>
+      </linearGradient>
+    </defs>
+    <rect width="1080" height="1350" fill="url(#grad1)"/>
+    <path d="M0 200 L1080 0 L1080 100 L0 300 Z" fill="rgba(255,255,255,0.04)"/>
+    <path d="M0 800 L1080 600 L1080 700 L0 900 Z" fill="rgba(255,255,255,0.04)"/>
+    <circle cx="540" cy="675" r="250" fill="rgba(255,255,255,0.03)"/>
+  </svg>
+</div>
+</body>
+</html>

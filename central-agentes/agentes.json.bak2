@@ -1,0 +1,84 @@
+{
+  "porta": 7770,
+  "freellmapi": {
+    "baseUrl": "http://127.0.0.1:31415/v1",
+    "configMorfeus": "../agente-whatsapp/config.json"
+  },
+  "agentes": [
+    {
+      "id": "morfeus",
+      "nome": "Morfeus",
+      "emoji": "💬",
+      "descricao": "SDR/Closer no WhatsApp: atende leads de marketing (tráfego, sites, CRM) e agenda reuniões.",
+      "tipo": "processo",
+      "pasta": "../agente-whatsapp",
+      "iniciar": "INICIAR.bat",
+      "titulo": "Agente WhatsApp",
+      "log": "../agente-whatsapp/agente.log",
+      "funcionarios": [
+        {
+          "nome": "Atendimento (SDR)",
+          "funcao": "primeira resposta e qualificação do lead"
+        },
+        {
+          "nome": "Closer",
+          "funcao": "apresenta serviços e conduz para o fechamento"
+        },
+        {
+          "nome": "Agendador",
+          "funcao": "marca reuniões na Agenda Google e no planner"
+        },
+        {
+          "nome": "Voz",
+          "funcao": "responde áudio com áudio"
+        },
+        {
+          "nome": "Transferência",
+          "funcao": "passa para humano quando não sabe"
+        }
+      ]
+    },
+    {
+      "id": "niobe",
+      "nome": "Niobe",
+      "emoji": "🎬",
+      "descricao": "Diretora de edição de vídeo no FilmCraft com 30 especialistas (chamada por /Niobe no Claude).",
+      "tipo": "niobe",
+      "pasta": "../agente-niobe",
+      "iniciar": "NIOBE-AO-VIVO.bat",
+      "log": "../agente-niobe/niobe.log"
+    },
+    {
+      "id": "agency",
+      "nome": "The Agency (agency-agents)",
+      "emoji": "🏢",
+      "descricao": "Biblioteca de ~310 agentes especialistas do GitHub (msitarzewski/agency-agents): marketing, vendas, design, engenharia, mídia paga, estratégia e mais.",
+      "tipo": "agencia",
+      "pasta": "../agency-agents"
+    },
+    {
+      "id": "freellmapi",
+      "nome": "FreeLLMAPI",
+      "emoji": "🧠",
+      "descricao": "Cérebro gratuito que os agentes usam (rota mais rápida, Groq ~0,4 s).",
+      "tipo": "servico",
+      "exe": "%LOCALAPPDATA%\\Programs\\freellmapi-desktop\\freellmapi.exe",
+      "processo": "freellmapi.exe",
+      "portaTeste": 31415
+    },
+    {
+      "id": "neo",
+      "nome": "Neo",
+      "emoji": "🧩",
+      "descricao": "Orquestrador no Claude: CRM GoHighLevel e motion design (chamado no chat).",
+      "tipo": "skill"
+    },
+    {
+      "id": "smith",
+      "nome": "Agente Smith",
+      "emoji": "🕶️",
+      "descricao": "Segurança: audita e protege o MATRIX CRM, o Morfeus e as contas, com 30 especialistas (chamado por /agente-smith no Claude).",
+      "tipo": "skill"
+    }
+  ]
+}

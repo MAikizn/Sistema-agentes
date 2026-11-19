@@ -1,0 +1,66 @@
+{
+  "id": "MorfeusAtendimento1",
+  "name": "Morfeus - Atendimento",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Morfeus - Atendimento\nCada mensagem que chega no WhatsApp passa por aqui.\n\n**Entrada** (em `body`): `telefone`, `nome`, `mensagem` (o que a pessoa escreveu), `veioAudio`, `prospeccao`, `system` (o roteiro do Morfeus) e `historico` (a conversa).\n\n**Saída**: `{ \"resposta\": \"texto que o Morfeus envia\" }`.\nSe a resposta sair vazia, se este fluxo der erro ou se o n8n estiver desligado, o Morfeus responde sozinho, do jeito antigo.\n\n**Ideias**: coloque um nó IF antes da IA para responder palavras-chave com texto fixo, grave cada conversa numa planilha, mude o roteiro por horário.\n\nAs marcas `[LEAD_QUALIFICADO]`, `[TRANSFERIR]` e `[CHAMAR_NUMERO]` continuam valendo: mantenha-as no texto quando a IA escrever.",
+        "height": 420,
+        "width": 460
+      },
+      "id": "a1000000-0000-4000-8000-000000000001",
+      "name": "Como funciona",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-520, -180]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "morfeus-atendimento",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "a1000000-0000-4000-8000-000000000002",
+      "name": "Mensagem do WhatsApp",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "webhookId": "morfeus-atendimento"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:7780/v1/chat/completions",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'unidade-rapida', temperature: 0.5, max_tokens: 1200, messages: [{ role: 'system', content: $json.body.system }].concat($json.body.historico) }) }}",
+        "options": { "timeout": 25000 }
+      },
+      "id": "a1000000-0000-4000-8000-000000000003",
+      "name": "Unidade pensa a resposta",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [280, 0]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ resposta: $json.choices[0].message.content }) }}",
+        "options": {}
+      },
+      "id": "a1000000-0000-4000-8000-000000000004",
+      "name": "Devolve ao Morfeus",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [560, 0]
+    }
+  ],
+  "connections": {
+    "Mensagem do WhatsApp": { "main": [[{ "node": "Unidade pensa a resposta", "type": "main", "index": 0 }]] },
+    "Unidade pensa a resposta": { "main": [[{ "node": "Devolve ao Morfeus", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "pinData": {}
+}

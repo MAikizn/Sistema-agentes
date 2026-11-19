@@ -1,0 +1,39 @@
+{
+    "llm":  {
+                "baseUrl":  "http://127.0.0.1:31415/v1",
+                "apiKey":  "COLOQUE_AQUI",
+                "model":  [
+                              "gemini-3.5-flash",
+                              "gpt-oss-120b",
+                              "gemini-3.1-flash-lite",
+                              "qwen3.8-27b"
+                          ]
+            },
+    "unidade":  {
+                    "ativo":  true,
+                    "baseUrl":  "http://127.0.0.1:7780/v1",
+                    "model":  "unidade-rapida",
+                    "timeoutSegundos":  24,
+                    "_ajuda":  "Cérebro da estrutura (Kimi K3 + Mistral Large). Se a Unidade estiver desligada, o Morfeus usa o bloco llm acima."
+                },
+    "n8n":  {
+                "ativo":  true,
+                "webhookAtendimento":  "http://127.0.0.1:5678/webhook/morfeus-atendimento",
+                "webhookEventos":  "http://127.0.0.1:5678/webhook/morfeus-eventos",
+                "timeoutSegundos":  30,
+                "_ajuda":  "O atendimento passa pelo fluxo \u0027Morfeus - Atendimento\u0027 do n8n (http://localhost:5678). Se o n8n estiver desligado ou o fluxo falhar, o Morfeus responde sozinho pela Unidade. Para tirar o n8n do caminho: ativo = false."
+            },
+    "numeroAvisoLeads":  "556294876383",
+    "pausaAposHumanoHoras":  12,
+    "maxHistorico":  12,
+    "agendaUrl":  "https://script.google.com/macros/s/AKfycbzLOk9pdhTpPR7SK8yxNwAiHu5aNZDwHIVufQXWaFI8AjU5WA8kKCz68c_v9wRifnDx/exec",
+    "responderNumerosOcultos":  false,
+    "responderAudioComAudio":  true,
+    "vozAudio":  "pt-BR-AntonioNeural",
+    "vozProsodia":  {
+                        "pitch":  "-6%",
+                        "rate":  "+2%"
+                    },
+    "geminiApiKey":  "COLOQUE_AQUI",
+    "vozGemini":  "Orus"
+}

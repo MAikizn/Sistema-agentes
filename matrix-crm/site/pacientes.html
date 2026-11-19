@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<script>function esc(v){return String(v==null?'':v).replace(/[&<>"'`]/g,function(c){return '&#'+c.charCodeAt(0)+';';});}</script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leads · MATRIX CRM</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: var(--espaco-xs) var(--espaco-sm);
+      margin-bottom: var(--espaco-xs);
+    }
+    .logo-icone {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--marca), var(--marca-2));
+      border-radius: var(--raio-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--texto-inverso);
+      flex-shrink: 0;
+      box-shadow: var(--sombra-marca);
+    }
+    .logo-texto {
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: -0.5px;
+      color: var(--texto);
+    }
+    .seletor-subconta {
+      width: 100%;
+      margin-bottom: var(--espaco-sm);
+    }
+    .seletor-subconta select {
+      font-weight: 600;
+      font-size: 0.85rem;
+      height: 40px;
+    }
+    .lateral-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+      overflow-y: auto;
+    }
+    .topo-esquerda {
+      display: flex;
+      align-items: center;
+      gap: var(--espaco-md);
+    }
+    .topo-titulo {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--texto);
+      margin: 0;
+    }
+    .topo-direita {
+      display: flex;
+      align-items: center;
+      gap: var(--espaco-md);
+    }
+    .topo-busca {
+      width: 240px;
+    }
+    .btn-mobile-trigger {
+      display: none;
+    }
+    .lateral-overlay {
+      display: none;
+    }
+    @media (max-width: 768px) {
+      .btn-mobile-trigger {
+        display: inline-flex;
+      }
+      .topo-busca {
+        display: none;
+      }
+      .lateral-overlay.aberta {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(2px);
+        z-index: 35;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="overlay" class="lateral-overlay"></div>
+
+  <div class="app">
+    <!-- MENU LATERAL -->
+    <aside class="lateral">
+      <div class="logo-container">
+        <div class="logo-icone">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+        </div>
+        <span class="logo-texto">MATRIX CRM</span>
+      </div>
+
+      <div class="campo seletor-subconta">
+        <select aria-label="Selecione a Subconta">
+          <option value="sorriso" selected>Clínica Sorriso (exemplo)</option>
+          <option value="matriz">Matriz Odontologia</option>
+          <option value="unidade-sul">Unidade Sul</option>
+        </select>
+      </div>
+
+      <nav class="lateral-nav">
+        <a href="painel.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+          <span>Painel</span>
+        </a>
+        <a href="conversas.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          <span>Conversas</span>
+        </a>
+        <a href="pacientes.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <span>Leads</span>
+        </a>
+        <a href="funil.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+          <span>Funil</span>
+        </a>
+        <a href="agenda.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          <span>Agenda</span>
+        </a>
+        <a href="agentes.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8.01" y2="16"></line><line x1="16" y1="16" x2="16.01" y2="16"></line></svg>
+          <span>Agentes de IA</span>
+        </a>
+        <a href="automacoes.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          <span>Automações</span>
+        </a>
+        <a href="configuracoes.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          <span>Configurações</span>
+        </a>
+        <a href="agencia.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M9 8h1"></path><path d="M9 12h1"></path><path d="M9 16h1"></path><path d="M14 8h1"></path><path d="M14 12h1"></path><path d="M14 16h1"></path><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path></svg>
+          <span>Agência</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- BARRA SUPERIOR DA INTERFACE -->
+    <header class="topo">
+      <div class="topo-esquerda">
+        <button id="btn-menu-toggle" class="btn btn-icone btn-suave btn-mobile-trigger" aria-label="Abrir menu de navegação">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <h1 class="topo-titulo">Leads</h1>
+      </div>
+
+      <div class="topo-direita">
+        <div class="campo topo-busca">
+          <input type="text" placeholder="Buscar leads, telefones..." aria-label="Buscar leads e registros">
+        </div>
+
+        <button id="btn-tema-toggle" class="btn btn-icone btn-suave" aria-label="Alternar tema claro ou escuro">
+          <svg id="icone-tema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+
+        <div class="avatar" title="Dra. Ana Silva">
+          AS
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="conteudo">
+<style>
+  .filtros { display: flex; gap: var(--espaco-md); flex-wrap: wrap; margin-bottom: var(--espaco-md); }
+  .busca-container { flex: 1; min-width: 200px; }
+  .tabela-conteiner { background: var(--superficie); }
+  .status-etapa { font-size: 0.75rem; padding: 2px 8px; border-radius: 4px; }
+</style>
+
+<div class="entre">
+  <h1>Leads</h1>
+  <div class="linha">
+    <button class="btn btn-suave">
+      <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+      Importar ficha por foto
+    </button>
+    <button class="btn btn-primario" type="button" onclick="novoLead()">
+      <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+      Novo lead
+    </button>
+  </div>
+</div>
+
+<div class="filtros">
+  <div class="campo busca-container">
+    <input type="text" id="busca" placeholder="Buscar por nome ou telefone..." onkeyup="filtrarTabela()">
+  </div>
+  <select id="filtroDentista" onchange="filtrarTabela()">
+    <option value="">Todos os dentistas</option>
+  </select>
+  <select id="filtroEtapa" onchange="filtrarTabela()">
+    <option value="">Todas as etapas</option>
+  </select>
+</div>
+
+<div class="tabela-conteiner">
+  <table class="tabela" id="tabelaPacientes">
+    <thead>
+      <tr>
+        <th>Lead</th>
+        <th>Telefone</th>
+        <th>Última Consulta</th>
+        <th>Próximo Retorno</th>
+        <th>Etapa</th>
+        <th>Dentista</th>
+      </tr>
+    </thead>
+    <tbody id="corpoTabela">
+      <!-- Dados gerados via JS -->
+    </tbody>
+  </table>
+</div>
+
+<script>
+  // Os leads vêm do banco (/api/pacientes), só da subconta de quem está logado.
+  let pacientes = [];
+  const data = ms => ms ? new Date(ms).toLocaleDateString('pt-BR') : '-';
+  const telefone = d => { d = String(d || ''); const m = d.match(/^(?:55)?(\d{2})(\d{4,5})(\d{4})$/); return m ? `(${m[1]}) ${m[2]}-${m[3]}` : d; };
+
+  function renderizar(dados) {
+    const corpo = document.getElementById('corpoTabela');
+    if (!dados.length) { corpo.innerHTML = `<tr><td colspan="6" class="mudo" style="text-align:center">${pacientes.length ? 'Nenhum lead encontrado com esses filtros.' : 'Nenhum lead ainda. Clique em "Novo lead" ou crie um card no Funil.'}</td></tr>`; return; }
+    corpo.innerHTML = dados.map(p => `
+      <tr>
+        <td><strong><a href="paciente.html?id=${encodeURIComponent(p.id)}" style="color:var(--marca); text-decoration:none;">${esc(p.nome)}</a></strong></td>
+        <td>${esc(telefone(p.celular))}</td>
+        <td>${esc(data(p.ultimaConsulta))}</td>
+        <td>${esc(data(p.proximoRetorno))}</td>
+        <td>${p.etapa ? `<span class="etiqueta etiqueta-info">${esc(p.etapa)}</span>` : '<span class="mudo">-</span>'}</td>
+        <td>${esc(p.dentista || '-')}</td>
+      </tr>
+    `).join('');
+  }
+
+  function filtrarTabela() {
+    const busca = document.getElementById('busca').value.toLowerCase();
+    const soNumeros = busca.replace(/\D/g, '');
+    const dentista = document.getElementById('filtroDentista').value;
+    const etapa = document.getElementById('filtroEtapa').value;
+    renderizar(pacientes.filter(p =>
+      (p.nome.toLowerCase().includes(busca) || (soNumeros && p.celular.includes(soNumeros))) &&
+      (dentista === '' || p.dentistaId === dentista) &&
+      (etapa === '' || p.etapa === etapa)
+    ));
+  }
+
+  function opcoes(sel, lista) {
+    const atual = sel.value; while (sel.options.length > 1) sel.remove(1);
+    lista.forEach(([v, t]) => { const o = document.createElement('option'); o.value = v; o.textContent = t; sel.appendChild(o); });
+    sel.value = atual;
+  }
+
+  function carregar() {
+    return MATRIX.api('GET', 'pacientes').then(d => {
+      pacientes = d.pacientes;
+      const etapas = [...new Set(pacientes.map(p => p.etapa).filter(Boolean))].sort();
+      opcoes(document.getElementById('filtroEtapa'), etapas.map(e => [e, e]));
+      filtrarTabela();
+    }).catch(er => {
+      document.getElementById('corpoTabela').innerHTML = `<tr><td colspan="6" class="mudo" style="text-align:center">${esc(er.message)}</td></tr>`;
+    });
+  }
+
+  function novoLead() {
+    const nome = (prompt('Nome do lead:') || '').trim(); if (!nome) return;
+    const celular = (prompt('Celular com DDD (opcional):') || '').trim();
+    MATRIX.api('POST', 'pacientes', { nome: nome, celular: celular })
+      .then(r => { location.href = 'paciente.html?id=' + encodeURIComponent(r.id); })
+      .catch(er => MATRIX.alertar(er.message));
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    MATRIX.api('GET', 'equipe').then(d => opcoes(document.getElementById('filtroDentista'), d.equipe.map(u => [u.id, u.nome]))).catch(() => {});
+    carregar();
+  });
+</script>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // 1. Marcação do link ativo conforme página atual
+      var pathAtual = window.location.pathname.split('/').pop();
+      if (!pathAtual) pathAtual = 'painel.html';
+      
+      var linksNav = document.querySelectorAll('.lateral nav a');
+      linksNav.forEach(function(link) {
+        var href = link.getAttribute('href');
+        if (href === pathAtual) {
+          link.classList.add('ativo');
+        } else {
+          link.classList.remove('ativo');
+        }
+      });
+
+      // 2. Controle do Menu Lateral no Celular
+      var btnMenu = document.getElementById('btn-menu-toggle');
+      var lateral = document.querySelector('.lateral');
+      var overlay = document.getElementById('overlay');
+
+      function fecharMenu() {
+        if (lateral) lateral.classList.remove('aberta');
+        if (overlay) overlay.classList.remove('aberta');
+      }
+
+      function abrirMenu() {
+        if (lateral) lateral.classList.add('aberta');
+        if (overlay) overlay.classList.add('aberta');
+      }
+
+      if (btnMenu) {
+        btnMenu.addEventListener('click', function(e) {
+          e.stopPropagation();
+          if (lateral && lateral.classList.contains('aberta')) {
+            fecharMenu();
+          } else {
+            abrirMenu();
+          }
+        });
+      }
+
+      if (overlay) {
+        overlay.addEventListener('click', fecharMenu);
+      }
+
+      // 3. Gerenciador de Tema (Claro / Escuro)
+      var btnTema = document.getElementById('btn-tema-toggle');
+      var iconeTema = document.getElementById('icone-tema');
+      
+      var temaSalvo = localStorage.getItem('matrix-tema') || 'escuro';
+      
+      function aplicarTema(tema) {
+        if (tema === 'claro') {
+          document.documentElement.setAttribute('data-tema', 'claro');
+          if (iconeTema) {
+            iconeTema.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+          }
+        } else {
+          document.documentElement.removeAttribute('data-tema');
+          if (iconeTema) {
+            iconeTema.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+          }
+        }
+      }
+
+      aplicarTema(temaSalvo);
+
+      if (btnTema) {
+        btnTema.addEventListener('click', function() {
+          var temaAtual = document.documentElement.getAttribute('data-tema') === 'claro' ? 'claro' : 'escuro';
+          var novoTema = temaAtual === 'claro' ? 'escuro' : 'claro';
+          localStorage.setItem('matrix-tema', novoTema);
+          aplicarTema(novoTema);
+        });
+      }
+
+      // 4. Aplicação dinâmica das cores de marca salvas
+      var corMarca = localStorage.getItem('matrix-marca');
+      var corMarca2 = localStorage.getItem('matrix-marca-2');
+
+      if (corMarca) {
+        document.documentElement.style.setProperty('--marca', corMarca);
+      }
+      if (corMarca2) {
+        document.documentElement.style.setProperty('--marca-2', corMarca2);
+      }
+    });
+  </script>
+<script src="perfil.js"></script>
+</body>
+</html>

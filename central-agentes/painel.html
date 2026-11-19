@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Central de Agentes · Maike</title>
+<style>
+  :root { --bg:#0b0b10; --card:#14141c; --line:#262633; --txt:#ececf1; --mut:#8b8b9e; --ok:#22c55e; --off:#6b7280; --work:#f59e0b; --bad:#ef4444; --acc:#8b5cf6; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--txt); font:14px/1.45 "Segoe UI", system-ui, sans-serif; }
+  header { display:flex; align-items:center; gap:18px; padding:18px 28px; border-bottom:1px solid var(--line); position:sticky; top:0; background:rgba(11,11,16,.92); backdrop-filter:blur(8px); z-index:5; }
+  header h1 { font-size:18px; letter-spacing:.3px; }
+  header h1 span { color:var(--acc); }
+  .kpis { display:flex; gap:10px; margin-left:auto; }
+  .kpi { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:6px 12px; text-align:center; min-width:92px; }
+  .kpi b { display:block; font-size:18px; }
+  .kpi small { color:var(--mut); font-size:11px; }
+  a.btn, button { font:inherit; cursor:pointer; border:1px solid var(--line); background:#1c1c27; color:var(--txt); border-radius:8px; padding:6px 12px; text-decoration:none; }
+  button:hover, a.btn:hover { border-color:var(--acc); }
+  button.on { background:#14361f; border-color:#1f6f3a; }
+  button.offb { background:#3a1416; border-color:#7a2228; }
+  main { display:grid; grid-template-columns:1fr 340px; gap:20px; padding:22px 28px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(420px,1fr)); gap:16px; align-content:start; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px 18px; }
+  .card.wide { grid-column:1/-1; }
+  .top { display:flex; align-items:center; gap:10px; }
+  .emoji { font-size:24px; }
+  .nome { font-size:16px; font-weight:700; }
+  .pill { margin-left:auto; font-size:12px; padding:3px 10px; border-radius:99px; border:1px solid var(--line); display:flex; align-items:center; gap:6px; }
+  .dot { width:8px; height:8px; border-radius:50%; background:var(--off); display:inline-block; }
+  .dot.ativo, .dot.rodando { background:var(--ok); box-shadow:0 0 8px var(--ok); }
+  .dot.trabalhando { background:var(--work); box-shadow:0 0 10px var(--work); animation:pulse 1s infinite; }
+  @keyframes pulse { 50% { transform:scale(1.5); opacity:.6; } }
+  .desc { color:var(--mut); margin:8px 0 4px; }
+  .det { color:#b8b8c8; font-size:12px; margin-bottom:10px; }
+  .acoes { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+  .func h4 { font-size:12px; color:var(--mut); text-transform:uppercase; letter-spacing:.8px; margin:10px 0 6px; }
+  .chips { display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:6px; }
+  .chip { background:#1a1a24; border:1px solid var(--line); border-left:3px solid var(--c,#555); border-radius:8px; padding:6px 8px; font-size:12px; }
+  .chip .n { display:flex; align-items:center; gap:6px; font-weight:600; }
+  .chip .u { color:var(--mut); font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  aside .card { position:sticky; top:86px; max-height:calc(100vh - 110px); overflow:auto; }
+  .feed div { border-bottom:1px solid var(--line); padding:7px 0; font-size:12px; }
+  .feed time { color:var(--mut); font-family:Consolas,monospace; margin-right:6px; }
+  .feed b { margin-right:4px; }
+  dialog { background:#0f0f15; color:var(--txt); border:1px solid var(--line); border-radius:12px; width:min(900px,92vw); padding:16px; }
+  dialog pre { background:#07070a; padding:12px; border-radius:8px; max-height:65vh; overflow:auto; font:12px Consolas,monospace; white-space:pre-wrap; }
+  dialog::backdrop { background:rgba(0,0,0,.6); }
+  .tog { font-size:12px; color:var(--mut); display:flex; align-items:center; gap:6px; margin-left:auto; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Central de <span>Agentes</span> · Maike</h1>
+  <a class="btn" href="http://localhost:3000/office" target="_blank">Abrir escritório 3D (Hermes3D)</a>
+  <div class="kpis" id="kpis"></div>
+</header>
+<main>
+  <section class="grid" id="grid"></section>
+  <aside><div class="card"><div class="nome" style="margin-bottom:8px">Atividade ao vivo</div><div class="feed" id="feed"></div></div></aside>
+</main>
+<dialog id="dlg"><div class="top"><b id="dlgT"></b><button style="margin-left:auto" onclick="dlg.close()">Fechar</button></div><pre id="dlgP"></pre></dialog>
+<script>
+const $ = s => document.querySelector(s);
+const hora = t => new Date(t).toLocaleTimeString('pt-BR');
+const esc = s => String(s ?? '').replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+async function acao(id, a) {
+  if (a === 'desligar' && !confirm('Desligar este agente?')) return;
+  await fetch(`/api/agentes/${id}/${a}`, { method: 'POST' }); setTimeout(carregar, 800);
+}
+async function verLog(id, nome) {
+  const r = await (await fetch(`/api/agentes/${id}/log`)).json();
+  $('#dlgT').textContent = 'Log · ' + nome; $('#dlgP').textContent = r.log; dlg.showModal(); $('#dlgP').scrollTop = 1e9;
+}
+async function escritorio(id) { await fetch(`/api/agentes/${id}/escritorio`, { method: 'POST' }); carregar(); }
+function chips(fs, agrupar) {
+  if (!fs || !fs.length) return '';
+  const item = f => `<div class="chip" style="--c:${f.cor || '#555'}" title="${esc(f.funcao)}"><div class="n"><span class="dot ${f.status}"></span>${esc(f.nome)}</div><div class="u">${f.ultima ? esc(f.ultima) + ' · ' + hora(f.quando) : esc(f.funcao)}</div></div>`;
+  if (!agrupar) return `<div class="func"><h4>Funcionários</h4><div class="chips">${fs.map(item).join('')}</div></div>`;
+  const g = {}; fs.forEach(f => (g[f.funcao] ||= []).push(f));
+  if (agrupar === 'fechado') return `<div class="func">${Object.entries(g).map(([a, l]) => `<details><summary style="cursor:pointer;margin:6px 0;color:var(--mut)">${esc(a)} · ${l.length}</summary><div class="chips">${l.map(item).join('')}</div></details>`).join('')}</div>`;
+  return `<div class="func">${Object.entries(g).map(([a, l]) => `<h4>${esc(a)} · ${l.length}</h4><div class="chips">${l.map(item).join('')}</div>`).join('')}</div>`;
+}
+async function carregar() {
+  let d; try { d = await (await fetch('/api/agentes')).json(); } catch { return; }
+  const ag = d.agentes, func = ag.flatMap(a => a.funcionarios || []);
+  $('#kpis').innerHTML = [
+    [ag.filter(a => a.rodando).length + '/' + ag.length, 'agentes ligados'],
+    [func.length, 'funcionários'],
+    [func.filter(f => f.status === 'trabalhando').length, 'trabalhando agora'],
+  ].map(([v, l]) => `<div class="kpi"><b>${v}</b><small>${l}</small></div>`).join('');
+  $('#grid').innerHTML = ag.map(a => `
+    <div class="card ${a.id === 'niobe' || a.tipo === 'agencia' ? 'wide' : ''}">
+      <div class="top"><span class="emoji">${a.emoji}</span><span class="nome">${esc(a.nome)}</span>
+        <span class="pill"><span class="dot ${a.rodando ? 'rodando' : ''}"></span>${a.rodando ? 'Ligado' : 'Desligado'}</span></div>
+      <div class="desc">${esc(a.descricao)}</div>
+      <div class="det">${esc(a.detalhe)}</div>
+      <div class="acoes">
+        ${a.controlavel ? `<button class="on" onclick="acao('${a.id}','ligar')">Ligar</button><button class="offb" onclick="acao('${a.id}','desligar')">Desligar</button>` : ''}
+        ${['morfeus', 'niobe'].includes(a.id) ? `<button onclick="verLog('${a.id}','${esc(a.nome)}')">Ver log</button>` : ''}
+        <label class="tog"><input type="checkbox" ${a.noEscritorio ? 'checked' : ''} onchange="escritorio('${a.id}')"> no escritório 3D</label>
+      </div>
+      ${chips(a.funcionarios, a.tipo === 'agencia' ? 'fechado' : a.id === 'niobe')}
+    </div>`).join('');
+  $('#feed').innerHTML = d.atividade.map(x => `<div><time>${hora(x.t)}</time><b style="color:${x.cor}">${esc(x.quem)}</b>${esc(x.txt)} <span style="color:var(--mut)">· ${esc(x.agente)}</span></div>`).join('') || '<div style="color:var(--mut)">Nada ainda. Quando a Niobe editar ou um agente for ligado, aparece aqui.</div>';
+}
+carregar(); setInterval(carregar, 1500);
+</script>
+</body>
+</html>

@@ -1,0 +1,585 @@
+<style>
+  /* Estilos específicos da tela de Funil Kanban */
+  .funil-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--espaco-md);
+    background-color: var(--superficie);
+    padding: var(--espaco-md) var(--espaco-lg);
+    border: 1px solid var(--borda);
+    border-radius: var(--raio-lg);
+  }
+
+  .funil-seletor-abas {
+    display: flex;
+    background-color: var(--superficie-2);
+    padding: 4px;
+    border-radius: var(--raio);
+    border: 1px solid var(--borda);
+    gap: 4px;
+  }
+
+  .btn-aba-funil {
+    padding: var(--espaco-sm) var(--espaco-md);
+    border: none;
+    background: transparent;
+    color: var(--texto-mudo);
+    font-weight: 600;
+    font-size: 0.9rem;
+    border-radius: var(--raio-sm);
+    cursor: pointer;
+    transition: var(--transicao);
+    display: flex;
+    align-items: center;
+    gap: var(--espaco-xs);
+    min-height: 36px;
+  }
+
+  .btn-aba-funil.ativo {
+    background-color: var(--superficie);
+    color: var(--marca);
+    box-shadow: var(--sombra-sm);
+  }
+
+  .funil-filtros {
+    display: flex;
+    align-items: center;
+    gap: var(--espaco-md);
+    flex-wrap: wrap;
+  }
+
+  .funil-mural {
+    display: flex;
+    gap: var(--espaco-md);
+    overflow-x: auto;
+    padding-bottom: var(--espaco-md);
+    min-height: calc(100vh - 240px);
+    scroll-behavior: smooth;
+  }
+
+  /* Customizacao da Coluna Kanban */
+  .coluna-funil {
+    flex: 0 0 310px;
+    background-color: var(--superficie);
+    border: 1px solid var(--borda);
+    border-radius: var(--raio-lg);
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 240px);
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .coluna-funil.drag-over {
+    border-color: var(--marca);
+    background-color: var(--superficie-2);
+  }
+
+  .coluna-topo {
+    padding: var(--espaco-md);
+    border-bottom: 1px solid var(--borda);
+    display: flex;
+    flex-direction: column;
+    gap: var(--espaco-xs);
+    background-color: var(--superficie-2);
+    border-top-left-radius: var(--raio-lg);
+    border-top-right-radius: var(--raio-lg);
+  }
+
+  .coluna-titulo-linha {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .coluna-nome {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--texto);
+    display: flex;
+    align-items: center;
+    gap: var(--espaco-xs);
+  }
+
+  .coluna-badge-qtd {
+    background-color: var(--superficie-3);
+    color: var(--texto);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: var(--raio-pilo);
+    border: 1px solid var(--borda);
+  }
+
+  .coluna-total-val {
+    font-size: 0.85rem;
+    color: var(--marca);
+    font-weight: 700;
+  }
+
+  .coluna-corpo {
+    padding: var(--espaco-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--espaco-md);
+    overflow-y: auto;
+    flex-grow: 1;
+    min-height: 150px;
+  }
+
+  /* Cartao Kanban Customizado */
+  .cartao-paciente {
+    background-color: var(--superficie-2);
+    border: 1px solid var(--borda);
+    border-radius: var(--raio);
+    padding: var(--espaco-md);
+    cursor: grab;
+    display: flex;
+    flex-direction: column;
+    gap: var(--espaco-sm);
+    transition: var(--transicao);
+    position: relative;
+    user-select: none;
+  }
+
+  .cartao-paciente:hover {
+    border-color: var(--marca);
+    transform: translateY(-2px);
+    box-shadow: var(--sombra);
+  }
+
+  .cartao-paciente:active {
+    cursor: grabbing;
+  }
+
+  .cartao-paciente.arrastando {
+    opacity: 0.4;
+    border: 2px dashed var(--marca);
+  }
+
+  .cartao-cabecalho {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--espaco-xs);
+  }
+
+  .cartao-nome {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--texto);
+    line-height: 1.2;
+  }
+
+  .cartao-dente {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 0.75rem;
+    background-color: var(--superficie-3);
+    color: var(--info);
+    padding: 2px 6px;
+    border-radius: var(--raio-sm);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .cartao-detalhes {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.85rem;
+  }
+
+  .cartao-dentista {
+    color: var(--texto-mudo);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .cartao-dentista svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+  }
+
+  .cartao-rodape {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: var(--espaco-xs);
+    border-top: 1px solid var(--borda);
+    margin-top: 2px;
+  }
+
+  .cartao-valor {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--texto);
+  }
+
+  /* Modal de Adicionar Card */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--espaco-md);
+  }
+
+  @media (max-width: 600px) {
+    .funil-header {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .funil-filtros {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<!-- HEADER DA TELA DE FUNIL (SELETORES & FILTROS) -->
+<div class="funil-header">
+  <div class="linha" style="gap: var(--espaco-md);">
+    <div class="linha" style="gap:8px">
+      <strong>Funil</strong>
+      <input type="text" id="novaEtapaNome" maxlength="40" placeholder="Nome da nova etapa" aria-label="Nome da nova etapa" style="width:200px" onkeydown="if(event.key==='Enter'){event.preventDefault();adicionarEtapa();}">
+      <button class="btn btn-suave" type="button" onclick="adicionarEtapa()">+ Adicionar etapa</button>
+    </div>
+  </div>
+
+  <div class="funil-filtros">
+    <div class="campo" style="width: 220px;">
+      <select id="filtroDentista" onchange="aplicarFiltros()" aria-label="Filtrar por responsável">
+        <option value="todos">Todos os responsáveis</option>
+        <option value="Camila Silva">Camila Silva</option>
+        <option value="Rodrigo Santos">Rodrigo Santos</option>
+        <option value="Juliana Costa">Juliana Costa</option>
+      </select>
+    </div>
+
+    <button class="btn btn-primario" onclick="abrirModalNovoCard()">
+      <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+      Novo Card
+    </button>
+  </div>
+</div>
+
+<!-- QUADRO KANBAN (ROLAGEM HORIZONTAL) -->
+<div class="funil-mural" id="kanbanMural">
+  <!-- As colunas e cartões serão renderizados dinamicamente pelo JavaScript -->
+</div>
+
+<!-- MODAL NOVO CARD / OPORTUNIDADE -->
+<div class="modal" id="modalNovoCard">
+  <div class="modal-conteudo">
+    <div class="entre" style="margin-bottom: var(--espaco-md);">
+      <h3 style="font-size: 1.2rem; font-weight: 700;" id="modalTitulo">Nova Oportunidade</h3>
+      <button class="btn btn-icone btn-suave" onclick="fecharModalNovoCard()" aria-label="Fechar modal">
+        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+
+    <form id="formNovoCard" onsubmit="salvarNovoCard(event)">
+      <div style="display: flex; flex-direction: column; gap: var(--espaco-md);">
+        <div class="campo">
+          <label for="inputNome">Nome do Lead *</label>
+          <input type="text" id="inputNome" placeholder="Ex: Maria Oliveira" required />
+        </div>
+
+        <div class="form-grid">
+          <div class="campo">
+            <label for="inputDentista">Responsável</label>
+            <select id="inputDentista" required>
+              <option value="Camila Silva">Camila Silva</option>
+              <option value="Rodrigo Santos">Rodrigo Santos</option>
+              <option value="Juliana Costa">Juliana Costa</option>
+            </select>
+          </div>
+
+          <div class="campo">
+            <label for="inputColuna">Etapa / Coluna</label>
+            <select id="inputColuna" required>
+              <!-- Preenchido via JS conforme funil ativo -->
+            </select>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="campo">
+            <input type="hidden" id="inputValor" value="0" />
+          </div>
+
+          <div class="campo">
+            <label for="inputDente">Etiqueta (opcional)</label>
+            <input type="text" id="inputDente" placeholder="Ex.: orçamento enviado" />
+          </div>
+        </div>
+
+        <div class="campo">
+          <label for="inputSituacao">Situação / Tag</label>
+          <select id="inputSituacao">
+            <option value="Avaliação|etiqueta-info">Avaliação (Info)</option>
+            <option value="Urgente|etiqueta-erro">Urgente (Alerta)</option>
+            <option value="Particular|etiqueta-sucesso">Particular (Sucesso)</option>
+            <option value="Convênio|etiqueta-alerta">Convênio (Pendente)</option>
+            <option value="Aguardando|etiqueta-alerta">Aguardando Retorno</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="entre" style="margin-top: var(--espaco-lg);">
+        <button type="button" class="btn btn-suave" onclick="fecharModalNovoCard()">Cancelar</button>
+        <button type="submit" class="btn btn-primario">Salvar no Funil</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Estrutura de Colunas por Funil
+  // Cada cliente (subconta) monta as próprias etapas. O padrão é só "Novo lead".
+  function etapasSalvas() { try { const e = JSON.parse(localStorage.getItem('matrix-etapas')); if (Array.isArray(e) && e.length) return e; } catch (e) {} return [{ id: 'novo_lead', nome: 'Novo lead' }]; }
+  const ESTRUTURA_FUNIS = { atendimento: etapasSalvas(), procedimentos: [] };
+  function salvarEtapas() { try { localStorage.setItem('matrix-etapas', JSON.stringify(ESTRUTURA_FUNIS.atendimento)); } catch (e) {} }
+  function adicionarEtapa() {
+    const campo = document.getElementById('novaEtapaNome'), nome = campo.value.trim().slice(0, 40); if (!nome) { campo.focus(); return; }
+    ESTRUTURA_FUNIS.atendimento.push({ id: 'etapa_' + Date.now(), nome: nome }); salvarEtapas(); campo.value = ''; renderizarKanban();
+  }
+  function removerEtapa(id) {
+    if (id === 'novo_lead') return;
+    cartoesDados.forEach(c => { if (c.colunaId === id) c.colunaId = 'novo_lead'; });
+    ESTRUTURA_FUNIS.atendimento = ESTRUTURA_FUNIS.atendimento.filter(e => e.id !== id); salvarEtapas(); renderizarKanban();
+  }
+
+  // Cartões de exemplo
+  let cartoesDados = [
+    { id: 101, funil: 'atendimento', colunaId: 'novo_lead', nome: 'Beatriz Lima', dente: '', dentista: 'Camila Silva', valor: 0, situacao: 'WhatsApp', etiquetaClasse: 'etiqueta-info' },
+    { id: 102, funil: 'atendimento', colunaId: 'novo_lead', nome: 'Marcos Oliveira', dente: '', dentista: 'Rodrigo Santos', valor: 0, situacao: 'Urgente', etiquetaClasse: 'etiqueta-erro' }
+  ];
+
+  let funilAtual = 'atendimento';
+  let dentistaFiltro = 'todos';
+
+  // Inicialização
+  document.addEventListener('DOMContentLoaded', () => {
+    renderizarKanban();
+  });
+
+  // Alterna entre Funil Atendimento e Procedimentos
+  function alternarFunil(tipoFunil) {
+    funilAtual = tipoFunil;
+
+
+    renderizarKanban();
+  }
+
+  // Aplica filtro por dentista
+  function aplicarFiltros() {
+    dentistaFiltro = document.getElementById('filtroDentista').value;
+    renderizarKanban();
+  }
+
+  // Formatação de Moeda em R$
+  function formatarMoeda(valor) {
+    return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  }
+
+  // Renderiza todo o Kanban baseado na estrutura e filtros atuais
+  function renderizarKanban() {
+    const mural = document.getElementById('kanbanMural');
+    mural.innerHTML = '';
+
+    const colunasDefinidas = ESTRUTURA_FUNIS[funilAtual];
+
+    colunasDefinidas.forEach(coluna => {
+      // Filtrar cartões pertencentes a esta coluna e ao funil/dentista selecionado
+      const cartoesColuna = cartoesDados.filter(c => {
+        const pertenceFunil = c.funil === funilAtual;
+        const pertenceColuna = c.colunaId === coluna.id;
+        const pertenceDentista = dentistaFiltro === 'todos' || c.dentista === dentistaFiltro;
+        return pertenceFunil && pertenceColuna && pertenceDentista;
+      });
+
+      // Calcular soma total da coluna
+      const totalValor = cartoesColuna.reduce((acc, c) => acc + c.valor, 0);
+
+      // Elemento HTML da Coluna
+      const colunaEl = document.createElement('div');
+      colunaEl.className = 'coluna-funil';
+      colunaEl.setAttribute('data-coluna-id', coluna.id);
+
+      // Eventos Drag and Drop na coluna
+      colunaEl.addEventListener('dragover', e => handleDragOver(e, colunaEl));
+      colunaEl.addEventListener('dragleave', e => handleDragLeave(e, colunaEl));
+      colunaEl.addEventListener('drop', e => handleDrop(e, coluna.id, colunaEl));
+
+      // Cabeçalho da coluna
+      colunaEl.innerHTML = `
+        <div class="coluna-topo">
+          <div class="coluna-titulo-linha">
+            <span class="coluna-nome">${esc(coluna.nome)}</span>
+            <span class="coluna-badge-qtd">${cartoesColuna.length}</span>
+            ${coluna.id === 'novo_lead' ? '' : `<button type="button" class="btn btn-icone btn-suave" title="Remover etapa" aria-label="Remover etapa" onclick="removerEtapa('${esc(coluna.id)}')" style="width:26px;height:26px;padding:0">✕</button>`}
+          </div>
+          
+        </div>
+        <div class="coluna-corpo" id="corpo-${esc(coluna.id)}"></div>
+      `;
+
+      mural.appendChild(colunaEl);
+
+      const corpoEl = colunaEl.querySelector(`#corpo-${esc(coluna.id)}`);
+
+      // Renderizar Cartões dentro da coluna
+      if (cartoesColuna.length === 0) {
+        corpoEl.innerHTML = `
+          <div style="text-align: center; color: var(--texto-mudo); font-size: 0.8rem; padding: var(--espaco-md) 0; border: 1px dashed var(--borda); border-radius: var(--raio-sm);">
+            Arraste um card aqui
+          </div>
+        `;
+      } else {
+        cartoesColuna.forEach(card => {
+          const cardEl = criarElementoCartao(card);
+          corpoEl.appendChild(cardEl);
+        });
+      }
+    });
+  }
+
+  // Cria o elemento HTML do Cartão Kanban
+  function criarElementoCartao(card) {
+    const el = document.createElement('div');
+    el.className = 'cartao-paciente';
+    el.setAttribute('draggable', 'true');
+    el.setAttribute('data-card-id', card.id);
+
+    // Eventos de Drag no Cartão
+    el.addEventListener('dragstart', e => handleDragStart(e, card.id));
+    el.addEventListener('dragend', handleDragEnd);
+
+    const tagDenteHTML = card.dente 
+      ? `<span class="cartao-dente">
+          <svg viewBox="0 0 24 24" style="width: 12px; height: 12px; fill: currentColor;"><path d="M12 2C8.5 2 6 4.5 6 8c0 3 1.5 5 2 9 .4 3.2 1.5 5 4 5s3.6-1.8 4-5c.5-4 2-6 2-9 0-3.5-2.5-6-6-6z"/></svg>
+          ${esc(card.dente)}
+         </span>`
+      : '';
+
+    el.innerHTML = `
+      <div class="cartao-cabecalho">
+        <span class="cartao-nome">${esc(card.nome)}</span>
+        ${tagDenteHTML}
+      </div>
+      
+      <div class="cartao-detalhes">
+        <div class="cartao-dentista">
+          <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          ${esc(card.dentista)}
+        </div>
+      </div>
+
+      <div class="cartao-rodape">
+        
+        <span class="etiqueta ${esc(card.etiquetaClasse)}">${esc(card.situacao)}</span>
+      </div>
+    `;
+
+    return el;
+  }
+
+  // Lógica de Arrastar e Soltar (HTML5 Drag and Drop)
+  let cardIdSendoArrastado = null;
+
+  function handleDragStart(e, cardId) {
+    cardIdSendoArrastado = cardId;
+    e.dataTransfer.setData('text/plain', cardId);
+    e.dataTransfer.effectAllowed = 'move';
+    
+    // Adiciona classe visual com pequeno atraso para melhor efeito no browser
+    setTimeout(() => {
+      if (e.target) e.target.classList.add('arrastando');
+    }, 0);
+  }
+
+  function handleDragEnd(e) {
+    if (e.target) e.target.classList.remove('arrastando');
+    cardIdSendoArrastado = null;
+  }
+
+  function handleDragOver(e, colunaEl) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    colunaEl.classList.add('drag-over');
+  }
+
+  function handleDragLeave(e, colunaEl) {
+    colunaEl.classList.remove('drag-over');
+  }
+
+  function handleDrop(e, novaColunaId, colunaEl) {
+    e.preventDefault();
+    colunaEl.classList.remove('drag-over');
+
+    if (!cardIdSendoArrastado) return;
+
+    // Localizar o cartão no array e atualizar sua coluna
+    const card = cartoesDados.find(c => c.id === cardIdSendoArrastado);
+    if (card && card.colunaId !== novaColunaId) {
+      card.colunaId = novaColunaId;
+      renderizarKanban(); // Re-renderiza atualizando contadores e valores das colunas
+    }
+  }
+
+  // Lógica do Modal de Novo Card
+  function abrirModalNovoCard() {
+    const modal = document.getElementById('modalNovoCard');
+    const selectColuna = document.getElementById('inputColuna');
+    
+    // Preenche as opções de coluna com base no funil ativo
+    selectColuna.innerHTML = '';
+    ESTRUTURA_FUNIS[funilAtual].forEach(col => {
+      const opt = document.createElement('option');
+      opt.value = col.id;
+      opt.textContent = col.nome;
+      selectColuna.appendChild(opt);
+    });
+
+    document.getElementById('formNovoCard').reset();
+    modal.classList.add('aberto');
+  }
+
+  function fecharModalNovoCard() {
+    document.getElementById('modalNovoCard').classList.remove('aberto');
+  }
+
+  function salvarNovoCard(e) {
+    e.preventDefault();
+
+    const nome = document.getElementById('inputNome').value;
+    const dentista = document.getElementById('inputDentista').value;
+    const colunaId = document.getElementById('inputColuna').value;
+    const valor = parseFloat(document.getElementById('inputValor').value) || 0;
+    const dente = document.getElementById('inputDente').value;
+    const [situacao, etiquetaClasse] = document.getElementById('inputSituacao').value.split('|');
+
+    const novoCard = {
+      id: Date.now(),
+      funil: funilAtual,
+      colunaId: colunaId,
+      nome: nome,
+      dente: dente,
+      dentista: dentista,
+      valor: valor,
+      situacao: situacao,
+      etiquetaClasse: etiquetaClasse
+    };
+
+    cartoesDados.push(novoCard);
+    fecharModalNovoCard();
+    renderizarKanban();
+  }
+</script>

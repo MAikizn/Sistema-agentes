@@ -1,0 +1,24 @@
+{
+    "pastaSaida":  "saida",
+    "maxParalelo":  3,
+    "maxClipes":  5,
+    "fonte":  "Arial Black",
+    "corDestaque":  "\u0026H0000E5FF",
+    "ruidoSilencio":  "-35dB",
+    "silencioMinimo":  0.45,
+    "abrirPastaAoTerminar":  true,
+    "manterArquivosTemporarios":  false,
+    "geminiModelos":  [
+                          "gemini-2.5-flash",
+                          "gemini-2.0-flash"
+                      ],
+    "filmcraft":  {
+                      "ativo":  true,
+                      "cli":  "%LOCALAPPDATA%\\Programs\\ArtCraft\\FilmCraft\\filmcraft-cli.exe"
+                  },
+    "whatsapp":  {
+                     "ativo":  false,
+                     "gatilho":  "/Niobe",
+                     "numerosAutorizados":  null
+                 }
+}

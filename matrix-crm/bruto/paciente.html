@@ -1,0 +1,90 @@
+<style>
+  .odontograma-svg { width: 100%; max-width: 600px; height: auto; margin: 0 auto; display: block; }
+  .dente { cursor: pointer; transition: fill 0.3s; stroke: #333; stroke-width: 1; }
+  .dente:hover { fill: var(--marca); }
+  .status-pendente { fill: #f0f0f0; }
+  .status-andamento { fill: var(--alerta); }
+  .status-concluido { fill: var(--sucesso); }
+  @media print {
+    .abas, .btn { display: none; }
+    .aba-conteudo { display: block !important; }
+    body::before { content: "MATRIX CRM - FICHA DO LEAD"; font-weight: bold; font-size: 20px; }
+  }
+</style>
+
+<div class="entre">
+  <h2>Ficha do Lead: João Silva</h2>
+  <button class="btn" onclick="window.print()">Imprimir Ficha</button>
+</div>
+
+<div class="abas">
+  <button class="aba ativa" onclick="mudarAba(event, 'dados')">Dados</button>
+  <button class="aba" onclick="mudarAba(event, 'anamnese')">Anamnese</button>
+  <button class="aba" onclick="mudarAba(event, 'odonto')">Odontograma</button>
+</div>
+
+<div id="dados" class="aba-conteudo">
+  <div class="cartao">
+    <div class="grade">
+      <div class="campo"><label>Nome Completo</label><input type="text" value="João Silva"></div>
+      <div class="campo"><label>CPF</label><input type="text" value="123.456.789-00"></div>
+      <div class="campo"><label>Celular</label><input type="tel" value="(11) 99999-8888"></div>
+      <div class="campo"><label>E-mail</label><input type="email" value="joao@email.com"></div>
+    </div>
+  </div>
+</div>
+
+<div id="anamnese" class="aba-conteudo oculto">
+  <div class="cartao">
+    <h3>Histórico de Saúde</h3>
+    <div class="grade">
+      <label class="interruptor">Diabetes? <input type="checkbox"><span class="trilho"></span></label>
+      <label class="interruptor">Gestante? <input type="checkbox"><span class="trilho"></span></label>
+      <label class="interruptor">Fumante? <input type="checkbox"><span class="trilho"></span></label>
+    </div>
+    <div class="campo"><label>Observações</label><textarea placeholder="Especifique alergias ou tratamentos..."></textarea></div>
+  </div>
+</div>
+
+<div id="odonto" class="aba-conteudo oculto">
+  <div class="cartao">
+    <svg class="odontograma-svg" viewBox="0 0 600 200">
+      <!-- Arcada Superior -->
+      <g id="superior">
+        <circle id="18" class="dente status-pendente" cx="50" cy="50" r="15" />
+        <circle id="11" class="dente status-pendente" cx="280" cy="50" r="15" />
+      </g>
+      <!-- Arcada Inferior -->
+      <g id="inferior">
+        <circle id="48" class="dente status-pendente" cx="50" cy="150" r="15" />
+        <circle id="41" class="dente status-pendente" cx="280" cy="150" r="15" />
+      </g>
+    </svg>
+    <div class="tabela-conteiner">
+      <table class="tabela">
+        <thead><tr><th>Dente</th><th>Procedimento</th><th>Status</th></tr></thead>
+        <tbody id="lista-procedimentos"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  function mudarAba(evt, id) {
+    document.querySelectorAll('.aba-conteudo').forEach(el => el.classList.add('oculto'));
+    document.querySelectorAll('.aba').forEach(el => el.classList.remove('ativa'));
+    document.getElementById(id).classList.remove('oculto');
+    evt.currentTarget.classList.add('ativa');
+  }
+
+  document.querySelectorAll('.dente').forEach(dente => {
+    dente.addEventListener('click', () => {
+      const proc = prompt("Procedimento (Cárie, Limpeza, Implante):");
+      if(proc) {
+        dente.setAttribute('class', 'dente status-andamento');
+        const lista = document.getElementById('lista-procedimentos');
+        lista.innerHTML += `<tr><td>${esc(dente.id)}</td><td>${esc(proc)}</td><td><span class="etiqueta etiqueta-alerta">Em andamento</span></td></tr>`;
+      }
+    });
+  });
+</script>

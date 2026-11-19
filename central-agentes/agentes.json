@@ -1,0 +1,422 @@
+{
+  "porta": 7770,
+  "freellmapi": {
+    "baseUrl": "http://127.0.0.1:31415/v1",
+    "configMorfeus": "../agente-whatsapp/config.json"
+  },
+  "unidade": {
+    "baseUrl": "http://127.0.0.1:7780/v1",
+    "modelo": "unidade"
+  },
+  "agentes": [
+    {
+      "id": "unidade",
+      "nome": "Unidade",
+      "emoji": "🧠",
+      "descricao": "O cérebro da estrutura: une o Kimi K3 e o Mistral Large numa IA só (fusão nos pedidos pesados, resposta rápida no WhatsApp). Todos os agentes pensam por ela, menos a Niobe, que usa o Haiku 5.5.",
+      "tipo": "processo",
+      "pasta": "../unidade",
+      "iniciar": "INICIAR-UNIDADE.bat",
+      "titulo": "Unidade",
+      "log": "../unidade/unidade.log"
+    },
+    {
+      "id": "n8n",
+      "nome": "n8n",
+      "emoji": "🔀",
+      "descricao": "Automações visuais em http://localhost:5678. O atendimento do Morfeus passa pelo fluxo 'Morfeus - Atendimento', e o 'Morfeus - Eventos' recebe leads, respostas e transferências para você criar automações sem pedir ao Claude.",
+      "tipo": "processo",
+      "pasta": "../Apps/n8n",
+      "iniciar": "INICIAR-N8N.bat",
+      "titulo": "n8n"
+    },
+    {
+      "id": "morfeus",
+      "nome": "Morfeus",
+      "emoji": "💬",
+      "descricao": "SDR/Closer no WhatsApp: atende leads de marketing (tráfego, sites, CRM) e agenda reuniões.",
+      "tipo": "processo",
+      "pasta": "../agente-whatsapp",
+      "iniciar": "INICIAR.bat",
+      "titulo": "Agente WhatsApp",
+      "log": "../agente-whatsapp/agente.log",
+      "funcionarios": [
+        {
+          "nome": "Atendimento (SDR)",
+          "funcao": "primeira resposta e qualificação do lead"
+        },
+        {
+          "nome": "Closer",
+          "funcao": "apresenta serviços e conduz para o fechamento"
+        },
+        {
+          "nome": "Agendador",
+          "funcao": "marca reuniões na Agenda Google e no planner"
+        },
+        {
+          "nome": "Voz",
+          "funcao": "responde áudio com áudio"
+        },
+        {
+          "nome": "Transferência",
+          "funcao": "passa para humano quando não sabe"
+        },
+        {
+          "nome": "Pesquisador de assunto",
+          "funcao": "pesquisa o tema que o lead citou",
+          "novo": true,
+          "conectado": false
+        },
+        {
+          "nome": "Pesquisador de concorrência",
+          "funcao": "compara com concorrentes",
+          "novo": true,
+          "conectado": false
+        },
+        {
+          "nome": "Pesquisador de empresa do lead",
+          "funcao": "perfil e porte do lead",
+          "novo": true,
+          "conectado": false
+        },
+        {
+          "nome": "Pesquisador de objeções",
+          "funcao": "respostas para objeções comuns",
+          "novo": true,
+          "conectado": false
+        },
+        {
+          "nome": "Leitor de áudio",
+          "funcao": "ouve e transcreve áudios",
+          "novo": true,
+          "conectado": false
+        },
+        {
+          "nome": "Revisor de transcrição",
+          "funcao": "corrige erros da transcrição",
+          "novo": true,
+          "conectado": false
+        },
+        {
+          "nome": "Detector de tom e emoção",
+          "funcao": "humor do lead pelo áudio",
+          "novo": true,
+          "conectado": false
+        },
+        {
+          "nome": "Resumidor de áudio longo",
+          "funcao": "resume áudios grandes",
+          "novo": true,
+          "conectado": false
+        },
+        {
+          "nome": "Extrator de dados do áudio",
+          "funcao": "nome, telefone, datas",
+          "novo": true,
+          "conectado": false
+        },
+        {
+          "nome": "Intérprete de gírias e sotaques",
+          "funcao": "entende jeito de falar",
+          "novo": true,
+          "conectado": false
+        },
+        {
+          "nome": "Qualificador BANT",
+          "funcao": "orçamento, decisor, necessidade, prazo",
+          "novo": true,
+          "conectado": false
+        },
+        {
+          "nome": "Pontuador de lead",
+          "funcao": "nota de 0 a 100",
+          "novo": true,
+          "conectado": false
+        },
+        {
+          "nome": "Classificador de intenção",
+          "funcao": "compra, dúvida, suporte",
+          "novo": true,
+          "conectado": false
+        },
+        {
+          "nome": "Detector de urgência",
+          "funcao": "prioriza quem tem pressa",
+          "novo": true,
+          "conectado": false
+        },
+        {
+          "nome": "Memória do lead",
+          "funcao": "histórico da conversa",
+          "novo": true,
+          "conectado": false
+        },
+        {
+          "nome": "Resumo de conversa",
+          "funcao": "resumo para o closer",
+          "novo": true,
+          "conectado": false
+        },
+        {
+          "nome": "Redator de respostas",
+          "funcao": "texto natural de WhatsApp",
+          "novo": true,
+          "conectado": false
+        },
+        {
+          "nome": "Revisor de tom",
+          "funcao": "mantém a voz do Maike",
+          "novo": true,
+          "conectado": false
+        },
+        {
+          "nome": "Corretor de português",
+          "funcao": "ortografia e clareza",
+          "novo": true,
+          "conectado": false
+        },
+        {
+          "nome": "Tradutor",
+          "funcao": "atende em outros idiomas",
+          "novo": true,
+          "conectado": false
+        },
+        {
+          "nome": "Quebra de objeção",
+          "funcao": "contorna o 'está caro'",
+          "novo": true,
+          "conectado": false
+        },
+        {
+          "nome": "Preparador de proposta",
+          "funcao": "monta proposta rápida",
+          "novo": true,
+          "conectado": false
+        },
+        {
+          "nome": "Calculador de preço",
+          "funcao": "orçamentos e descontos",
+          "novo": true,
+          "conectado": false
+        },
+        {
+          "nome": "Follow-up automático",
+          "funcao": "retoma leads parados",
+          "novo": true,
+          "conectado": false
+        },
+        {
+          "nome": "Reativador de leads frios",
+          "funcao": "reabre conversas antigas",
+          "novo": true,
+          "conectado": false
+        },
+        {
+          "nome": "Agendamento inteligente",
+          "funcao": "melhor horário de reunião",
+          "novo": true,
+          "conectado": false
+        },
+        {
+          "nome": "Lembrete de reunião",
+          "funcao": "confirma e lembra",
+          "novo": true,
+          "conectado": false
+        },
+        {
+          "nome": "Auditor de qualidade",
+          "funcao": "nota o atendimento",
+          "novo": true,
+          "conectado": false
+        },
+        {
+          "nome": "Guardião de LGPD",
+          "funcao": "evita dados indevidos",
+          "novo": true,
+          "conectado": false
+        },
+        {
+          "nome": "Escalador para humano",
+          "funcao": "avisa quando o Maike entra",
+          "novo": true,
+          "conectado": false
+        }
+      ]
+    },
+    {
+      "id": "niobe",
+      "nome": "Niobe",
+      "emoji": "🎬",
+      "descricao": "Diretora de edição de vídeo no FilmCraft com 30 especialistas (chamada por /Niobe no Claude). Ela e a equipe pensam só com o Haiku 5.5.",
+      "tipo": "niobe",
+      "pasta": "../agente-niobe",
+      "iniciar": "NIOBE-AO-VIVO.bat",
+      "log": "../agente-niobe/niobe.log"
+    },
+    {
+      "id": "agency",
+      "nome": "The Agency (agency-agents)",
+      "emoji": "🏢",
+      "descricao": "Biblioteca de ~310 agentes especialistas do GitHub (msitarzewski/agency-agents): marketing, vendas, design, engenharia, mídia paga, estratégia e mais.",
+      "tipo": "agencia",
+      "pasta": "../agency-agents"
+    },
+    {
+      "id": "ecc",
+      "nome": "ECC (Everything Claude Code)",
+      "emoji": "🧰",
+      "descricao": "Plugin ECC do Claude (v2.2.3), o mesmo instalado no Claude Code: 71 agentes de engenharia (arquitetura, revisão de código, segurança, testes, build, SEO, marketing).",
+      "tipo": "agencia",
+      "pasta": "../ECC-src/ECC",
+      "divisoes": ["agents"],
+      "comoUsar": "no Claude, chame pelos comandos /ecc:...",
+      "semPasta": "pasta ECC-src\\ECC não encontrada em Documentos"
+    },
+    {
+      "id": "freellmapi",
+      "nome": "FreeLLMAPI",
+      "emoji": "🧠",
+      "descricao": "Roteador de modelos gratuitos que alimenta a Unidade (é onde ficam as chaves do Kimi K3 e do Mistral Large).",
+      "tipo": "servico",
+      "exe": "%LOCALAPPDATA%\\Programs\\freellmapi-desktop\\freellmapi.exe",
+      "processo": "freellmapi.exe",
+      "portaTeste": 31415
+    },
+    {
+      "id": "neo",
+      "nome": "Neo",
+      "emoji": "🧩",
+      "descricao": "Orquestrador no Claude: CRM GoHighLevel e motion design (chamado no chat).",
+      "tipo": "skill"
+    },
+    {
+      "id": "smith",
+      "nome": "Agente Smith",
+      "emoji": "🕶️",
+      "descricao": "Segurança: audita e protege o MATRIX CRM, o Morfeus e as contas, com 30 especialistas (chamado por /agente-smith no Claude).",
+      "tipo": "skill",
+      "funcionarios": [
+        {
+          "nome": "Mapeador de superfície",
+          "funcao": "mapeia tudo que está exposto"
+        },
+        {
+          "nome": "Inventariante de dados",
+          "funcao": "onde ficam dados sensíveis"
+        },
+        {
+          "nome": "Caçador de segredos",
+          "funcao": "chaves e senhas esquecidas"
+        },
+        {
+          "nome": "Auditor de dependências",
+          "funcao": "bibliotecas vulneráveis"
+        },
+        {
+          "nome": "Analista de exposição pública",
+          "funcao": "o que a internet enxerga"
+        },
+        {
+          "nome": "Autenticação e sessão",
+          "funcao": "login, tokens e sessões"
+        },
+        {
+          "nome": "Controle de acesso",
+          "funcao": "quem acessa o quê"
+        },
+        {
+          "nome": "Injeção (SQL/comandos)",
+          "funcao": "entradas maliciosas"
+        },
+        {
+          "nome": "XSS e conteúdo",
+          "funcao": "scripts injetados em páginas"
+        },
+        {
+          "nome": "CSRF e CORS",
+          "funcao": "requisições forjadas"
+        },
+        {
+          "nome": "Upload e arquivos",
+          "funcao": "envio de arquivos perigosos"
+        },
+        {
+          "nome": "APIs e webhooks",
+          "funcao": "portas de integração"
+        },
+        {
+          "nome": "Lógica de negócio",
+          "funcao": "fraudes por regra de negócio"
+        },
+        {
+          "nome": "Erros e logs",
+          "funcao": "vazamento em erros e logs"
+        },
+        {
+          "nome": "Cloudflare",
+          "funcao": "DNS, WAF e proteção"
+        },
+        {
+          "nome": "HTTPS e cabeçalhos",
+          "funcao": "criptografia e headers"
+        },
+        {
+          "nome": "Banco de dados",
+          "funcao": "permissões e backups do banco"
+        },
+        {
+          "nome": "Contas e acessos",
+          "funcao": "senhas, 2FA e permissões"
+        },
+        {
+          "nome": "Estação de trabalho",
+          "funcao": "segurança do PC"
+        },
+        {
+          "nome": "Injeção de prompt",
+          "funcao": "ataques às IAs"
+        },
+        {
+          "nome": "Vazamento por IA",
+          "funcao": "dados enviados a modelos"
+        },
+        {
+          "nome": "Ações de agentes",
+          "funcao": "limites do que agentes fazem"
+        },
+        {
+          "nome": "WhatsApp e canais",
+          "funcao": "segurança de mensageria"
+        },
+        {
+          "nome": "Automações (n8n)",
+          "funcao": "fluxos e credenciais"
+        },
+        {
+          "nome": "LGPD",
+          "funcao": "privacidade e consentimento"
+        },
+        {
+          "nome": "Engenharia social (defesa)",
+          "funcao": "golpes e phishing"
+        },
+        {
+          "nome": "Backup e continuidade",
+          "funcao": "recuperação de desastre"
+        },
+        {
+          "nome": "Resposta a incidentes",
+          "funcao": "plano quando algo dá errado"
+        },
+        {
+          "nome": "Monitor de vulnerabilidades",
+          "funcao": "alertas de novas falhas"
+        },
+        {
+          "nome": "Redator de relatório",
+          "funcao": "relatório final para o Maike"
+        }
+      ]
+    }
+  ]
+}

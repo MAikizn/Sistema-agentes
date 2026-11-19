@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NEO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+<style>
+  :root {
+    --bg: #070d0a;
+    --panel: rgba(14, 28, 20, 0.78);
+    --line: rgba(151, 206, 76, 0.22);
+    --green: #97ce4c;
+    --neon: #4dff6a;
+    --lime: #d6ff3f;
+    --cyan: #46e6d2;
+    --text: #e3f5d6;
+    --muted: #8fae86;
+    --warn: #ffd23f;
+    --bad: #ff5d5d;
+    --display: 'Orbitron', 'Segoe UI', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', Consolas, 'Courier New', monospace;
+    --sans: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(77, 255, 106, 0.16), transparent 60%),
+      radial-gradient(900px 500px at 110% 110%, rgba(70, 230, 210, 0.10), transparent 60%),
+      linear-gradient(rgba(151, 206, 76, 0.05) 1px, transparent 1px) 0 0 / 100% 32px,
+      linear-gradient(90deg, rgba(151, 206, 76, 0.05) 1px, transparent 1px) 0 0 / 32px 100%,
+      var(--bg);
+    color: var(--text);
+    font: 15px/1.6 var(--sans);
+    padding: 28px clamp(16px, 4vw, 48px) 40px;
+  }
+  body::after { /* scanlines */
+    content: ''; position: fixed; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.18) 0 1px, transparent 1px 3px);
+    mix-blend-mode: multiply;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
+
+  header { display: flex; align-items: center; gap: 22px; margin-bottom: 26px; flex-wrap: wrap; }
+  .portal { position: relative; width: 84px; height: 84px; flex: none; }
+  .portal::before, .portal::after {
+    content: ''; position: absolute; inset: 0; border-radius: 50%;
+    background: conic-gradient(from 0deg, var(--lime), var(--neon), #1f7a2e, var(--green), var(--cyan), var(--lime));
+    animation: spin 3.2s linear infinite;
+    filter: blur(1px);
+    -webkit-mask: radial-gradient(circle, transparent 22%, #000 24%);
+            mask: radial-gradient(circle, transparent 22%, #000 24%);
+  }
+  .portal::after { inset: 10px; animation-duration: 1.9s; animation-direction: reverse; opacity: 0.85; filter: blur(2px); }
+  .portal span { position: absolute; inset: 0; border-radius: 50%; box-shadow: 0 0 32px 6px rgba(77,255,106,0.55), inset 0 0 22px rgba(214,255,63,0.6); animation: pulse 2.4s ease-in-out infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes pulse { 50% { box-shadow: 0 0 46px 12px rgba(77,255,106,0.75), inset 0 0 30px rgba(214,255,63,0.8); } }
+
+  .brand h1 {
+    margin: 0; font: 800 44px/1 var(--display); letter-spacing: 0.18em;
+    color: var(--lime);
+    text-shadow: 0 0 8px rgba(214,255,63,0.8), 0 0 24px rgba(77,255,106,0.6), 0 0 48px rgba(77,255,106,0.35);
+  }
+  .brand p { margin: 6px 0 0; font: 600 12px/1.4 var(--mono); color: var(--muted); letter-spacing: 0.22em; text-transform: uppercase; }
+  .clock { margin-left: auto; font: 600 12px var(--mono); color: var(--green); border: 1px solid var(--line); padding: 6px 12px; border-radius: 999px; background: rgba(0,0,0,0.3); }
+
+  .card {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 18px;
+    padding: 22px 24px; backdrop-filter: blur(6px);
+    box-shadow: 0 0 0 1px rgba(77,255,106,0.05), 0 18px 50px rgba(0,0,0,0.45), inset 0 1px 0 rgba(214,255,63,0.08);
+    margin-bottom: 18px;
+  }
+  .card h2 { margin: 0 0 14px; font: 600 15px var(--display); letter-spacing: 0.12em; color: var(--green); text-transform: uppercase; }
+  .title { font: 800 22px/1.3 var(--display); color: var(--text); margin: 0 0 14px; letter-spacing: 0.04em; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+  .chip { font: 600 12px var(--mono); padding: 5px 11px; border-radius: 999px; border: 1px solid var(--line); background: rgba(151,206,76,0.08); color: var(--text); white-space: nowrap; }
+  .chip b { color: var(--lime); font-weight: 600; margin-right: 6px; }
+  .chip.route-free { border-color: rgba(77,255,106,0.5); box-shadow: 0 0 12px rgba(77,255,106,0.25); }
+  .chip.route-claude { border-color: rgba(70,230,210,0.5); box-shadow: 0 0 12px rgba(70,230,210,0.2); }
+
+  .md { overflow-wrap: anywhere; }
+  .md h1, .md h2, .md h3 { font-family: var(--display); color: var(--lime); letter-spacing: 0.04em; margin: 1.2em 0 0.5em; }
+  .md h1 { font-size: 20px; } .md h2 { font-size: 17px; } .md h3 { font-size: 15px; }
+  .md a { color: var(--cyan); }
+  .md strong { color: #f4ffe9; }
+  .md code { font: 13px var(--mono); background: rgba(0,0,0,0.4); border: 1px solid var(--line); padding: 1px 6px; border-radius: 6px; color: var(--lime); }
+  .md pre { background: rgba(0,0,0,0.5); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; overflow-x: auto; }
+  .md pre code { background: none; border: 0; padding: 0; color: var(--text); }
+  .md blockquote { margin: 0; padding: 4px 16px; border-left: 3px solid var(--neon); color: var(--muted); }
+  .md hr { border: 0; border-top: 1px dashed var(--line); margin: 20px 0; }
+  .tablewrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th { font: 600 11px var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  tr:hover td { background: rgba(151,206,76,0.05); }
+
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 18px; }
+  .kpi { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; }
+  .kpi .label { font: 600 11px var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+  .kpi .value { font: 800 30px/1.2 var(--display); color: var(--lime); text-shadow: 0 0 14px rgba(214,255,63,0.45); margin-top: 6px; }
+  .kpi .sub { font-size: 12px; color: var(--muted); }
+
+  .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 8px; vertical-align: 1px; }
+  .ok { background: var(--neon); box-shadow: 0 0 10px var(--neon); }
+  .warn { background: var(--warn); box-shadow: 0 0 10px var(--warn); }
+  .bad { background: var(--bad); box-shadow: 0 0 10px var(--bad); }
+  .unk { background: var(--muted); }
+
+  .bar { height: 8px; border-radius: 999px; background: rgba(255,255,255,0.07); overflow: hidden; min-width: 120px; }
+  .bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--green), var(--lime)); box-shadow: 0 0 10px rgba(214,255,63,0.6); }
+
+  .thread { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+  .msg { max-width: 82%; padding: 10px 14px; border-radius: 14px; border: 1px solid var(--line); font-size: 14px; }
+  .msg .who { font: 600 10px var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .msg.user { align-self: flex-end; background: rgba(70, 230, 210, 0.08); border-color: rgba(70, 230, 210, 0.3); }
+  .msg.assistant { align-self: flex-start; background: rgba(151, 206, 76, 0.07); }
+  .msg.assistant .who { color: var(--green); }
+  .msg .md p { margin: 0.3em 0; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; }
+  .grid2 .card { margin-bottom: 0; }
+  .muted { color: var(--muted); }
+  .err { border-color: rgba(255,93,93,0.5); }
+  .err .title { color: var(--bad); }
+  footer { margin-top: 24px; font: 12px var(--mono); color: var(--muted); text-align: center; letter-spacing: 0.1em; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="portal"><span></span></div>
+    <div class="brand">
+      <h1>NEO</h1>
+      <p>orquestrador · FreeLLMAPI × Claude</p>
+    </div>
+    <div class="clock" id="clock"></div>
+  </header>
+  <main id="app"></main>
+  <footer id="foot"></footer>
+</div>
+
+<script id="neo-data" type="application/json">"__NEO_DATA__"</script>
+<script>
+  const data = JSON.parse(document.getElementById('neo-data').textContent);
+  const app = document.getElementById('app');
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  function md(text) {
+    if (window.marked && window.DOMPurify) {
+      const html = DOMPurify.sanitize(marked.parse(text || ''));
+      return html.replace(/<table>/g, '<div class="tablewrap"><table>').replace(/<\/table>/g, '</table></div>');
+    }
+    return '<pre>' + esc(text) + '</pre>';
+  }
+
+  function chip(label, value, cls = '') {
+    if (value === undefined || value === null || value === '') return '';
+    return `<span class="chip ${cls}"><b>${esc(label)}</b>${esc(value)}</span>`;
+  }
+
+  function renderAnswer(d) {
+    const free = d.route === 'FreeLLMAPI';
+    const clip = s => (s && s.length > 700 ? s.slice(0, 700) + ' …' : s);
+    const thread = (d.thread || []).map(m => `
+      <div class="msg ${m.role === 'user' ? 'user' : 'assistant'}">
+        <div class="who">${m.role === 'user' ? 'Você' : '◆ Neo'}</div>
+        <div class="md">${md(clip(m.content))}</div>
+      </div>`).join('');
+    app.innerHTML = `
+      ${thread ? `<div class="thread">${thread}</div>` : ''}
+      <section class="card ${d.error ? 'err' : ''}">
+        <p class="title">${esc(d.title || 'Resposta')}</p>
+        <div class="chips">
+          ${chip('rota', d.route, free ? 'route-free' : 'route-claude')}
+          ${chip('modelo', d.model)}
+          ${chip('tempo', d.ms != null ? d.ms + ' ms' : '')}
+          ${chip('tokens in', d.tokensIn)}
+          ${chip('tokens out', d.tokensOut)}
+          ${chip('arquivo', d.savedTo)}
+        </div>
+        <div class="md">${md(d.markdown)}</div>
+      </section>`;
+  }
+
+  function statusDot(s) {
+    const k = String(s || '').toLowerCase();
+    if (['ready', 'healthy', 'ok'].includes(k)) return 'ok';
+    if (['rate_limited', 'cooldown', 'stale', 'exhausting_soon', 'low_balance', 'needs_configuration'].includes(k)) return 'warn';
+    if (['invalid', 'error', 'down'].includes(k)) return 'bad';
+    return 'unk';
+  }
+
+  function renderPanel(d) {
+    const h = d.health || {}, ph = d.providers || {}, q = (d.quota && d.quota.pools) || [], r = d.routing || {};
+    const pools = Object.fromEntries(q.map(p => [p.platform, p]));
+    const rows = Object.entries(ph).map(([name, p]) => {
+      const keys = p.keys || {};
+      const st = keys.invalid || keys.error ? 'error' : p.active_cooldowns ? 'cooldown' : keys.healthy ? 'healthy' : 'unknown';
+      const pool = pools[name];
+      const pct = pool && pool.remainingPct != null ? pool.remainingPct : null;
+      const quota = pct != null
+        ? `<div class="bar" title="${pct}%"><i style="width:${Math.max(2, pct)}%"></i></div><span class="muted">${esc(pool.remaining)}/${esc(pool.limit)}</span>`
+        : `<span class="muted">${esc(pool ? (pool.unavailableReason || pool.status) : '—')}</span>`;
+      const keyTxt = Object.entries(keys).map(([k, v]) => `${v} ${k}`).join(' · ');
+      return `<tr><td><span class="dot ${statusDot(st)}"></span>${esc(name)}</td><td>${esc(keyTxt)}</td><td>${esc(p.available_models)}</td><td>${esc(p.active_cooldowns)}</td><td>${quota}</td></tr>`;
+    }).join('');
+    const top = (r.top_models || []).slice(0, 8).map((m, i) =>
+      `<tr><td class="muted">${i + 1}</td><td>${esc(m.model)}</td><td class="muted">${esc(m.platform)}</td><td>${esc(m.score)}</td></tr>`).join('');
+    const search = (h.search && h.search.engines) || [];
+    app.innerHTML = `
+      <div class="kpis">
+        <div class="kpi"><div class="label">Status</div><div class="value"><span class="dot ${statusDot(h.status)}"></span>${esc(h.status || 'offline')}</div><div class="sub">MCP ${h.mcp_enabled ? 'ativo' : 'desligado'}</div></div>
+        <div class="kpi"><div class="label">Provedores</div><div class="value">${esc(h.healthy_providers ?? 0)}/${esc(h.configured_providers ?? 0)}</div><div class="sub">saudáveis / configurados</div></div>
+        <div class="kpi"><div class="label">Modelos</div><div class="value">${esc(h.available_models ?? 0)}</div><div class="sub">disponíveis agora</div></div>
+        <div class="kpi"><div class="label">Roteamento</div><div class="value" style="font-size:22px">${esc(r.strategy || '—')}</div><div class="sub">padrão: ${esc(h.default_model || 'auto')}</div></div>
+      </div>
+      <section class="card">
+        <h2>Provedores</h2>
+        <div class="tablewrap"><table>
+          <thead><tr><th>Provedor</th><th>Chaves</th><th>Modelos</th><th>Cooldowns</th><th>Cota</th></tr></thead>
+          <tbody>${rows || '<tr><td colspan="5" class="muted">Nenhum provedor</td></tr>'}</tbody>
+        </table></div>
+      </section>
+      <div class="grid2">
+        <section class="card">
+          <h2>Top da cadeia de fallback</h2>
+          <div class="tablewrap"><table><thead><tr><th>#</th><th>Modelo</th><th>Plataforma</th><th>Score</th></tr></thead><tbody>${top || '<tr><td colspan="4" class="muted">—</td></tr>'}</tbody></table></div>
+        </section>
+        <section class="card">
+          <h2>Busca na web</h2>
+          <p><span class="dot ${statusDot(h.search && h.search.status)}"></span>${esc((h.search && h.search.status) || '—')}</p>
+          ${search.map(e => `<div class="chip" style="display:inline-block;margin:0 6px 6px 0"><b>${esc(e.platform)}</b>${esc(e.state)}</div>`).join('')}
+        </section>
+      </div>`;
+  }
+
+  function renderError(d) {
+    app.innerHTML = `<section class="card err"><p class="title">${esc(d.title || 'Falha')}</p><div class="md">${md(d.markdown)}</div></section>`;
+  }
+
+  if (data.mode === 'panel') renderPanel(data);
+  else if (data.mode === 'error') renderError(data);
+  else renderAnswer(data);
+  if (data.thread && data.thread.length) document.querySelector('section.card').scrollIntoView();
+
+  const when = new Date(data.at || Date.now());
+  document.getElementById('clock').textContent = when.toLocaleString('pt-BR');
+  document.getElementById('foot').textContent = '◆ NEO · ' + (data.mode === 'panel' ? 'painel' : 'resposta') + ' · ' + when.toLocaleTimeString('pt-BR');
+  document.title = 'NEO · ' + (data.mode === 'panel' ? 'Painel' : (data.title || 'Resposta'));
+</script>
+</body>
+</html>
